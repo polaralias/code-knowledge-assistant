@@ -57,7 +57,7 @@ function renderTopbar() {
     <a class="brand" href="./" aria-label="Code Atlas home"><span class="brand-mark" aria-hidden="true">CA</span><span class="brand-name">Code Atlas</span></a>
     <div class="repo-context" aria-label="Current repository"><span>${escapeHtml(fixture.repository.owner)}</span><span aria-hidden="true">/</span><strong>${escapeHtml(fixture.repository.name)}</strong></div>
     <div class="top-actions">
-      ${reviewSessions.size > 1 || pendingReviewLabel ? `<label class="review-switcher"><span class="sr-only">Switch review</span><select id="review-switcher" aria-label="Switch review">${[...reviewSessions].map(([key, session]) => `<option value="${escapeHtml(key)}" ${key === activeReviewKey ? 'selected' : ''}>${escapeHtml(session.label)}</option>`).join('')}${pendingReviewLabel ? `<option disabled>${escapeHtml(pendingReviewLabel)} · processing</option>` : ''}</select></label>` : ''}
+      <label class="review-switcher"><span class="sr-only">Switch review</span><select id="review-switcher" aria-label="Switch review">${[...reviewSessions].map(([key, session]) => `<option value="${escapeHtml(key)}" ${key === activeReviewKey ? 'selected' : ''}>${escapeHtml(session.label)}</option>`).join('')}${pendingReviewLabel ? `<option disabled>${escapeHtml(pendingReviewLabel)} · processing</option>` : '<option disabled>New review to add another</option>'}</select></label>
       <span class="top-note">${reviewClient.mode === 'live' || uploadClient.mode === 'live' ? 'Live review' : 'Local preview'}</span>
       <button class="upload-trigger" type="button" id="upload-trigger">New review</button>
       <label class="state-control"><span class="sr-only">Preview state</span><select id="state-select" aria-label="Preview workspace state">
