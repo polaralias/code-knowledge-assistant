@@ -174,7 +174,7 @@ test('polling is bounded and stops on failed, expired, deleted, and malformed jo
   await assert.rejects(() => rateLimited.uploadAndPoll(file()), (error) => error.code === 'rate-limited');
   let polls = 0;
   const bounded = createUploadClient({ endpoint: 'https://review.example.test/api', fallback: DEMO_REVIEW, maxPollAttempts: 2, sleep: async () => {}, fetchImpl: async (url) => { if (url.endsWith('/api/reviews')) return jsonResponse({ jobId: 'job_123' }, 202); polls += 1; return jsonResponse({ state: 'processing', jobId: 'job_123', reviewId: 'review_123' }); } });
-  await assert.rejects(() => bounded.uploadAndPoll(file()), (error) => error.code === 'network-error');
+  await assert.rejects(() => bounded.uploadAndPoll(file()), (error) => error.code === 'poll-timeout');
   assert.equal(polls, 2);
   const malformed = createUploadClient({ endpoint: 'https://review.example.test/api', fallback: DEMO_REVIEW, fetchImpl: async (url) => url.endsWith('/api/reviews') ? jsonResponse({ jobId: 'job_123' }, 202) : jsonResponse({ state: 'ready' }) });
   await assert.rejects(() => malformed.uploadAndPoll(file()), (error) => error.code === 'invalid-response');

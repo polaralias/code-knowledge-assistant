@@ -7,7 +7,9 @@ import { isQuestionResponse, normaliseEndpoint } from './live-client.js';
 
 export const DEFAULT_MAX_UPLOAD_BYTES = 50 * 1024 * 1024;
 export const DEFAULT_POLL_INTERVAL_MS = 1500;
-export const DEFAULT_MAX_POLL_ATTEMPTS = 20;
+// Reviews may include a full repository inventory and one provider generation call.
+// Six minutes is bounded but avoids treating normal large-repo work as an outage.
+export const DEFAULT_MAX_POLL_ATTEMPTS = 240;
 
 /** @param {Response} response @returns {Promise<unknown>} */
 async function readJson(response) {
@@ -155,7 +157,7 @@ export function createUploadClient(options) {
       if (['failed', 'expired', 'deleted'].includes(body.state)) throw Object.assign(new Error(`Upload job ${body.state}`), { code: body.state });
       if (attempt < maxPollAttempts) await sleep(pollIntervalMs, controls.signal);
     }
-    throw Object.assign(new Error('Upload job polling timed out'), { code: 'network-error' });
+    throw Object.assign(new Error('Upload job polling timed out'), { code: 'poll-timeout' });
   }
 
   /** @param {string} reviewId @param {{ signal?: AbortSignal }} [controls] */

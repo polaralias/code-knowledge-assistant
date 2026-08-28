@@ -171,6 +171,7 @@ function uploadCopy(state) {
     deleted: { title: 'Upload job was deleted', body: 'This review job is no longer available. Nothing was recovered from the deleted job.', action: 'Upload another ZIP' },
     'rate-limited': { title: 'Upload limit reached', body: 'The service is rate-limiting uploads. Wait for the limit to reset, then try again.', action: 'Close' },
     'network-error': { title: 'Review service unreachable', body: 'The live endpoint did not respond. Check the service and try again.', action: 'Try again' },
+    'poll-timeout': { title: 'Review is taking longer than expected', body: 'The worker is still processing this repository. Start another review only if you want to abandon this one.', action: 'Try again' },
     'invalid-response': { title: 'Review response is invalid', body: 'The service responded with data outside the documented job contract. No partial review was opened.', action: 'Try again' },
   }[state] ?? { title: 'Review repository', body: 'Choose a ZIP or public GitHub repository to begin.', action: 'Upload ZIP' };
 }
@@ -195,7 +196,7 @@ function renderUploadPanel() {
   const state = uploadProgress.state;
   const copy = uploadCopy(state);
   const busy = ['uploading', 'queued', 'processing'].includes(state);
-  const terminalError = ['failed', 'expired', 'deleted', 'rate-limited', 'network-error', 'invalid-response', 'invalid-github-url', 'invalid-github-ref', 'unauthorized', 'conflict'].includes(state);
+  const terminalError = ['failed', 'expired', 'deleted', 'rate-limited', 'network-error', 'poll-timeout', 'invalid-response', 'invalid-github-url', 'invalid-github-ref', 'unauthorized', 'conflict'].includes(state);
   const formReady = state === 'idle' || state === 'invalid-file' || terminalError;
   const modeTabs = `<div class="intake-modes" role="tablist" aria-label="Repository source"><button type="button" class="intake-mode ${uploadMode === 'zip' ? 'is-active' : ''}" id="mode-zip" role="tab" aria-selected="${uploadMode === 'zip'}">ZIP upload</button><button type="button" class="intake-mode ${uploadMode === 'github' ? 'is-active' : ''}" id="mode-github" role="tab" aria-selected="${uploadMode === 'github'}">Public GitHub</button></div>`;
   const accessCodeField = `<div class="access-code-field"><label for="review-access-code">Review access code <span class="field-hint">optional for local demos</span></label><input class="chat-input" id="review-access-code" name="review-access-code" type="password" autocomplete="off" autocapitalize="none" spellcheck="false" value="${escapeHtml(reviewAccessCode)}" aria-describedby="review-access-code-hint" /><p class="field-hint" id="review-access-code-hint">Sent in memory only when creating a hosted ZIP or Git review.</p></div>`;
@@ -222,7 +223,7 @@ function openUploadDialog() {
 }
 
 function uploadFailureState(error) {
-  return ['failed', 'expired', 'deleted', 'rate-limited', 'unauthorized', 'conflict', 'network-error', 'invalid-response', 'invalid-github-url', 'invalid-github-ref'].includes(error?.code) ? error.code : 'network-error';
+  return ['failed', 'expired', 'deleted', 'rate-limited', 'unauthorized', 'conflict', 'network-error', 'poll-timeout', 'invalid-response', 'invalid-github-url', 'invalid-github-ref'].includes(error?.code) ? error.code : 'network-error';
 }
 
 async function submitUpload() {
@@ -299,7 +300,7 @@ function bindUploadEvents() {
   document.querySelector('#mode-github')?.addEventListener('click', () => { uploadMode = 'github'; uploadProgress = { state: 'idle' }; renderUploadPanel(); document.querySelector('#git-repository-url')?.focus(); });
   document.querySelector('#cancel-upload')?.addEventListener('click', () => {
     if (['uploading', 'queued', 'processing'].includes(uploadProgress.state)) { uploadAbortController?.abort(); uploadAbortController = null; uploadProgress = { state: 'idle' }; renderUploadPanel(); return; }
-    if (['failed', 'network-error', 'invalid-response', 'invalid-github-url', 'invalid-github-ref', 'unauthorized', 'conflict'].includes(uploadProgress.state)) { uploadMode === 'github' ? submitGitHubReview() : submitUpload(); return; }
+    if (['failed', 'network-error', 'poll-timeout', 'invalid-response', 'invalid-github-url', 'invalid-github-ref', 'unauthorized', 'conflict'].includes(uploadProgress.state)) { uploadMode === 'github' ? submitGitHubReview() : submitUpload(); return; }
     if (['expired', 'deleted'].includes(uploadProgress.state)) { uploadProgress = { state: 'idle' }; renderUploadPanel(); return; }
     uploadDialog?.close();
   });
