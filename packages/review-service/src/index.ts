@@ -3,7 +3,7 @@ import { lstat, mkdir, rename, rm } from "node:fs/promises";
 import path from "node:path";
 
 import { createDeterministicAnswerer, type GroundedAnswer } from "@code-knowledge-assistant/answering";
-import { inventoryRepository } from "@code-knowledge-assistant/intake";
+import { inventoryRepository, type InventoryPolicy } from "@code-knowledge-assistant/intake";
 import {
   intakePublicGitRepository,
   parsePublicGitHubRepository,
@@ -54,6 +54,8 @@ export type ReviewServiceDependencies = {
   runReview?: (input: ZipRepositoryReviewInput) => Promise<ZipRepositoryReview>;
   gitTransport?: GitTransport;
   gitIntakeOptions?: PublicGitIntakeOptions;
+  /** Bounded inventory policy for public Git snapshots; ZIP intake remains independently governed. */
+  gitInventoryPolicy?: Partial<InventoryPolicy>;
   runMaterializedReview?: (input: MaterializedRepositoryReviewInput) => Promise<ZipRepositoryReview>;
   questionAnswererFactory?: (review: ZipRepositoryReview["review"]) => { answer(question: string): GroundedAnswer | Promise<GroundedAnswer> };
   reviewGeneration?: { client: StructuredGenerationClient; model: string };
@@ -236,7 +238,7 @@ export function createReviewService(dependencies: ReviewServiceDependencies): Re
     try {
       if (!dependencies.gitTransport) throw new ReviewServiceError("GIT_REVIEW_UNAVAILABLE");
       acquired = await intakePublicGitRepository(source, dependencies.gitTransport, dependencies.gitIntakeOptions);
-      const inventory = await inventoryRepository(acquired.workspacePath);
+      const inventory = await inventoryRepository(acquired.workspacePath, dependencies.gitInventoryPolicy);
       const result = await runMaterializedReview({
         sourceRoot: acquired.workspacePath,
         inventory,

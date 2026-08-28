@@ -78,6 +78,13 @@ export async function buildUploadReviewServer(input: BuildUploadReviewServerInpu
     uploadRoot: path.join(dataRoot, "owned-uploads"),
     intakeWorkspaceRoot,
     rehydratedWorkspaceRoot,
+    // Git repositories commonly carry generated documentation and visualisations larger
+    // than the ZIP review ceiling. Keep the Git path bounded without rejecting the
+    // entire repository because of one large non-executable document.
+    gitInventoryPolicy: {
+      maxAnalyzedFileBytes: 5 * 1024 * 1024,
+      maxAnalyzedBytes: 100 * 1024 * 1024,
+    },
     questionAnswererFactory: provider ? (review) => createProviderAnswerer(review.evidenceIndex, provider.client, provider.model) : undefined,
     reviewGeneration: provider ? { client: provider.client, model: provider.model } : undefined,
   });
