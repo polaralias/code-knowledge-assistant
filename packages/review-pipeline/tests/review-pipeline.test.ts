@@ -3,6 +3,7 @@ import { mkdtemp, mkdir, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
+import type { StructuredGenerationRequest, StructuredGenerationResult } from "@code-knowledge-assistant/model-provider";
 
 import { inventoryRepository } from "@code-knowledge-assistant/intake";
 import { buildLocalRepositoryReview, ReviewPipelineError } from "../src/index.ts";
@@ -59,4 +60,23 @@ test("a repository with no successfully analyzed evidence is refused", async () 
     }),
     (error: unknown) => error instanceof ReviewPipelineError && error.code === "REVIEW_EVIDENCE_EMPTY",
   );
+});
+
+test("provider concepts replace deterministic summaries only after evidence validation", async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "cka-review-provider-"));
+  await mkdir(path.join(root, "src"));
+  await writeFile(path.join(root, "src", "main.ts"), "export function startServer() { return 'ready'; }\n");
+  const inventory = await inventoryRepository(root);
+  const kinds = ["overview", "component", "flow", "integration", "coverage", "uncertainty"] as const;
+  const result = await buildLocalRepositoryReview({
+    root, inventory, reviewId: "review-provider", sourceRevision: "upload:provider", generatedAt: "2026-08-28T08:00:00.000Z",
+    generation: { model: "qwen3.6-flash", client: { async generate<T>(input: StructuredGenerationRequest): Promise<StructuredGenerationResult<T>> {
+      const evidenceId = /\[([^\]]+)\]/u.exec(input.prompt)?.[1] ?? "";
+      return { provider: "test", requestedModel: input.model, model: "served-qwen", prompt: input.prompt, schema: input.schema,
+        output: { concepts: kinds.map((kind, index) => ({ id: `${kind}-provider`, kind, title: `${kind} title`, summary: `${kind} summary`, claims: [{ id: `claim-${index}`, text: `${kind} claim`, evidence_ids: [evidenceId], confidence: "high" as const }] })) }, usage: { inputTokens: 1, outputTokens: 1, totalTokens: 2 }, latencyMs: 1, estimatedCostUsd: 0, request: { provider: "test", model: input.model, prompt: input.prompt, schema: input.schema } } as StructuredGenerationResult<T>;
+    } } },
+  });
+  assert.equal(result.review.generation.model, "served-qwen");
+  assert.equal(result.review.generation.generator, "model-provider");
+  assert.deepEqual([...new Set(result.review.concepts.map((concept) => concept.kind))].sort(), [...kinds].sort());
 });

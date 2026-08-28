@@ -74,6 +74,7 @@ export async function buildUploadReviewServer(input: BuildUploadReviewServerInpu
     intakeWorkspaceRoot,
     rehydratedWorkspaceRoot,
     questionAnswererFactory: provider ? (review) => createProviderAnswerer(review.evidenceIndex, provider.client, provider.model) : undefined,
+    reviewGeneration: provider ? { client: provider.client, model: provider.model } : undefined,
   });
   let demoAvailable = input.demoReviewArtifactPath === undefined;
   let demoDependencies: ReviewApiDependencies = {

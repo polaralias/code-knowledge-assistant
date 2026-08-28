@@ -143,6 +143,9 @@ importers:
       '@code-knowledge-assistant/intake':
         specifier: workspace:*
         version: link:../intake
+      '@code-knowledge-assistant/model-provider':
+        specifier: workspace:*
+        version: link:../model-provider
       '@code-knowledge-assistant/review-pipeline':
         specifier: workspace:*
         version: link:../review-pipeline
@@ -158,6 +161,9 @@ importers:
       '@code-knowledge-assistant/intake':
         specifier: workspace:*
         version: link:../intake
+      '@code-knowledge-assistant/model-provider':
+        specifier: workspace:*
+        version: link:../model-provider
       '@code-knowledge-assistant/retrieval':
         specifier: workspace:*
         version: link:../retrieval
@@ -176,6 +182,9 @@ importers:
       '@code-knowledge-assistant/intake':
         specifier: workspace:*
         version: link:../intake
+      '@code-knowledge-assistant/model-provider':
+        specifier: workspace:*
+        version: link:../model-provider
       '@code-knowledge-assistant/retrieval':
         specifier: workspace:*
         version: link:../retrieval

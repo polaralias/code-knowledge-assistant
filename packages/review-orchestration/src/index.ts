@@ -17,6 +17,7 @@ import {
   ReviewPipelineError,
   type LocalRepositoryReview,
 } from "@code-knowledge-assistant/review-pipeline";
+import type { StructuredGenerationClient } from "@code-knowledge-assistant/model-provider";
 
 export type ZipRepositoryReviewInput = {
   archivePath: string;
@@ -29,6 +30,7 @@ export type ZipRepositoryReviewInput = {
   generatedAt: string;
   now?: () => Date;
   zipPolicy?: Partial<ZipIntakePolicy>;
+  generation?: { client: StructuredGenerationClient; model: string };
 };
 
 export type ZipRepositoryReview = {
@@ -50,6 +52,7 @@ export type MaterializedRepositoryReviewInput = {
   sourceRevision: string;
   generatedAt: string;
   now?: () => Date;
+  generation?: { client: StructuredGenerationClient; model: string };
 };
 
 export type MaterializedRepositoryReview = ZipRepositoryReview;
@@ -181,6 +184,7 @@ export async function orchestrateMaterializedRepositoryReview(
       reviewId: input.reviewId,
       sourceRevision: input.sourceRevision,
       generatedAt: input.generatedAt,
+      generation: input.generation,
     });
     await rehydrated.cleanup();
     rehydrated = undefined;
@@ -224,6 +228,7 @@ export async function orchestrateZipRepositoryReview(
       sourceRevision: input.sourceRevision,
       generatedAt: input.generatedAt,
       now: input.now,
+      generation: input.generation,
     });
   } catch (error) {
     throw new ZipReviewOrchestrationError(zipErrorCode(error));

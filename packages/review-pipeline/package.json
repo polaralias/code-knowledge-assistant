@@ -9,6 +9,7 @@
   "dependencies": {
     "@code-knowledge-assistant/analysis": "workspace:*",
     "@code-knowledge-assistant/intake": "workspace:*",
+    "@code-knowledge-assistant/model-provider": "workspace:*",
     "@code-knowledge-assistant/retrieval": "workspace:*",
     "@code-knowledge-assistant/review-generation": "workspace:*"
   }

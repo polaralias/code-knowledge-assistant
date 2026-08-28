@@ -20,6 +20,7 @@ import {
   type ZipRepositoryReviewInput,
 } from "@code-knowledge-assistant/review-orchestration";
 import { deleteSourceSnapshot, purgeExpiredSourceSnapshots, type ObjectStore } from "@code-knowledge-assistant/source-snapshots";
+import type { StructuredGenerationClient } from "@code-knowledge-assistant/model-provider";
 
 export type ReviewServiceErrorCode =
   | "REVIEW_CLEANUP_FAILED"
@@ -55,6 +56,7 @@ export type ReviewServiceDependencies = {
   gitIntakeOptions?: PublicGitIntakeOptions;
   runMaterializedReview?: (input: MaterializedRepositoryReviewInput) => Promise<ZipRepositoryReview>;
   questionAnswererFactory?: (review: ZipRepositoryReview["review"]) => { answer(question: string): GroundedAnswer | Promise<GroundedAnswer> };
+  reviewGeneration?: { client: StructuredGenerationClient; model: string };
 };
 export type { MaterializedRepositoryReviewInput } from "@code-knowledge-assistant/review-orchestration";
 
@@ -189,6 +191,7 @@ export function createReviewService(dependencies: ReviewServiceDependencies): Re
         sourceRevision: `upload-${jobId}`,
         generatedAt: now().toISOString(),
         now,
+        generation: dependencies.reviewGeneration,
       });
       if (result.snapshot.id !== snapshotId || result.review.review.review_id !== reviewId) {
         throw new ReviewServiceError("UPLOAD_OWNERSHIP_FAILED");
@@ -245,6 +248,7 @@ export function createReviewService(dependencies: ReviewServiceDependencies): Re
         sourceRevision: acquired.revision,
         generatedAt: now().toISOString(),
         now,
+        generation: dependencies.reviewGeneration,
       });
       if (result.snapshot.id !== snapshotId || result.review.review.review_id !== reviewId || result.review.review.source_revision !== acquired.revision) {
         throw new ReviewServiceError("UPLOAD_OWNERSHIP_FAILED");
