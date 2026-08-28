@@ -3,7 +3,7 @@ import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
-import { AccessControlError, FileSystemAccessControl } from "../src/index.ts";
+import { AccessControlError, FileSystemAccessControl, createAccessController } from "../src/index.ts";
 
 function clock() {
   let value = new Date("2026-08-27T12:00:00.000Z");
@@ -113,4 +113,18 @@ test("fails closed on corrupt state, unsafe identifiers, limits, and publication
   } finally {
     await rm(root, { recursive: true, force: true });
   }
+});
+
+test("mints hashed dynamic codes, survives reconstruction, and revokes by opaque id", async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "cka-access-mint-"));
+  const first = createAccessController({ root, accessCodes: [] });
+  const minted = await first.mintAccessCode!();
+  assert.match(minted.code, /^[A-Za-z0-9_-]{32}$/u);
+  assert.equal((await first.validateAccessCode(minted.code)).valid, true);
+  const second = createAccessController({ root, accessCodes: [] });
+  assert.equal((await second.validateAccessCode(minted.code)).valid, true);
+  assert.deepEqual(await second.revokeAccessCode!(minted.id), { id: minted.id, revoked: true });
+  assert.equal((await second.validateAccessCode(minted.code)).valid, false);
+  const listed = await second.listAccessCodes!();
+  assert.deepEqual(listed, [{ id: minted.id, createdAt: listed[0]!.createdAt, revoked: true }]);
 });

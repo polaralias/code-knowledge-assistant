@@ -20,6 +20,14 @@ if (!Number.isSafeInteger(requestedPort) || requestedPort < 1 || requestedPort >
 
 const telemetry = createOperationalTelemetry({ write: (record) => process.stdout.write(`${record}\n`) });
 const accessControl = createAccessController({ root: path.join(dataRoot, 'access-control'), accessCodes });
+const admin = process.env.ADMIN_USERNAME && process.env.ADMIN_PASSWORD
+  && accessControl.mintAccessCode && accessControl.revokeAccessCode && accessControl.listAccessCodes
+  ? { username: process.env.ADMIN_USERNAME, password: process.env.ADMIN_PASSWORD, accessControl: {
+      mintAccessCode: accessControl.mintAccessCode.bind(accessControl),
+      revokeAccessCode: accessControl.revokeAccessCode.bind(accessControl),
+      listAccessCodes: accessControl.listAccessCodes.bind(accessControl),
+    } }
+  : undefined;
 const server = await buildUploadReviewServer({
   dataRoot,
   webRoot,
@@ -32,6 +40,7 @@ const server = await buildUploadReviewServer({
     branch: 'pinned snapshot',
     displayRevision: 'fcc51ebf4666',
   },
+  admin,
 });
 server.listen(requestedPort, host, () => {
   process.stdout.write(`Code Atlas upload review listening on ${host}:${requestedPort}\n`);

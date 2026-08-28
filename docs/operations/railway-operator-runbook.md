@@ -13,10 +13,13 @@ Set these Railway variables:
 - `DATA_ROOT=/var/lib/code-atlas`
 - `RAILWAY_RUN_UID=0` because Railway mounts persistent volumes as root
 - `REVIEW_ACCESS_CODES_JSON` as a JSON array of operator-issued codes, stored as an encrypted Railway variable, for example `["replace-me"]`
+- `ADMIN_USERNAME` and `ADMIN_PASSWORD` as encrypted variables when the operator console is enabled
 
 Attach one persistent Railway volume at `/var/lib/code-atlas`. Do not mount over `/app`. Railway mounts the volume as root, so the service-level `RAILWAY_RUN_UID=0` override is required even though the portable image defaults to the non-root `node` user. The volume contains the body-free lifecycle metadata, source objects, completed artifacts, workspaces, owned uploads, and access-control ledger. Keep the service at one replica while it uses filesystem-backed coordination.
 
 Do not put access codes in the repository, Dockerfile, command-line arguments, smoke URL, or telemetry. Rotate the encrypted variable when an operator-issued code is retired.
+
+When enabled, open `/admin`, sign in with the admin variables, and mint or revoke codes from the authenticated console. A minted plaintext code is shown once; the persistent volume stores only its hash and opaque ID. Do not log or commit the plaintext code.
 
 ## Deploy and verify
 

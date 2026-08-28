@@ -33,6 +33,7 @@ RUN apt-get update \
 
 COPY --from=build /app/apps/api /app/apps/api
 COPY --from=build /app/apps/web/index.html /app/apps/web/index.html
+COPY --from=build /app/apps/web/admin.html /app/apps/web/admin.html
 COPY --from=build /app/apps/web/styles.css /app/apps/web/styles.css
 COPY --from=build /app/apps/web/src /app/apps/web/src
 COPY --from=build /app/packages /app/packages

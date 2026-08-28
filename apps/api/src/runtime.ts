@@ -52,6 +52,11 @@ export type BuildUploadReviewServerInput = {
   accessControl?: AccessController;
   demoReviewArtifactPath?: string;
   demoReviewMetadata?: LocalReviewViewMetadata;
+  admin?: { username: string; password: string; accessControl: {
+    mintAccessCode(): Promise<{ id: string; code: string }>;
+    revokeAccessCode(id: string): Promise<{ id: string; revoked: boolean }>;
+    listAccessCodes(): Promise<readonly { id: string; createdAt: string; revoked: boolean }[]>;
+  } };
 };
 
 export async function buildUploadReviewServer(input: BuildUploadReviewServerInput) {
@@ -111,6 +116,7 @@ export async function buildUploadReviewServer(input: BuildUploadReviewServerInpu
       telemetry: input.telemetry,
       accessControl: input.accessControl,
       readiness: input.demoReviewArtifactPath === undefined ? undefined : async () => demoAvailable,
+      admin: input.admin,
     },
   );
   const expiryScheduler = createReviewExpiryScheduler({

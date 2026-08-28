@@ -1,4 +1,5 @@
 import { createReadStream, createWriteStream } from "node:fs";
+import { createHmac, randomBytes, timingSafeEqual } from "node:crypto";
 import { mkdir, mkdtemp, readFile, rm, stat } from "node:fs/promises";
 import { createServer, type IncomingMessage, type Server, type ServerResponse } from "node:http";
 import { isIP } from "node:net";
@@ -54,6 +55,11 @@ export type ReviewApiOptions = {
     recordQuestion(input: { clientSubject: string }): Promise<unknown>;
   };
   clientSubject?: (request: IncomingMessage) => string;
+  admin?: { username: string; password: string; accessControl: {
+    mintAccessCode(): Promise<{ id: string; code: string }>;
+    revokeAccessCode(id: string): Promise<{ id: string; revoked: boolean }>;
+    listAccessCodes(): Promise<readonly { id: string; createdAt: string; revoked: boolean }[]>;
+  } };
 };
 
 export class ReviewApiError extends Error {
@@ -76,6 +82,8 @@ const STATIC_ROUTES = new Map<string, readonly [string, string]>([
   ["/src/state-view.js", ["src/state-view.js", "text/javascript; charset=utf-8"]],
   ["/src/live-client.js", ["src/live-client.js", "text/javascript; charset=utf-8"]],
   ["/src/upload-client.js", ["src/upload-client.js", "text/javascript; charset=utf-8"]],
+  ["/admin", ["admin.html", "text/html; charset=utf-8"]],
+  ["/src/admin.js", ["src/admin.js", "text/javascript; charset=utf-8"]],
 ]);
 const REVIEW_IDENTIFIER = /^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$/u;
 
@@ -246,6 +254,22 @@ export function createReviewApiServer(
   const monotonicNow = options.monotonicNow ?? (() => performance.now());
   const leasesByJob = new Map<string, string>();
   const leasesByReview = new Map<string, string>();
+  const adminSessions = new Map<string, { csrf: string; expiresAt: number }>();
+  const adminCookie = "__Host-code-atlas-admin";
+  const adminToken = (request: IncomingMessage): string | null => {
+    const raw = request.headers.cookie ?? "";
+    const match = raw.split(";").map((part) => part.trim()).find((part) => part.startsWith(`${adminCookie}=`));
+    return match?.slice(adminCookie.length + 1) ?? null;
+  };
+  const authorisedAdmin = (request: IncomingMessage): boolean => {
+    if (!options.admin) return false;
+    const token = adminToken(request); const session = token ? adminSessions.get(token) : undefined;
+    if (!session || session.expiresAt <= Date.now()) { if (token) adminSessions.delete(token); return false; }
+    const supplied = request.headers["x-admin-csrf"];
+    if (typeof supplied !== "string") return false;
+    const suppliedBytes = Buffer.from(supplied); const expectedBytes = Buffer.from(session.csrf);
+    return suppliedBytes.length === expectedBytes.length && timingSafeEqual(suppliedBytes, expectedBytes);
+  };
 
   async function startLease(request: IncomingMessage): Promise<string | null> {
     if (!options.accessControl) return null;
@@ -298,6 +322,25 @@ export function createReviewApiServer(
       if (method === "GET" && url.pathname === "/healthz") {
         sendJson(response, 200, { status: "ok" });
         return;
+      }
+      if (options.admin && method === "POST" && url.pathname === "/api/admin/login") {
+        const body = await readJsonBody(request, maxRequestBytes);
+        if (Object.keys(body).some((key) => !["username", "password"].includes(key)) || typeof body.username !== "string" || typeof body.password !== "string") throw new ReviewApiError("ADMIN_LOGIN_INVALID", 400);
+        const expectedUser = Buffer.from(options.admin.username); const suppliedUser = Buffer.from(body.username);
+        const expectedPassword = Buffer.from(options.admin.password); const suppliedPassword = Buffer.from(body.password);
+        const valid = expectedUser.length === suppliedUser.length && expectedPassword.length === suppliedPassword.length && timingSafeEqual(expectedUser, suppliedUser) && timingSafeEqual(expectedPassword, suppliedPassword);
+        if (!valid) throw new ReviewApiError("ADMIN_UNAUTHORIZED", 401);
+        const token = randomBytes(32).toString("base64url"); const csrf = randomBytes(24).toString("base64url");
+        adminSessions.set(token, { csrf, expiresAt: Date.now() + 8 * 60 * 60 * 1_000 });
+        response.setHeader("set-cookie", `${adminCookie}=${token}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=28800`);
+        sendJson(response, 200, { authenticated: true, csrf }); return;
+      }
+      if (options.admin && url.pathname.startsWith("/api/admin/")) {
+        if (!authorisedAdmin(request)) throw new ReviewApiError("ADMIN_UNAUTHORIZED", 401);
+        if (method === "GET" && url.pathname === "/api/admin/access-codes") { sendJson(response, 200, { codes: await options.admin.accessControl.listAccessCodes() }); return; }
+        if (method === "POST" && url.pathname === "/api/admin/access-codes") { sendJson(response, 201, await options.admin.accessControl.mintAccessCode()); return; }
+        const revokeId = pathIdentifier(url.pathname, "/api/admin/access-codes/");
+        if (method === "DELETE" && revokeId !== null) { sendJson(response, 200, await options.admin.accessControl.revokeAccessCode(revokeId)); return; }
       }
       if (method === "GET" && url.pathname === "/readyz") {
         let ready = true;
