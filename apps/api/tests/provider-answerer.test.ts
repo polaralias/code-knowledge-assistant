@@ -37,7 +37,7 @@ test("provider answerer supplements broad follow-ups with primary source excerpt
         request: { provider: "test", model: input.model, prompt: input.prompt, schema: input.schema } } as StructuredGenerationResult<T>;
     },
   }, "test-model", [{ id: "primary:chunk-1", layer: "primary", content: "export function startServer() { return 'ready'; }", provenance: { repository_path: "src/main.ts", line_start: 1, line_end: 1 } }]);
-  const result = await answerer.answer("what do they say?");
+  const result = await answerer.answer("What does main.ts say?");
   assert.equal(result.status, "answered");
   assert.match(prompt, /src\/main\.ts/u);
   assert.equal(result.citations[0]?.repository_path, "src/main.ts");
