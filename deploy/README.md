@@ -19,7 +19,7 @@ The default port is `4173` and can be changed with `PORT`. The bind host default
 
 The image healthcheck calls the application `/healthz` route, exposes the default port, and stops cleanly on SIGTERM. The image bundles `demo/uptime-kuma-demo.json`; startup loads it by default and identifies the public view as the pinned Uptime Kuma snapshot. Set `DEMO_REVIEW_ARTIFACT_PATH` only when replacing the bundled artifact with another bounded local artifact; set it to an empty value to deliberately disable the demo. No external service, Railway project, credential, or deployment target is contacted by the image.
 
-Set `ADMIN_USERNAME` and `ADMIN_PASSWORD` as encrypted variables to enable the operator console at `/admin`; minted codes are stored as hashes under `DATA_ROOT` and shown in plaintext only once. Leave both unset to disable the console.
+Set `ADMIN_USERNAME` and `ADMIN_PASSWORD` as encrypted variables to enable the operator console at `/admin`; minted codes are stored as hashes under `DATA_ROOT` and shown in plaintext only once. Leave both unset to disable the console. Rotate the administrator password after the first deployment and keep it out of screenshots or shared demo links.
 
 ## Railway configuration
 
