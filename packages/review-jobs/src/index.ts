@@ -76,6 +76,7 @@ export interface ReviewJobStore {
   findByReviewId(reviewId: string): Promise<ReviewJob | null>;
   transition(id: string, expectedVersion: number, next: ReviewJobNext): Promise<ReviewJob>;
   listExpired(asOf: Date): Promise<ReviewJob[]>;
+  list(): Promise<ReviewJob[]>;
   delete(id: string): Promise<ReviewJob>;
 }
 
@@ -423,6 +424,14 @@ export class FileSystemReviewJobStore implements ReviewJobStore {
       if (!TERMINAL_STATES.has(job.state) && Date.parse(job.expires_at) <= asOf.getTime()) expired.push(job);
     }
     return expired;
+  }
+
+  async list(): Promise<ReviewJob[]> {
+    await this.ensureDirectory();
+    const entries = await readdir(this.jobsDirectory(), { withFileTypes: true });
+    const ids = entries.filter((entry) => entry.isFile() && entry.name.endsWith(".json"))
+      .map((entry) => entry.name.slice(0, -5)).sort();
+    return Promise.all(ids.map((id) => this.readPath(id)));
   }
 
   async delete(id: string): Promise<ReviewJob> {

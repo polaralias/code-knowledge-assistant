@@ -81,6 +81,8 @@ export type ReviewService = {
   getReview(reviewId: string): Promise<ZipRepositoryReview["review"] | null>;
   answerQuestion(reviewId: string, question: string): Promise<GroundedAnswer>;
   deleteReview(reviewId: string): Promise<{ state: "deleted" }>;
+  listPending(): Promise<Array<{ jobId: string; reviewId: string; state: "queued" | "processing"; createdAt: string }>>;
+  stopJob(jobId: string): Promise<{ state: "deleted" }>;
   purgeExpired(): Promise<{ expiredJobIds: string[] }>;
 };
 
@@ -413,6 +415,22 @@ export function createReviewService(dependencies: ReviewServiceDependencies): Re
       reviewToSnapshot.delete(reviewId);
       deletedReviews.add(reviewId);
       await rm(path.join(uploadRoot, `${jobId}.zip`), { force: true });
+      return { state: "deleted" };
+    },
+
+    async listPending() {
+      return (await dependencies.jobs.list()).filter((job): job is typeof job & { state: "queued" | "processing" } => job.state === "queued" || job.state === "processing").map((job) => ({ jobId: job.id, reviewId: job.review_id ?? jobToReview.get(job.id) ?? "", state: job.state, createdAt: job.created_at }));
+    },
+
+    async stopJob(jobId) {
+      const job = await dependencies.jobs.get(jobId);
+      if (job.state === "deleted") return { state: "deleted" };
+      if (job.review_id) await dependencies.artifacts?.delete(job.review_id).catch(() => undefined);
+      await deleteSourceSnapshot(job.snapshot_id, dependencies.store).catch(() => undefined);
+      await dependencies.jobs.delete(job.id);
+      await rm(path.join(uploadRoot, `${job.id}.zip`), { force: true });
+      if (job.review_id) { reviews.delete(job.review_id); reviewToJob.delete(job.review_id); reviewToSnapshot.delete(job.review_id); deletedReviews.add(job.review_id); }
+      jobToReview.delete(job.id);
       return { state: "deleted" };
     },
 

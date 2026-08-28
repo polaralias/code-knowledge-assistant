@@ -59,7 +59,7 @@ export type ReviewApiOptions = {
     mintAccessCode(): Promise<{ id: string; code: string }>;
     revokeAccessCode(id: string): Promise<{ id: string; revoked: boolean }>;
     listAccessCodes(): Promise<readonly { id: string; createdAt: string; revoked: boolean }[]>;
-  } };
+  }; listPending?: () => Promise<Array<{ jobId: string; reviewId: string; state: "queued" | "processing"; createdAt: string }>>; stopJob?: (jobId: string) => Promise<{ state: "deleted" }> };
 };
 
 export class ReviewApiError extends Error {
@@ -341,6 +341,9 @@ export function createReviewApiServer(
         if (method === "POST" && url.pathname === "/api/admin/access-codes") { sendJson(response, 201, await options.admin.accessControl.mintAccessCode()); return; }
         const revokeId = pathIdentifier(url.pathname, "/api/admin/access-codes/");
         if (method === "DELETE" && revokeId !== null) { sendJson(response, 200, await options.admin.accessControl.revokeAccessCode(revokeId)); return; }
+        if (method === "GET" && url.pathname === "/api/admin/pending") { if (!options.admin.listPending) throw new ReviewApiError("ADMIN_UNAVAILABLE", 503); sendJson(response, 200, { jobs: await options.admin.listPending() }); return; }
+        const pendingId = pathIdentifier(url.pathname, "/api/admin/pending/");
+        if (method === "DELETE" && pendingId !== null) { if (!options.admin.stopJob) throw new ReviewApiError("ADMIN_UNAVAILABLE", 503); sendJson(response, 200, { jobId: pendingId, ...(await options.admin.stopJob(pendingId)) }); return; }
       }
       if (method === "GET" && url.pathname === "/readyz") {
         let ready = true;

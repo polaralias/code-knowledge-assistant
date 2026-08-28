@@ -56,7 +56,7 @@ export type BuildUploadReviewServerInput = {
     mintAccessCode(): Promise<{ id: string; code: string }>;
     revokeAccessCode(id: string): Promise<{ id: string; revoked: boolean }>;
     listAccessCodes(): Promise<readonly { id: string; createdAt: string; revoked: boolean }[]>;
-  } };
+  }; listPending?: () => Promise<Array<{ jobId: string; reviewId: string; state: "queued" | "processing"; createdAt: string }>>; stopJob?: (jobId: string) => Promise<{ state: "deleted" }> };
 };
 
 export async function buildUploadReviewServer(input: BuildUploadReviewServerInput) {
@@ -112,6 +112,11 @@ export async function buildUploadReviewServer(input: BuildUploadReviewServerInpu
       demoAvailable = false;
     }
   }
+  const wiredAdmin = input.admin && input.admin.listPending && input.admin.stopJob ? input.admin : input.admin ? {
+    ...input.admin,
+    listPending: service.listPending.bind(service),
+    stopJob: service.stopJob.bind(service),
+  } : undefined;
   const server = createReviewApiServer(
     demoDependencies,
     {
@@ -124,7 +129,7 @@ export async function buildUploadReviewServer(input: BuildUploadReviewServerInpu
       telemetry: input.telemetry,
       accessControl: input.accessControl,
       readiness: input.demoReviewArtifactPath === undefined ? undefined : async () => demoAvailable,
-      admin: input.admin,
+      admin: wiredAdmin,
     },
   );
   const expiryScheduler = createReviewExpiryScheduler({
