@@ -2,10 +2,10 @@
 type: Deployment Readiness
 title: Deployment Readiness and Outstanding Work
 description: Records the verified deployment-shaped product path, the external launch gates, and the work that can remain deferred.
-timestamp: 2026-08-28T03:04:00Z
+timestamp: 2026-08-28T06:33:23Z
 authority: canonical
 verification: verified-limited
-verified_at: 2026-08-28T03:04:00Z
+verified_at: 2026-08-28T06:33:23Z
 verified_against:
   - pnpm test
   - pnpm typecheck
@@ -20,6 +20,8 @@ verified_against:
   - packages/review-service/tests/git-review-service.test.ts
   - direct runtime smoke against https://github.com/pallets/click at main
   - local Docker browser checks for Review, Findings, Map, responsive mobile, and light/dark emulation
+  - Railway production deployment 90c48ad1-2fc4-4380-ac56-ab1b99f9becd at commit 84cc163
+  - hosted deploy/smoke.mjs lifecycle against code-knowledge-assistant-production.up.railway.app
   - tasks/index.md
 navigation:
   role: supporting
@@ -30,9 +32,9 @@ navigation:
 
 ## Executive status
 
-The application path is deployment-shaped but is not ready for an unrestricted public hosted launch. The local/reference service supports bounded ZIP uploads and public GitHub intake through the same durable review, restart, cited-question, deletion, and expiry lifecycle. Hosted access-code controls, persistent abuse limits, body-safe telemetry, CI/release policy, an immutable Uptime Kuma review artifact, provider evaluation context retrieval, provider-budget reservation integration, and post-deploy smoke tooling are now implemented and test-covered. The Docker image has also been built and exercised locally, including the anonymous demo question path. Railway provisioning, live provider credentials/evaluation, and clean hosted-browser evidence remain external or open gates.
+The access-gated reference service is publicly deployed on Railway and supports bounded ZIP uploads and public GitHub intake through the same durable review, cited-question, deletion, and expiry lifecycle. The Dockerfile-backed singleton runs with a persistent `/var/lib/code-atlas` volume, and the hosted smoke has verified health, readiness, pinned Git intake, asynchronous review generation, review retrieval, cited questions, deletion, and terminal state. Provider-backed generation/evaluation and clean hosted-browser screenshot evidence remain open gates; the deterministic lexical path remains the working control.
 
-The remaining launch work is concentrated in four areas: provider-backed generation and evaluation, external deployment verification, public browser evidence, and final documentation/release reconciliation. The deterministic lexical path remains the working control; no hosted model is selected until the evaluation gate passes.
+The remaining launch work is concentrated in provider-backed generation and evaluation, public browser evidence, and final release presentation. No hosted model is selected until the evaluation gate passes.
 
 ## Current evidence matrix
 
@@ -45,16 +47,21 @@ The remaining launch work is concentrated in four areas: provider-backed generat
 | Browser experience | Bundled anonymous demo navigation, cited question interaction, and the ZIP/Git client contracts are local runtime/test verified. | Mixed test-verified and runtime-verified | Capture a clean hosted-browser upload, Git, deletion, and screenshot run before claiming the public journey is demonstrated. |
 | Workspace composition | Chat-centred Review, Findings, and Map tabs are implemented with a findings drill-in rail, progress/source context, responsive collapse, and an honest future map stub. | Local Docker browser-verified in light and dark emulation | The interaction model is ready for hosted evidence; relationship graph extraction remains deliberately deferred. |
 | Persistence and expiry | Local JSON/job, object, snapshot, and artifact stores are restart-safe and swept by a non-overlapping scheduler. | Test-verified | Multi-instance coordination, hosted object storage, PostgreSQL/pgvector, and backup deletion are not present. |
-| Container and hosting | Non-root Node 24 Dockerfile, bundled demo artifact, real API startup, `/healthz`, `/readyz`, and Dockerfile-backed singleton Railway manifest exist. | Policy-test and local image smoke verified | Railway provisioning, volume persistence, restart, and public health checks remain external gates. |
+| Container and hosting | Node 24 Dockerfile, bundled demo artifact, real API startup, `/healthz`, `/readyz`, and a Dockerfile-backed singleton Railway service with a persistent volume are live. Railway's root-owned volume requires the documented `RAILWAY_RUN_UID=0` deployment override. | Policy-test, local image, Railway deployment, and hosted lifecycle smoke verified | Restart recovery and controlled expiry remain operator checks; multi-replica storage is not supported. |
 | Security and abuse | No repository code executes; input, path, size, ref, output, retention, hashed access-code, persistent quota, provider reservation, and anonymous-demo question boundaries are enforced. | Test-verified | External security scans and production secret configuration still need release evidence. |
 | Operations and release | Documentation-led task and knowledge bundles, pinned CI/release workflows, JSONL telemetry, smoke checks, and rollback/runbook guidance are present. | Test/policy and local image verified | Run the workflows in CI and complete the external deployment evidence. |
 
-## Required before a public hosted demo
+## Completed reference-deployment evidence
 
-1. Confirm the GitHub owner/name and deploy branch, create the Railway project/service from that connected repository, and attach one persistent volume at `/var/lib/code-atlas`; set `DATA_ROOT`, `HOST=0.0.0.0`, and the Railway-provided `PORT` without placing secrets in the repository.
-2. Deploy the built image, then verify `/healthz`, `/readyz`, the bundled Uptime Kuma demo, restart recovery, volume persistence, ZIP intake, public Git intake, deletion, and expiry from a clean browser session.
-3. Establish an approved provider workspace and per-run ceiling, provide the provider API key through a local/host secret store, run the checked evaluation matrix against real repository context, and record exact model snapshots, latency, cost, retrieval, citation, refusal, and security results before enabling provider-backed generation. Do not imply that DeepSeek, Qwen, OpenRouter, embeddings, or reranking are selected until that evidence exists.
-4. Run CI/release policy gates in the target environment, complete a clean hosted-browser journey, capture stable screenshots, and reconcile task/knowledge evidence before publishing.
+1. The public source is published at `polaralias/code-knowledge-assistant`.
+2. Railway project `Code Knowledge Assistant` runs commit `84cc163` as a one-replica Dockerfile service with a persistent volume mounted at `/var/lib/code-atlas`.
+3. `deploy/smoke.mjs` passed against the public HTTPS domain, including pinned Uptime Kuma Git intake and a cited question.
+
+## Still required before final presentation
+
+1. Establish the Frankfurt Model Studio workspace identifier and per-run ceiling, provide the API key through the local secret store, and run the checked evaluation matrix for `qwen3.6-flash` and `deepseek-v4-flash-0731`. Record exact model snapshots, latency, cost, retrieval, citation, refusal, and security results before enabling provider-backed generation.
+2. Complete a clean hosted-browser ZIP and Git journey, verify restart recovery against retained state, and capture stable screenshots.
+3. Confirm the GitHub CI workflow on `main`, then reconcile the measured model, browser, and release evidence.
 
 ## Required for a stronger production service, but not the first reference demo
 
@@ -65,10 +72,9 @@ The remaining launch work is concentrated in four areas: provider-backed generat
 
 ## Next execution tranches
 
-1. Provision the Railway reference service and persistent volume, then run the HTTPS smoke and clean hosted browser journey.
-2. Resume the blocked evaluation workstream with an approved provider key, exact model/endpoint metadata, and a bounded spend ceiling. Compare public-source DeepSeek/Qwen candidates, then run the approved private-source Frankfurt lane; do not enable provider-backed generation from an unmeasured choice.
+1. Resume provider evaluation once the Frankfurt Workspace ID is available; compare `qwen3.6-flash` and `deepseek-v4-flash-0731` within the checked cost and safety ceilings.
+2. Run the clean hosted-browser journey and restart/persistence check, then capture stable public screenshots.
 3. Reconcile the measured model and retrieval result into the evaluation and hosting decisions, then decide whether semantic retrieval or provider synthesis earns a separate implementation tranche.
-4. Capture stable public screenshots and finalise README, task, knowledge, and release evidence. Keep multi-replica storage, Tree-sitter enhancement, graph extraction, memory, and private-provider integrations deferred unless the evidence justifies reopening scope.
 
 ## Safe to defer after the reference demo
 

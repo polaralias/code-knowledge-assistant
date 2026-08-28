@@ -2,7 +2,7 @@
 type: Repository Guide
 title: Code Knowledge Assistant
 description: Start here to understand the evidence-backed repository review and conversational code exploration project.
-timestamp: 2026-08-28T02:56:30Z
+timestamp: 2026-08-28T06:33:23Z
 authority: canonical
 navigation:
   role: entry-point
@@ -35,10 +35,10 @@ The repository is intentionally documentation-led. Canonical product and archite
 - Architecture and capability tiers: inventory, safe ZIP intake, retained source snapshots, structured lexical extraction, fallback extraction, deterministic review generation, and lexical retrieval are implementation-verified.
 - Model and retrieval choices: candidates only; evaluation must determine the deployed configuration.
 - Evaluation baseline: deterministic fixtures, scoring controls, and three immutable real-world intake manifests are present; paid provider comparison is paused.
-- Application code: bounded ZIP and public-GitHub intake now pass through durable body-free job metadata, immutable source snapshotting, conservative Python/TypeScript/JavaScript structured extraction (plus unknown-text fallback), deterministic evidence-backed review generation, and bounded cited answering. Completed review artifacts and lexical evidence indexes survive application restart, and a non-overlapping scheduler coordinates the 48-hour post-completion expiry across jobs, source snapshots, artifacts, memory, and owned uploads. Hosted access-code controls, persistent quotas, body-safe telemetry, CI/release policy, and a generated Uptime Kuma demo artifact are implemented. The browser now presents a chat-centred Review, Findings, and Map workspace over those contracts. The remaining product gates are provider evaluation/integration, hosted deployment, and clean hosted browser evidence.
+- Application code: bounded ZIP and public-GitHub intake now pass through durable body-free job metadata, immutable source snapshotting, conservative Python/TypeScript/JavaScript structured extraction (plus unknown-text fallback), deterministic evidence-backed review generation, and bounded cited answering. Completed review artifacts and lexical evidence indexes survive application restart, and a non-overlapping scheduler coordinates the 48-hour post-completion expiry across jobs, source snapshots, artifacts, memory, and owned uploads. Hosted access-code controls, persistent quotas, body-safe telemetry, CI/release policy, and a generated Uptime Kuma demo artifact are implemented. The browser now presents a chat-centred Review, Findings, and Map workspace over those contracts. The remaining product gates are provider evaluation/integration and clean hosted browser evidence.
 - Conversation retrieval: the shipped path is bounded lexical retrieval over primary and derived evidence with deterministic ranking, context limits, citations, and explicit insufficiency. It is a useful RAG-like control but not semantic vector RAG; embeddings, reranking, provider synthesis, conversation memory, and answer-time claim verification remain evaluated follow-up work.
-- Deployment code: a non-root Node container contract, bundled Uptime Kuma artifact, `/healthz`, `/readyz`, and a Railway manifest are present. The image builds and starts healthy locally with Docker Desktop; no Railway project has been created.
-- Remote project repository and Railway project: not created.
+- Deployment: the Dockerfile-backed singleton service is live at [code-knowledge-assistant-production.up.railway.app](https://code-knowledge-assistant-production.up.railway.app) with a persistent `/var/lib/code-atlas` volume. The hosted smoke has verified health, readiness, pinned Git intake, review generation and retrieval, cited questions, deletion, and terminal state against commit `84cc163`.
+- Public source: [polaralias/code-knowledge-assistant](https://github.com/polaralias/code-knowledge-assistant).
 
 See [Deployment readiness and outstanding work](./docs/knowledge/deployment-readiness.md) for the evidence matrix, launch gates, and explicit deferrals.
 

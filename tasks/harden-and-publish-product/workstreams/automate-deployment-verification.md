@@ -7,7 +7,7 @@ description: Provide a body-safe post-deploy lifecycle smoke and operator runboo
   for the singleton Railway service.
 status: done
 created: '2026-08-27T23:16:59Z'
-timestamp: '2026-08-27T23:30:43Z'
+timestamp: '2026-08-28T06:33:23Z'
 owner: luna-deploy
 ---
 
@@ -31,9 +31,9 @@ Provide a body-safe post-deploy lifecycle smoke and operator runbook for the sin
 
 ## Evidence
 
-- Commit:
-- Validation: `node --test deploy/smoke.test.mjs` passes 4 tests.
-- Integration: `deploy/smoke.mjs` is the post-deploy gate; `docs/operations/railway-operator-runbook.md` is the operator path.
+- Commit: `84cc163` is deployed to the Railway production service.
+- Validation: `node --test deploy/smoke.test.mjs` passes 5 tests.
+- Integration: `deploy/smoke.mjs` passed against the public Railway domain, including pinned Git intake, review retrieval, a cited question, deletion, and terminal state. `docs/operations/railway-operator-runbook.md` records the operator path and Railway volume UID requirement.
 
 ## Handoff
 

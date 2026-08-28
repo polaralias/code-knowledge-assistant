@@ -11,16 +11,17 @@ Set these Railway variables:
 - `HOST=0.0.0.0`
 - `PORT` supplied by Railway (do not hard-code a competing listener)
 - `DATA_ROOT=/var/lib/code-atlas`
+- `RAILWAY_RUN_UID=0` because Railway mounts persistent volumes as root
 - `REVIEW_ACCESS_CODES_JSON` as a JSON array of operator-issued codes, stored as an encrypted Railway variable, for example `["replace-me"]`
 
-Attach one persistent Railway volume at `/var/lib/code-atlas`. Do not mount over `/app`. The volume contains the body-free lifecycle metadata, source objects, completed artifacts, workspaces, owned uploads, and access-control ledger. Keep the service at one replica while it uses filesystem-backed coordination.
+Attach one persistent Railway volume at `/var/lib/code-atlas`. Do not mount over `/app`. Railway mounts the volume as root, so the service-level `RAILWAY_RUN_UID=0` override is required even though the portable image defaults to the non-root `node` user. The volume contains the body-free lifecycle metadata, source objects, completed artifacts, workspaces, owned uploads, and access-control ledger. Keep the service at one replica while it uses filesystem-backed coordination.
 
 Do not put access codes in the repository, Dockerfile, command-line arguments, smoke URL, or telemetry. Rotate the encrypted variable when an operator-issued code is retired.
 
 ## Deploy and verify
 
 1. Confirm the target service, volume mount, encrypted variables, and intended image revision in the Railway deployment view.
-2. Deploy through the approved Railway pipeline using the repository Dockerfile. Wait for the service health check to become healthy.
+2. Deploy through the approved Railway pipeline using the repository Dockerfile. Configure the Dockerfile path, start command, health check, restart policy, and singleton replica explicitly in Railway; the legacy `railway.toml` remains a repository policy reference but current Railway Config as Code is deprecated. Wait for the service health check to become healthy.
 3. Verify liveness and readiness:
 
    ```sh

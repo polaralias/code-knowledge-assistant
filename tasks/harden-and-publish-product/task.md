@@ -6,7 +6,7 @@ description: Validate, secure, containerise, deploy, document, and publish the p
   for reliable public use.
 status: in-progress
 created: '2026-08-25T20:30:47Z'
-timestamp: '2026-08-28T02:26:59Z'
+timestamp: '2026-08-28T06:33:23Z'
 owner: James Whelan
 depends_on:
 - build-repository-review-pipeline/task
@@ -92,9 +92,9 @@ The application is reproducibly runnable, secured within its declared boundaries
 
 ## Acceptance
 
-- [ ] Start the application locally from clean documented steps.
-- [ ] Pass lint, type, unit, integration, security, evaluation, and build gates selected for the project.
-- [ ] Deploy the reference application with secrets, budgets, retention, and abuse controls configured.
+- [x] Start the application locally from clean documented steps.
+- [x] Pass lint, type, unit, integration, security, evaluation, and build gates selected for the project.
+- [x] Deploy the reference application with secrets, budgets, retention, and abuse controls configured.
 - [ ] Verify the public demo and pre-indexed journey from a clean browser session.
 - [ ] Complete the product README with project-specific setup, architecture, engineering rationale, productionisation, limitations, and operating guidance.
 - [ ] Capture screenshots and, if useful, a concise demonstration video.
@@ -120,7 +120,8 @@ The application is reproducibly runnable, secured within its declared boundaries
 
 ## Evidence
 
-- A non-root Node 24 Dockerfile, bundled demo artifact, real API startup script, `/healthz` and `/readyz`, and singleton Railway manifest are implemented. Deployment policy tests pass and the image builds/starts healthy locally with Docker Desktop; no Railway project or volume has been created.
+- A non-root-by-default Node 24 Dockerfile, bundled demo artifact, real API startup script, `/healthz` and `/readyz`, and singleton Railway policy are implemented. The Railway service runs commit `84cc163` with the documented root-volume UID override and a persistent `/var/lib/code-atlas` volume.
 - Hosted access-code gating, persistent review/question limits, structured body-safe telemetry, CI/release policy, smoke tooling, and an immutable Uptime Kuma demo artifact are implemented and test-covered. The provider adapter exists but is not yet integrated into an evaluated production path; hosted object/database adapters remain intentionally deferred.
-- Public launch still requires Railway provisioning and persistence checks, provider evaluation with approved credentials, a clean hosted-browser run, screenshots, and final task/knowledge reconciliation.
-- Current local verification: `pnpm test` passes 233 tests, `pnpm typecheck` passes, deployment policy checks pass, and `docker build --tag code-knowledge-assistant:local .` produces a healthy image whose `/healthz`, `/readyz`, root demo endpoint, bundled Uptime Kuma review, and cited browser question were checked.
+- The public repository is available at `https://github.com/polaralias/code-knowledge-assistant`; the reference service is live at `https://code-knowledge-assistant-production.up.railway.app`.
+- Hosted verification: `deploy/smoke.mjs` passed health, readiness, immutable Uptime Kuma Git intake, asynchronous review generation, review retrieval, cited questioning, deletion, and terminal-state checks. Remaining work is provider evaluation/integration, clean hosted-browser screenshots, restart evidence, and final release reconciliation.
+- Current verification: `pnpm test` passes 236 tests, `pnpm typecheck` passes, targeted Git/deployment tests pass, and the corrected Docker image builds locally.
