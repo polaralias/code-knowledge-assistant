@@ -9,7 +9,7 @@ import type { AccessController } from "@code-knowledge-assistant/access-control"
 import { loadDemoReview } from "@code-knowledge-assistant/demo-review";
 import { FileSystemReviewJobStore } from "@code-knowledge-assistant/review-jobs";
 import { FileSystemReviewArtifactStore } from "@code-knowledge-assistant/review-artifacts";
-import { buildLocalRepositoryReview } from "@code-knowledge-assistant/review-pipeline";
+import { buildLocalRepositoryReview, type LocalRepositoryReview } from "@code-knowledge-assistant/review-pipeline";
 import { createReviewExpiryScheduler, createReviewService } from "@code-knowledge-assistant/review-service";
 import { FileSystemObjectStore } from "@code-knowledge-assistant/source-snapshots";
 
@@ -17,6 +17,20 @@ import { createReviewApiServer, ReviewApiError, type ReviewApiDependencies } fro
 import { createLocalReviewApiDependencies, type LocalReviewViewMetadata } from "./local-review.ts";
 import { createReviewServiceController } from "./review-service-controller.ts";
 import { createProviderAnswerer, createProviderClientFromEnvironment } from "./provider-answerer.ts";
+
+function providerContextDocuments(review: LocalRepositoryReview) {
+  const evidenceById = new Map(review.evidence.map((item) => [item.id, item] as const));
+  const primary = review.evidence.map((item) => ({ id: `primary:${item.id}`, layer: "primary" as const, content: item.excerpt,
+    provenance: { repository_path: item.path, line_start: item.start_line, line_end: item.end_line } }));
+  const derived = review.review.concepts.flatMap((concept) => concept.claims.map((claim) => {
+    const source = evidenceById.get(claim.evidence_ids[0] ?? "");
+    if (!source) return null;
+    return { id: `derived:${concept.id}:${claim.id}`, layer: "derived" as const,
+      content: `${concept.title}\n${concept.summary}\n${claim.text}`,
+      provenance: { repository_path: source.path, line_start: source.start_line, line_end: source.end_line } };
+  }).filter((item): item is NonNullable<typeof item> => item !== null));
+  return [...primary, ...derived];
+}
 
 export type BuildLocalReviewServerInput = {
   repositoryRoot: string;
@@ -86,9 +100,7 @@ export async function buildUploadReviewServer(input: BuildUploadReviewServerInpu
       maxAnalyzedBytes: 100 * 1024 * 1024,
     },
     onPipelineProgress: input.telemetry ? (event) => input.telemetry!.record({ event: "review.pipeline.progress", ...event }) : undefined,
-    questionAnswererFactory: provider ? (review) => createProviderAnswerer(review.evidenceIndex, provider.client, provider.model,
-      review.evidence.map((item) => ({ id: `primary:${item.id}`, layer: "primary" as const, content: item.excerpt,
-        provenance: { repository_path: item.path, line_start: item.start_line, line_end: item.end_line } }))) : undefined,
+    questionAnswererFactory: provider ? (review) => createProviderAnswerer(review.evidenceIndex, provider.client, provider.model, providerContextDocuments(review)) : undefined,
     reviewGeneration: provider ? { client: provider.client, models: provider.models } : undefined,
   });
   let demoAvailable = input.demoReviewArtifactPath === undefined;
@@ -108,9 +120,7 @@ export async function buildUploadReviewServer(input: BuildUploadReviewServerInpu
           branch: "snapshot",
           displayRevision: loaded.review.review.source_revision.slice(0, 12),
         },
-        provider ? createProviderAnswerer(loaded.review.evidenceIndex, provider.client, provider.model,
-          loaded.review.evidence.map((item) => ({ id: `primary:${item.id}`, layer: "primary" as const, content: item.excerpt,
-            provenance: { repository_path: item.path, line_start: item.start_line, line_end: item.end_line } }))) : loaded.questionAdapter,
+        provider ? createProviderAnswerer(loaded.review.evidenceIndex, provider.client, provider.model, providerContextDocuments(loaded.review)) : loaded.questionAdapter,
       );
     } catch {
       demoAvailable = false;

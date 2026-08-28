@@ -29,18 +29,20 @@ export function createProviderAnswerer(index: LexicalEvidenceIndex, client: Stru
       const retrieval = index.query(question, { resultLimit: 5, contextByteLimit: 12_000 });
       const selected: EvidenceDocument[] = retrieval.status === "ok" ? [...retrieval.results] : [];
       const selectedIds = new Set(selected.map((item) => item.id));
-      const broadQuestion = /\b(?:what|overview|purpose|describe|say|does)\b/iu.test(question);
+      const broadQuestion = /\b(?:what|overview|purpose|describe|say|does|how|why)\b/iu.test(question);
       const requestedPath = /\b([A-Za-z0-9_.-]+\.(?:md|mdx|rst|txt|json|ya?ml|toml|ts|tsx|js|jsx|py))\b/iu.exec(question)?.[1]?.toLowerCase() ?? null;
       if ((selected.length < 5 || broadQuestion) && supplementalDocuments.length > 0) {
         const broadContext = [...supplementalDocuments]
-          .filter((item) => item.layer === "primary" && !selectedIds.has(item.id))
+          .filter((item) => !selectedIds.has(item.id))
           .sort((left, right) => {
             const leftExact = requestedPath !== null && left.provenance.repository_path.toLowerCase().endsWith(requestedPath) ? 0 : 1;
             const rightExact = requestedPath !== null && right.provenance.repository_path.toLowerCase().endsWith(requestedPath) ? 0 : 1;
             if (leftExact !== rightExact) return leftExact - rightExact;
+            const leftLayer = left.layer === "derived" ? 0 : 1;
+            const rightLayer = right.layer === "derived" ? 0 : 1;
             const leftDocs = /(^|\/)(readme|docs?)([^/]*|\/)/iu.test(left.provenance.repository_path) ? 0 : 1;
             const rightDocs = /(^|\/)(readme|docs?)([^/]*|\/)/iu.test(right.provenance.repository_path) ? 0 : 1;
-            return leftDocs - rightDocs || left.provenance.repository_path.localeCompare(right.provenance.repository_path) || left.id.localeCompare(right.id);
+            return leftLayer - rightLayer || leftDocs - rightDocs || left.provenance.repository_path.localeCompare(right.provenance.repository_path) || left.id.localeCompare(right.id);
           });
         selected.push(...broadContext.slice(0, broadQuestion ? 3 : 5 - selected.length));
       }
