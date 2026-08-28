@@ -2,7 +2,7 @@
 type: Repository Guide
 title: Code Knowledge Assistant
 description: Start here to understand the evidence-backed repository review and conversational code exploration project.
-timestamp: 2026-08-28T06:33:23Z
+timestamp: 2026-08-28T13:13:28Z
 authority: canonical
 navigation:
   role: entry-point
@@ -32,11 +32,11 @@ The repository is intentionally documentation-led. Canonical product and archite
 ## Current state
 
 - Product direction: selected and documented.
-- Architecture and capability tiers: inventory, safe ZIP intake, retained source snapshots, structured lexical extraction, fallback extraction, deterministic review generation, and lexical retrieval are implementation-verified.
-- Model and retrieval choices: candidates only; evaluation must determine the deployed configuration.
+- Architecture and capability tiers: inventory, safe ZIP intake, retained source snapshots, structured lexical extraction, fallback extraction, evidence-constrained provider interpretation with a deterministic control, and lexical retrieval are implementation-verified.
+- Model and retrieval choices: Qwen 3.6 Flash is the current production generation primary and DeepSeek V4 Flash is its per-concept fallback; the wider evaluation remains required before treating that allocation as final.
 - Evaluation baseline: deterministic fixtures, scoring controls, and three immutable real-world intake manifests are present; paid provider comparison is paused.
-- Application code: bounded ZIP and public-GitHub intake now pass through durable body-free job metadata, immutable source snapshotting, conservative Python/TypeScript/JavaScript structured extraction (plus unknown-text fallback), deterministic evidence-backed review generation, and bounded cited answering. Completed review artifacts and lexical evidence indexes survive application restart, and a non-overlapping scheduler coordinates the 48-hour post-completion expiry across jobs, source snapshots, artifacts, memory, and owned uploads. Hosted access-code controls, persistent quotas, body-safe telemetry, CI/release policy, and a generated Uptime Kuma demo artifact are implemented. The browser now presents a chat-centred Review, Findings, and Map workspace over those contracts. The remaining product gates are provider evaluation/integration and clean hosted browser evidence.
-- Conversation retrieval: the shipped path is bounded lexical retrieval over primary and derived evidence with deterministic ranking, context limits, citations, and explicit insufficiency. It is a useful RAG-like control but not semantic vector RAG; embeddings, reranking, provider synthesis, conversation memory, and answer-time claim verification remain evaluated follow-up work.
+- Application code: bounded ZIP and public-GitHub intake now pass through durable body-free job metadata, immutable source snapshotting, conservative Python/TypeScript/JavaScript structured extraction (plus unknown-text fallback), six bounded provider interpretation passes, strict claim-to-evidence validation, and bounded cited answering. Qwen hybrid thinking is disabled for these structured passes so its token budget is spent on the validated result; the model supplies interpretation while the application owns stable concept and claim identifiers. If a pass fails validation, DeepSeek is tried for that concept and any still-unavailable concept retains the deterministic evidence-backed control. Completed review artifacts and lexical evidence indexes survive restart, with a 48-hour expiry lifecycle. The browser presents a chat-centred Review, Findings, and Map workspace.
+- Conversation retrieval: bounded lexical retrieval over primary and derived evidence feeds provider-backed cited answers with explicit insufficiency controls. It is retrieval-augmented generation in the broad sense, but not semantic vector RAG; embeddings, reranking, conversation memory, and answer-time derived-claim verification remain evaluated follow-up work.
 - Deployment: the Dockerfile-backed singleton service is live at [code-knowledge-assistant-production.up.railway.app](https://code-knowledge-assistant-production.up.railway.app) with a persistent `/var/lib/code-atlas` volume. The hosted smoke has verified health, readiness, pinned Git intake, review generation and retrieval, cited questions, deletion, and terminal state against commit `84cc163`.
 - Public source: [polaralias/code-knowledge-assistant](https://github.com/polaralias/code-knowledge-assistant).
 

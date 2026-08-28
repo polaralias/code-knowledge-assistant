@@ -6,11 +6,11 @@ okf_version: "0.1"
 
 # Concepts
 
-- [Initial Repository Knowledge Architecture](architecture-concept.md) - Describes the evidence, review, retrieval, model, storage, and deployment boundaries, including verified ZIP and public Git review paths and unimplemented hosted stages.
+- [Initial Repository Knowledge Architecture](architecture-concept.md) - Describes the evidence, review, retrieval, model, storage, and deployment boundaries, including provider-interpreted review generation and its deterministic safety control.
 - [Open Product and Engineering Decisions](decision-queue.md) - Lists the unresolved judgements that QTK must resolve before dependent implementation tasks become ready.
 - [Deployment Readiness and Outstanding Work](deployment-readiness.md) - Records the verified deployment-shaped product path, the external launch gates, and the work that can remain deferred.
 - [Engineering Quality and Operational Evidence](engineering-quality-contract.md) - Defines the implementation, evaluation, security, observability, and delivery evidence expected from the product.
-- [First Evaluation Baseline Results](evaluation-baseline-results.md) - Records the zero-cost lexical retrieval baseline and the prerequisites that stop the paid model matrix from running prematurely.
+- [First Evaluation Baseline Results](evaluation-baseline-results.md) - Records the zero-cost lexical retrieval baseline and the first bounded Frankfurt provider safety results.
 - [Evaluation Baseline Contract](evaluation-contract.md) - Defines the fixture suite, real-world repository intakes, scenario matrix, measurements, thresholds, and result evidence required before implementation choices are selected.
 - [Initial Feature Contracts](feature-contracts.md) - Decomposes the product outcome into bounded user-visible capabilities and their high-level acceptance surfaces.
 - [Language Support and Repository Intake](language-support-and-intake.md) - Defines input modes, analysis capability tiers, initial enhanced languages, and the limits of static repository understanding.

@@ -14,6 +14,8 @@ Set these Railway variables:
 - `RAILWAY_RUN_UID=0` because Railway mounts persistent volumes as root
 - `REVIEW_ACCESS_CODES_JSON` as a JSON array of operator-issued codes, stored as an encrypted Railway variable, for example `["replace-me"]`
 - `ADMIN_USERNAME` and `ADMIN_PASSWORD` as encrypted variables when the operator console is enabled
+- `MODEL_PROVIDER`, `MODEL_PROVIDER_ENDPOINT`, `MODEL_PROVIDER_API_KEY`, `MODEL_PROVIDER_MODEL`, and optional `MODEL_PROVIDER_MODEL_B` as encrypted or service variables for provider-backed extraction and cited answers
+- `MODEL_PROVIDER_ENABLE_THINKING=false` for Alibaba hybrid-thinking models used with bounded JSON generation; this is the application default for `alibaba-model-studio`, but setting it explicitly makes the production intent auditable
 
 Attach one persistent Railway volume at `/var/lib/code-atlas`. Do not mount over `/app`. Railway mounts the volume as root, so the service-level `RAILWAY_RUN_UID=0` override is required even though the portable image defaults to the non-root `node` user. The volume contains the body-free lifecycle metadata, source objects, completed artifacts, workspaces, owned uploads, and access-control ledger. Keep the service at one replica while it uses filesystem-backed coordination.
 

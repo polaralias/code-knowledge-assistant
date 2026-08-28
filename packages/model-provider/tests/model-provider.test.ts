@@ -70,6 +70,29 @@ test("generates structured JSON and preserves exact request and returned model m
   assert.equal(String(fetchInit?.body).includes("secret-key"), false);
 });
 
+test("can disable provider thinking for bounded structured generation", async () => {
+  let fetchInit: RequestInit | undefined;
+  const adapter = createOpenAICompatibleEvaluationAdapter({
+    provider: "evaluation-provider",
+    endpoint: "https://provider.example/v1/chat/completions",
+    apiKey: "secret-key",
+    enableThinking: false,
+    fetch: async (_url, init) => {
+      fetchInit = init;
+      return response({
+        model: "candidate-served",
+        choices: [{ message: { content: '{"answer":"ok"}' } }],
+        usage: { prompt_tokens: 12, completion_tokens: 4 },
+      });
+    },
+  });
+
+  await adapter.generate(request);
+
+  const sent = JSON.parse(String(fetchInit?.body));
+  assert.equal(sent.enable_thinking, false);
+});
+
 test("rejects credentialed or non-HTTPS endpoints before making a request", async () => {
   let calls = 0;
   const fetch = async () => {

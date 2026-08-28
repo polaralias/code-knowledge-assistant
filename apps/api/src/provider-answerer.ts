@@ -17,6 +17,12 @@ function envNumber(name: string, fallback: number): number {
   return Number.isFinite(value) && value > 0 ? value : fallback;
 }
 
+function envBoolean(name: string, fallback: boolean): boolean {
+  const value = process.env[name];
+  if (value === undefined) return fallback;
+  return value.toLowerCase() === "true";
+}
+
 export function createProviderAnswerer(index: LexicalEvidenceIndex, client: StructuredGenerationClient, model: string): { answer(question: string): Promise<GroundedAnswer> } {
   return Object.freeze({
     async answer(question: string): Promise<GroundedAnswer> {
@@ -51,9 +57,11 @@ export function createProviderClientFromEnvironment(): { client: StructuredGener
   const endpoint = process.env.MODEL_PROVIDER_ENDPOINT;
   const model = process.env.MODEL_PROVIDER_MODEL;
   if (!apiKey || !endpoint || !model) return null;
+  const provider = process.env.MODEL_PROVIDER ?? "alibaba-model-studio";
   const client = createOpenAICompatibleEvaluationAdapter({
-    provider: process.env.MODEL_PROVIDER ?? "alibaba-model-studio",
+    provider,
     endpoint, apiKey,
+    ...(provider === "alibaba-model-studio" ? { enableThinking: envBoolean("MODEL_PROVIDER_ENABLE_THINKING", false) } : {}),
     timeoutMs: envNumber("MODEL_PROVIDER_TIMEOUT_MS", 45_000),
     requestByteLimit: envNumber("MODEL_PROVIDER_REQUEST_BYTES", 128 * 1024),
     responseByteLimit: envNumber("MODEL_PROVIDER_RESPONSE_BYTES", 128 * 1024),

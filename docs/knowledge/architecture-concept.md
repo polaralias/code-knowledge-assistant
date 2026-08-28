@@ -1,11 +1,11 @@
 ---
 type: Architecture Concept
 title: Initial Repository Knowledge Architecture
-description: Describes the evidence, review, retrieval, model, storage, and deployment boundaries, including verified ZIP and public Git review paths and unimplemented hosted stages.
-timestamp: 2026-08-28T05:50:34Z
+description: Describes the evidence, review, retrieval, model, storage, and deployment boundaries, including provider-interpreted review generation and its deterministic safety control.
+timestamp: 2026-08-28T13:13:28Z
 authority: canonical
 verification: verified-limited
-verified_at: 2026-08-28T05:50:34Z
+verified_at: 2026-08-28T13:13:28Z
 verified_against:
   - packages/intake/tests/inventory.test.ts
   - packages/intake/tests/zip-intake.test.ts
@@ -14,6 +14,8 @@ verified_against:
   - packages/review-generation/tests/review-generation.test.ts
   - packages/retrieval/tests/retrieval.test.ts
   - packages/review-pipeline/tests/review-pipeline.test.ts
+  - packages/model-provider/tests/model-provider.test.ts
+  - local provider-backed Cozylife extraction with six validated Qwen 3.6 Flash concepts
   - packages/review-orchestration/tests/orchestration.test.ts
   - packages/review-jobs/tests/review-jobs.test.ts
   - packages/review-artifacts/tests/review-artifacts.test.ts
@@ -37,7 +39,7 @@ navigation:
 
 # Initial repository knowledge architecture
 
-This remains the end-to-end design hypothesis. The local path from a browser-submitted ZIP or public GitHub URL through bounded intake, durable body-free job transitions, deterministic inventory, immutable snapshotting, conservative lexical analysis, evidence-backed review generation, restart-safe artifact reconstruction, bounded cited answering, scheduled expiry, access-code enforcement, and the browser workspace is implementation-verified. A production-shaped public Git smoke reaches `ready`; a clean browser Git demonstration and hosted deployment remain release evidence. Provider-backed synthesis, enhanced parsing, and multi-instance hosted storage remain proposed boundaries.
+The path from a browser-submitted ZIP or public GitHub URL through bounded intake, durable body-free job transitions, deterministic inventory, immutable snapshotting, conservative lexical analysis, evidence-constrained provider interpretation, restart-safe artifact reconstruction, bounded cited answering, scheduled expiry, access-code enforcement, and the browser workspace is implementation-verified. Initial review generation runs one bounded model pass for each required concept family. The model receives selected source evidence and may author titles, summaries, and claims, but the application assigns internal identifiers and accepts only exact evidence references. Qwen 3.6 Flash runs with hybrid thinking disabled for predictable structured-output budgets; DeepSeek V4 Flash is a per-concept fallback, followed by the deterministic evidence-backed control. Enhanced parsing, semantic vector retrieval, and multi-instance hosted storage remain proposed boundaries.
 
 ## Logical flow
 
@@ -46,7 +48,8 @@ Repository input
   -> deterministic safety and inventory pass
   -> capability classification and source extraction
   -> primary evidence index
-  -> evidence-backed review passes
+  -> six evidence-constrained model interpretation passes
+  -> schema and claim-to-evidence validation
   -> derived documentation index
   -> hierarchical retrieval
   -> source verification

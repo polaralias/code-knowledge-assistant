@@ -76,13 +76,15 @@ test("provider concepts replace deterministic summaries only after evidence vali
       const evidenceId = /\[([^\]]+)\]/u.exec(input.prompt)?.[1] ?? "";
       const kind = /Concept kind: ([a-z]+)/u.exec(input.prompt)?.[1] ?? "overview";
       return { provider: "test", requestedModel: input.model, model: "served-qwen", prompt: input.prompt, schema: input.schema,
-        output: { concept: { id: `${kind}-provider`, kind, title: `${kind} title`, summary: `${kind} summary`, claims: [{ id: `claim-${kind}`, text: `${kind} claim`, evidence_ids: [evidenceId], confidence: "high" as const }] } }, usage: { inputTokens: 1, outputTokens: 1, totalTokens: 2 }, latencyMs: 1, estimatedCostUsd: 0, request: { provider: "test", model: input.model, prompt: input.prompt, schema: input.schema } } as StructuredGenerationResult<T>;
+        output: { concept: { title: `${kind} title`, summary: `${kind} summary`, claims: [{ text: `${kind} claim`, evidence_ids: [evidenceId], confidence: "high" as const }] } }, usage: { inputTokens: 1, outputTokens: 1, totalTokens: 2 }, latencyMs: 1, estimatedCostUsd: 0, request: { provider: "test", model: input.model, prompt: input.prompt, schema: input.schema } } as StructuredGenerationResult<T>;
     } } },
   });
   assert.equal(calls, 6);
   assert.equal(result.review.generation.model, "served-qwen");
   assert.equal(result.review.generation.generator, "model-provider");
   assert.deepEqual([...new Set(result.review.concepts.map((concept) => concept.kind))].sort(), [...kinds].sort());
+  assert.deepEqual(result.review.concepts.map((concept) => concept.id), ["overview", "component-primary", "flow-evidence-path", "integration-configuration", "coverage", "uncertainty"]);
+  assert.ok(result.review.concepts.every((concept) => concept.claims.every((claim) => claim.id.startsWith(`${concept.kind}-model-claim-`))));
 });
 
 test("provider failure preserves the deterministic evidence-backed review", async () => {
@@ -112,7 +114,7 @@ test("secondary model completes concept extraction when the primary model fails"
       const evidenceId = /\[([^\]]+)\]/u.exec(input.prompt)?.[1] ?? "";
       const kind = /Concept kind: ([a-z]+)/u.exec(input.prompt)?.[1] ?? "overview";
       return { provider: "test", requestedModel: input.model, model: "served-deepseek", prompt: input.prompt, schema: input.schema,
-        output: { concept: { id: `${kind}-secondary`, kind, title: `${kind} title`, summary: `${kind} summary`, claims: [{ id: `claim-${kind}`, text: `${kind} claim`, evidence_ids: [evidenceId], confidence: "medium" as const }] } }, usage: { inputTokens: 1, outputTokens: 1, totalTokens: 2 }, latencyMs: 1, estimatedCostUsd: 0, request: { provider: "test", model: input.model, prompt: input.prompt, schema: input.schema } } as StructuredGenerationResult<T>;
+        output: { concept: { title: `${kind} title`, summary: `${kind} summary`, claims: [{ text: `${kind} claim`, evidence_ids: [evidenceId], confidence: "medium" as const }] } }, usage: { inputTokens: 1, outputTokens: 1, totalTokens: 2 }, latencyMs: 1, estimatedCostUsd: 0, request: { provider: "test", model: input.model, prompt: input.prompt, schema: input.schema } } as StructuredGenerationResult<T>;
     } } },
   });
   assert.equal(requested.filter((model) => model === "qwen3.6-flash").length, 6);

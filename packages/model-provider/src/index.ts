@@ -134,6 +134,8 @@ export type OpenAICompatibleEvaluationAdapterOptions = {
   maxRequestBytes?: number;
   maxResponseBytes?: number;
   maxLatencyMs?: number;
+  /** Provider extension used by hybrid-thinking models during bounded JSON work. */
+  enableThinking?: boolean;
   budgets?: GenerationBudgets;
   budget?: GenerationBudgets;
   pricing?: Pricing;
@@ -182,6 +184,7 @@ function validateOptions(options: OpenAICompatibleEvaluationAdapterOptions): {
   responseByteLimit: number;
   budgets: GenerationBudgets;
   pricing: Pricing;
+  enableThinking: boolean | undefined;
 } {
   if (typeof options.provider !== "string" || options.provider.length === 0 || /[\r\n]/u.test(options.provider)) {
     fail("PROVIDER_INVALID");
@@ -189,6 +192,7 @@ function validateOptions(options: OpenAICompatibleEvaluationAdapterOptions): {
   if (typeof options.apiKey !== "string" || options.apiKey.length === 0 || /[\r\n]/u.test(options.apiKey)) {
     fail("API_KEY_INVALID");
   }
+  if (options.enableThinking !== undefined && typeof options.enableThinking !== "boolean") fail("LIMIT_INVALID");
   let parsed: URL;
   try {
     parsed = new URL(options.endpoint);
@@ -216,7 +220,8 @@ function validateOptions(options: OpenAICompatibleEvaluationAdapterOptions): {
     pricing.inputCostPerMillionUsd, pricing.outputCostPerMillionUsd]) {
     if (value !== undefined && !finiteNonNegative(value)) fail("LIMIT_INVALID");
   }
-  return { endpoint: parsed.toString(), timeoutMs, requestByteLimit, responseByteLimit, budgets, pricing };
+  return { endpoint: parsed.toString(), timeoutMs, requestByteLimit, responseByteLimit, budgets, pricing,
+    enableThinking: options.enableThinking };
 }
 
 function validateRequest(request: StructuredGenerationRequest): void {
@@ -424,6 +429,7 @@ export function createOpenAICompatibleEvaluationAdapter(
           model: request.model,
           messages: [{ role: "user", content: prompt }],
           response_format: { type: "json_object" },
+          ...(resolved.enableThinking === undefined ? {} : { enable_thinking: resolved.enableThinking }),
           ...(maxOutputTokens === undefined ? {} : { max_tokens: maxOutputTokens }),
         });
       } catch {

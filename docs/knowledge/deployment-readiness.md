@@ -2,10 +2,10 @@
 type: Deployment Readiness
 title: Deployment Readiness and Outstanding Work
 description: Records the verified deployment-shaped product path, the external launch gates, and the work that can remain deferred.
-timestamp: 2026-08-28T06:42:12Z
+timestamp: 2026-08-28T13:13:28Z
 authority: canonical
 verification: verified-limited
-verified_at: 2026-08-28T06:42:12Z
+verified_at: 2026-08-28T13:13:28Z
 verified_against:
   - pnpm test
   - pnpm typecheck
@@ -14,6 +14,9 @@ verified_against:
   - apps/api/tests/server.test.ts
   - apps/web/tests/upload-client.test.mjs
   - packages/evaluation/tests/provider-runner.test.mjs
+  - packages/model-provider/tests/model-provider.test.ts
+  - packages/review-pipeline/tests/review-pipeline.test.ts
+  - local provider-backed Cozylife extraction with six validated Qwen 3.6 Flash concepts
   - deploy/policy.test.mjs
   - docker build --tag code-knowledge-assistant:local .
   - local container healthz readyz root endpoint demo review and cited question smoke
@@ -33,18 +36,18 @@ navigation:
 
 ## Executive status
 
-The access-gated reference service is publicly deployed on Railway and supports bounded ZIP uploads and public GitHub intake through the same durable review, cited-question, deletion, and expiry lifecycle. The Dockerfile-backed singleton runs with a persistent `/var/lib/code-atlas` volume, and the hosted smoke has verified health, readiness, pinned Git intake, asynchronous review generation, review retrieval, cited questions, deletion, and terminal state. Provider-backed generation/evaluation and clean hosted-browser screenshot evidence remain open gates; the deterministic lexical path remains the working control.
+The access-gated reference service is publicly deployed on Railway and supports bounded ZIP uploads and public GitHub intake through the same durable review, cited-question, deletion, and expiry lifecycle. The Dockerfile-backed singleton runs with a persistent `/var/lib/code-atlas` volume. Evidence-constrained initial review generation is implemented and locally verified against Cozylife using six successful Qwen 3.6 Flash passes; DeepSeek V4 Flash and the deterministic baseline remain bounded fallbacks. Production replay of that exact provider-authored path, the wider quality/cost evaluation, and clean hosted-browser evidence remain launch checks.
 
-The remaining launch work is concentrated in provider-backed generation and evaluation, public browser evidence, and final release presentation. No hosted model is selected until the evaluation gate passes.
+The remaining launch work is concentrated in production verification of provider-authored extraction, the wider model/retrieval evaluation, public browser evidence, and final release presentation. The deployed allocation is operational, not a final evaluation winner.
 
 ## Current evidence matrix
 
 | Area | Current state | Evidence class | Launch implication |
 | --- | --- | --- | --- |
 | Repository intake | ZIP and credential-free public GitHub URL/ref intake are bounded, body-safe, and no-execution. | Test-verified; live Git smoke | Core intake can be demonstrated, but private Git provider access is not an MVP path. |
-| Review lifecycle | Inventory, source snapshots, disposable rehydration, deterministic review generation, opaque jobs, completed-artifact persistence, restart reconstruction, cited questions, deletion, and 48-hour expiry are implemented for the filesystem adapter. | Test-verified; ZIP browser path verified | Suitable for a single-replica reference service with one persistent data volume. |
+| Review lifecycle | Inventory, source snapshots, disposable rehydration, six evidence-constrained provider concept passes with strict validation and deterministic fallback, opaque jobs, completed-artifact persistence, restart reconstruction, cited questions, deletion, and 48-hour expiry are implemented for the filesystem adapter. | Test-verified; local live-provider Cozylife extraction | Production provider-authored replay remains required before the public demonstration claim is complete. |
 | Analysis | Python, TypeScript, and JavaScript are conservative lexical `structured` extraction; unknown eligible text uses labelled `fallback`. No language is currently `enhanced`. | Test-verified | Do not market Tree-sitter or semantic graph coverage as shipped capability. |
-| Conversation | Deterministic lexical retrieval and bounded cited answering are live. | Test-verified | The baseline recall is 0.595238 at 10 results against a provisional 0.85 gate; provider-backed synthesis and answer-time claim verification remain open. |
+| Conversation | Lexical retrieval and bounded provider-backed cited answering are live, with deterministic insufficiency behaviour. | Test-verified and deployed | The lexical baseline recall is 0.595238 at 10 results against a provisional 0.85 gate; semantic retrieval and answer-time derived-claim verification remain open. |
 | Browser experience | Bundled anonymous demo navigation, cited question interaction, and the ZIP/Git client contracts are local runtime/test verified. | Mixed test-verified and runtime-verified | Capture a clean hosted-browser upload, Git, deletion, and screenshot run before claiming the public journey is demonstrated. |
 | Workspace composition | Chat-centred Review, Findings, and Map tabs are implemented with a findings drill-in rail, progress/source context, responsive collapse, and an honest future map stub. | Local Docker browser-verified in light and dark emulation | The interaction model is ready for hosted evidence; relationship graph extraction remains deliberately deferred. |
 | Persistence and expiry | Local JSON/job, object, snapshot, and artifact stores are restart-safe and swept by a non-overlapping scheduler. | Test-verified | Multi-instance coordination, hosted object storage, PostgreSQL/pgvector, and backup deletion are not present. |
