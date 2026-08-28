@@ -80,3 +80,17 @@ test("provider concepts replace deterministic summaries only after evidence vali
   assert.equal(result.review.generation.generator, "model-provider");
   assert.deepEqual([...new Set(result.review.concepts.map((concept) => concept.kind))].sort(), [...kinds].sort());
 });
+
+test("provider failure preserves the deterministic evidence-backed review", async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "cka-review-provider-fallback-"));
+  await writeFile(path.join(root, "main.py"), "def start_server():\n    return 'ready'\n");
+  const inventory = await inventoryRepository(root);
+  const result = await buildLocalRepositoryReview({
+    root, inventory, reviewId: "review-fallback", sourceRevision: "upload:fallback", generatedAt: "2026-08-28T08:00:00.000Z",
+    generation: { model: "qwen3.6-flash", client: { async generate() { throw Object.assign(new Error("TIMEOUT"), { code: "TIMEOUT" }); } } },
+  });
+  assert.equal(result.review.generation.generator, "deterministic-baseline");
+  assert.equal(result.review.generation.model, null);
+  assert.equal(result.review.concepts.length, 6);
+  assert.ok(result.review.concepts.every((concept) => concept.claims.every((claim) => claim.evidence_ids.length > 0)));
+});
