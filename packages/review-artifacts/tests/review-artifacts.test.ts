@@ -64,6 +64,21 @@ test("a completed review survives store reconstruction and answers with a citati
   }
 });
 
+test("repository source identity survives artifact reconstruction", async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "cka-review-artifact-source-"));
+  try {
+    const source = { sourceType: "git" as const, owner: "polaralias", name: "homeassistant-cozylife", branch: "main", displayRevision: "0123456789ab" };
+    const first = new FileSystemReviewArtifactStore(root, { now: () => new Date("2026-08-27T12:00:00.000Z") });
+    await first.save({ id: "review-123", expires_at: "2026-08-29T12:00:00.000Z", review: completedReview(), source } as never);
+
+    const loaded = await new FileSystemReviewArtifactStore(root).get("review-123");
+
+    assert.deepEqual((loaded.artifact as Record<string, unknown>).source, source);
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+});
+
 test("duplicate, mismatched, unsafe, and integrity-drifted artifacts are refused without body-bearing errors", async () => {
   const root = await mkdtemp(path.join(os.tmpdir(), "cka-review-artifacts-"));
   try {

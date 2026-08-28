@@ -15,12 +15,22 @@ export type CompletedReviewArtifact = {
   analysis: RepositoryAnalysis;
   review: ReviewBundle;
   evidence: ReviewEvidence[];
+  source: ReviewArtifactSource | null;
+};
+
+export type ReviewArtifactSource = {
+  sourceType: "git" | "zip";
+  owner: string;
+  name: string;
+  branch: string;
+  displayRevision: string;
 };
 
 export type SaveCompletedReviewArtifactInput = {
   id: string;
   expires_at: string;
   review: LocalRepositoryReview;
+  source?: ReviewArtifactSource;
 };
 
 export type LoadedCompletedReviewArtifact = {
@@ -92,6 +102,18 @@ function timestamp(value: unknown): string {
 function count(value: unknown): number {
   if (typeof value !== "number" || !Number.isSafeInteger(value) || value < 0) throw new ReviewArtifactStoreError("ARTIFACT_SCHEMA_INVALID");
   return value;
+}
+
+function sourceMetadata(value: unknown): ReviewArtifactSource {
+  if (!isRecord(value)) throw new ReviewArtifactStoreError("ARTIFACT_SCHEMA_INVALID");
+  exact(value, ["sourceType", "owner", "name", "branch", "displayRevision"]);
+  if (value.sourceType !== "git" && value.sourceType !== "zip") throw new ReviewArtifactStoreError("ARTIFACT_SCHEMA_INVALID");
+  const sourceType = value.sourceType as "git" | "zip";
+  const owner = text(value.owner); const name = text(value.name); const branch = text(value.branch); const displayRevision = text(value.displayRevision);
+  if (![owner, name, branch, displayRevision].every((item) => item.length > 0 && item.length <= 255 && !/[\r\n\0]/u.test(item))) {
+    throw new ReviewArtifactStoreError("ARTIFACT_SCHEMA_INVALID");
+  }
+  return { sourceType, owner, name, branch, displayRevision };
 }
 
 function repoPath(value: unknown): string {
@@ -243,9 +265,12 @@ function documentsFor(review: Pick<LocalRepositoryReview, "review" | "evidence">
 
 function validateArtifact(value: unknown): CompletedReviewArtifact {
   if (!isRecord(value)) throw new ReviewArtifactStoreError("ARTIFACT_SCHEMA_INVALID");
-  exact(value, ["schema_version", "id", "created_at", "expires_at", "analysis", "review", "evidence"]);
+  const hasSource = Object.prototype.hasOwnProperty.call(value, "source");
+  exact(value, hasSource
+    ? ["schema_version", "id", "created_at", "expires_at", "analysis", "review", "evidence", "source"]
+    : ["schema_version", "id", "created_at", "expires_at", "analysis", "review", "evidence"]);
   if (value.schema_version !== 1) throw new ReviewArtifactStoreError("ARTIFACT_SCHEMA_INVALID");
-  const artifact: CompletedReviewArtifact = { schema_version: 1, id: opaque(value.id), created_at: timestamp(value.created_at), expires_at: timestamp(value.expires_at), analysis: analysis(value.analysis), review: {} as ReviewBundle, evidence: strictEvidence(value.evidence) };
+  const artifact: CompletedReviewArtifact = { schema_version: 1, id: opaque(value.id), created_at: timestamp(value.created_at), expires_at: timestamp(value.expires_at), analysis: analysis(value.analysis), review: {} as ReviewBundle, evidence: strictEvidence(value.evidence), source: hasSource && value.source !== null ? sourceMetadata(value.source) : null };
   if (Date.parse(artifact.expires_at) <= Date.parse(artifact.created_at)) throw new ReviewArtifactStoreError("ARTIFACT_SCHEMA_INVALID");
   artifact.review = strictReview(value.review, artifact.evidence);
   if (artifact.id !== artifact.review.review_id) throw new ReviewArtifactStoreError("ARTIFACT_ID_MISMATCH");
@@ -316,7 +341,7 @@ export class FileSystemReviewArtifactStore implements ReviewArtifactStore {
     catch { await rm(temporary, { force: true }).catch(() => undefined); throw new ReviewArtifactStoreError("ARTIFACT_IO_FAILED"); }
   }
   async save(input: SaveCompletedReviewArtifactInput): Promise<CompletedReviewArtifact> {
-    if (!isRecord(input) || Object.keys(input).length !== 3 || Object.keys(input).some((key) => !["id", "expires_at", "review"].includes(key))) throw new ReviewArtifactStoreError("ARTIFACT_SCHEMA_INVALID");
+    if (!isRecord(input) || ![3, 4].includes(Object.keys(input).length) || Object.keys(input).some((key) => !["id", "expires_at", "review", "source"].includes(key))) throw new ReviewArtifactStoreError("ARTIFACT_SCHEMA_INVALID");
     const id = opaque(input.id, "ARTIFACT_ID_INVALID");
     const expiresAt = timestamp(input.expires_at);
     if (!isRecord(input.review) || !("analysis" in input.review) || !("review" in input.review) || !("evidence" in input.review)) {
@@ -325,7 +350,7 @@ export class FileSystemReviewArtifactStore implements ReviewArtifactStore {
     const clock = this.now();
     if (!(clock instanceof Date) || !Number.isFinite(clock.getTime())) throw new ReviewArtifactStoreError("ARTIFACT_SCHEMA_INVALID");
     const now = clock.toISOString();
-    const candidate = validateArtifact({ schema_version: 1, id, created_at: now, expires_at: expiresAt, analysis: input.review.analysis, review: input.review.review, evidence: input.review.evidence });
+    const candidate = validateArtifact({ schema_version: 1, id, created_at: now, expires_at: expiresAt, analysis: input.review.analysis, review: input.review.review, evidence: input.review.evidence, source: input.source ?? null });
     if (Date.parse(candidate.expires_at) <= Date.parse(candidate.created_at)) throw new ReviewArtifactStoreError("ARTIFACT_SCHEMA_INVALID");
     return this.withLock(id, async () => {
       try { await readFile(this.target(id)); throw new ReviewArtifactStoreError("ARTIFACT_EXISTS"); }

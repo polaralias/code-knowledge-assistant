@@ -19,5 +19,8 @@ test("provider answerer sends bounded retrieved evidence and returns only verifi
   assert.equal(result.citations.length, 1);
   assert.equal(result.citations[0]?.repository_path, "src/main.ts");
   assert.match(request?.prompt ?? "", /startServer/u);
+  assert.match(request?.prompt ?? "", /conversational/u);
+  assert.match(request?.prompt ?? "", /Synthesize/u);
+  assert.match(request?.prompt ?? "", /Do not merely list matching documents/u);
   assert.equal((request?.prompt ?? "").includes("invented"), false);
 });

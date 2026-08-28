@@ -55,6 +55,24 @@ test("dependency, build, binary, and sensitive content is reported as excluded",
   assert.equal(result.entries.find((entry) => entry.path === ".env")?.sha256, null);
 });
 
+test("generated repository visualizations are reported as excluded", async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "cka-intake-"));
+  await mkdir(path.join(root, "docs", "visualizations"), { recursive: true });
+  await writeFile(path.join(root, "docs", "visualizations", "repository-okf.html"), "<html>generated graph</html>\n");
+  await writeFile(path.join(root, "docs", "architecture.md"), "# Architecture\n");
+
+  const result = await inventoryRepository(root);
+
+  assert.deepEqual(
+    result.entries.map(({ path, eligibility, exclusion_reason }) => ({ path, eligibility, exclusion_reason })),
+    [
+      { path: "docs/architecture.md", eligibility: "eligible", exclusion_reason: null },
+      { path: "docs/visualizations/repository-okf.html", eligibility: "excluded", exclusion_reason: "generated" },
+    ],
+  );
+  assert.equal(result.summary.excluded_directories, 1);
+});
+
 test("a repository containing a symbolic link is rejected with a stable policy error", async () => {
   const root = await mkdtemp(path.join(os.tmpdir(), "cka-intake-"));
   const outside = path.join(await mkdtemp(path.join(os.tmpdir(), "cka-outside-")), "secret.txt");

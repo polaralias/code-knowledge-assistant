@@ -19,7 +19,8 @@ export function createReviewServiceController(
       if (job.state !== "ready") return { state: job.state };
       const review = await service.getReview(reviewId);
       if (!review) return { state: "failed" };
-      const browser = createLocalReviewApiDependencies(review, metadata);
+      const sourceMetadata = await service.getReviewMetadata(reviewId);
+      const browser = createLocalReviewApiDependencies(review, sourceMetadata ?? metadata);
       return { state: "ready", review: await browser.loadReview() };
     },
 
@@ -29,7 +30,9 @@ export function createReviewServiceController(
       if (job.state !== "ready") return { state: job.state };
       const review = await service.getReview(reviewId);
       if (!review) return { state: "failed" };
-      const browser = createLocalReviewApiDependencies(review, metadata);
+      const browser = createLocalReviewApiDependencies(review, metadata, {
+        answer: (providerQuestion) => service.answerQuestion(reviewId, providerQuestion),
+      });
       return { state: "answered", answer: await browser.answerQuestion(question, reviewId) };
     },
 

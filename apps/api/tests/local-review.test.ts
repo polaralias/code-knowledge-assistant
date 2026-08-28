@@ -7,6 +7,7 @@ import type { LocalRepositoryReview } from "@code-knowledge-assistant/review-pip
 
 import { ReviewApiError } from "../src/index.ts";
 import { createLocalReviewApiDependencies } from "../src/local-review.ts";
+import { createReviewServiceController } from "../src/review-service-controller.ts";
 
 function reviewFixture(): LocalRepositoryReview {
   const excerpt = "export function startServer() { return 'ready'; }";
@@ -52,4 +53,56 @@ test("refuses a question for another review without leaking repository state", a
     assert.equal(error.code, "REVIEW_NOT_FOUND");
     return true;
   });
+});
+
+test("live review questions use the service's provider-composed answer instead of the deterministic document matcher", async () => {
+  const review = reviewFixture();
+  let providerCalls = 0;
+  const controller = createReviewServiceController({
+    async getReviewJob() { return { state: "ready" }; },
+    async getReview() { return review; },
+    async answerQuestion() {
+      providerCalls += 1;
+      return {
+        status: "answered",
+        answer: "The repository starts through startServer, which returns the ready state.",
+        qualification: "Only the static startup path is established.",
+        citations: [{ evidence_id: "primary:chunk-1", layer: "primary", repository_path: "src/main.ts", line_start: 1, line_end: 1 }],
+      };
+    },
+  } as never, { name: "sample" });
+
+  const result = await controller.answerQuestion("review-1", "Explain how startup works.");
+
+  assert.equal(providerCalls, 1);
+  assert.equal(result?.state, "answered");
+  if (result?.state === "answered") {
+    assert.equal((result.answer as Record<string, unknown>).answer, "The repository starts through startServer, which returns the ready state.");
+  }
+});
+
+test("a live Git review displays the repository identity captured by the review service", async () => {
+  const review = reviewFixture();
+  const controller = createReviewServiceController({
+    async getReviewJob() { return { state: "ready" }; },
+    async getReview() { return review; },
+    async getReviewMetadata() {
+      return { sourceType: "git", owner: "polaralias", name: "homeassistant-cozylife", branch: "main", displayRevision: "0123456789ab" };
+    },
+  } as never);
+
+  const result = await controller.getReview("review-1");
+
+  assert.equal(result?.state, "ready");
+  if (result?.state === "ready") {
+    const repository = (result.review as Record<string, any>).repository;
+    assert.deepEqual(repository, {
+      owner: "polaralias",
+      name: "homeassistant-cozylife",
+      branch: "main",
+      commit: "0123456789ab",
+      capturedAt: "2026-08-27T06:00:00Z",
+      size: "1 eligible files",
+    });
+  }
 });

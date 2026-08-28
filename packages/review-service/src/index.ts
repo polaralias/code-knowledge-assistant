@@ -72,6 +72,14 @@ export type ReviewServiceDependencies = {
 };
 export type { MaterializedRepositoryReviewInput } from "@code-knowledge-assistant/review-orchestration";
 
+export type ReviewSourceMetadata = {
+  sourceType: "git" | "zip";
+  owner: string;
+  name: string;
+  branch: string;
+  displayRevision: string;
+};
+
 export type ReviewService = {
   createReview(input: { uploadPath: string; byteSize: number }): Promise<{ jobId: string; reviewId: string; state: "queued" }>;
   createGitReview(input: { url: string; ref?: string }): Promise<{ jobId: string; reviewId: string; state: "queued" }>;
@@ -79,6 +87,7 @@ export type ReviewService = {
   getJobSnapshot(jobId: string): Promise<{ jobId: string; reviewId: string; state: ReviewJob["state"] } | null>;
   getReviewJob(reviewId: string): Promise<ReviewJob | null>;
   getReview(reviewId: string): Promise<ZipRepositoryReview["review"] | null>;
+  getReviewMetadata(reviewId: string): Promise<ReviewSourceMetadata | null>;
   answerQuestion(reviewId: string, question: string): Promise<GroundedAnswer>;
   deleteReview(reviewId: string): Promise<{ state: "deleted" }>;
   listPending(): Promise<Array<{ jobId: string; reviewId: string; state: "queued" | "processing"; createdAt: string }>>;
@@ -178,6 +187,28 @@ function validGitRef(value: unknown): value is string {
     && !value.includes("..") && !value.includes("//") && !value.includes("@{") && !/[\u0000-\u0020~^:?*\\[\]]/u.test(value);
 }
 
+function safeIdentityPart(value: string): string | null {
+  const trimmed = value.trim().replace(/\.git$/u, "");
+  return /^[A-Za-z0-9](?:[A-Za-z0-9._-]{0,98}[A-Za-z0-9])?$/u.test(trimmed) ? trimmed : null;
+}
+
+function inferUploadedMetadata(review: ZipRepositoryReview["review"]): ReviewSourceMetadata {
+  for (const evidence of review.evidence.slice(0, 200)) {
+    const match = /https:\/\/github\.com\/([A-Za-z0-9](?:[A-Za-z0-9-]{0,37}[A-Za-z0-9])?)\/([A-Za-z0-9._-]{1,100})(?:\.git)?(?:[\s/#)"']|$)/u.exec(evidence.excerpt);
+    const owner = match ? safeIdentityPart(match[1] ?? "") : null;
+    const name = match ? safeIdentityPart(match[2] ?? "") : null;
+    if (owner && name) return { sourceType: "zip", owner, name, branch: "snapshot", displayRevision: review.review.source_revision.slice(0, 12) };
+  }
+  const roots = new Set(review.analysis.files.map((file) => file.path.split("/")[0]).filter((part): part is string => Boolean(part)));
+  const rootedName = roots.size === 1 && review.analysis.files.some((file) => file.path.includes("/"))
+    ? safeIdentityPart([...roots][0] ?? "") : null;
+  const packageName = review.evidence
+    .filter((evidence) => /(?:^|\/)package\.json$/u.test(evidence.path))
+    .map((evidence) => /["']name["']\s*:\s*["']([^"']+)["']/u.exec(evidence.excerpt)?.[1] ?? "")
+    .map(safeIdentityPart).find((candidate) => candidate !== null) ?? null;
+  return { sourceType: "zip", owner: "local", name: packageName ?? rootedName ?? "uploaded-repository", branch: "snapshot", displayRevision: review.review.source_revision.slice(0, 12) };
+}
+
 export function createReviewService(dependencies: ReviewServiceDependencies): ReviewService {
   const now = dependencies.now ?? (() => new Date());
   const createId = dependencies.createId ?? defaultId;
@@ -192,6 +223,7 @@ export function createReviewService(dependencies: ReviewServiceDependencies): Re
   const reviewToJob = new Map<string, string>();
   const jobToReview = new Map<string, string>();
   const reviewToSnapshot = new Map<string, string>();
+  const reviewMetadata = new Map<string, ReviewSourceMetadata>();
   const deletedReviews = new Set<string>();
 
   async function processJob(jobId: string, reviewId: string, snapshotId: string, archivePath: string): Promise<void> {
@@ -214,7 +246,8 @@ export function createReviewService(dependencies: ReviewServiceDependencies): Re
         throw new ReviewServiceError("UPLOAD_OWNERSHIP_FAILED");
       }
       const expiresAt = new Date(now().getTime() + RETENTION_MILLISECONDS).toISOString();
-      await dependencies.artifacts?.save({ id: reviewId, expires_at: expiresAt, review: result.review });
+      const sourceMetadata = inferUploadedMetadata(result.review);
+      await dependencies.artifacts?.save({ id: reviewId, expires_at: expiresAt, review: result.review, source: sourceMetadata });
       await dependencies.jobs.transition(jobId, processing.version, {
         state: "ready",
         review_id: reviewId,
@@ -232,6 +265,7 @@ export function createReviewService(dependencies: ReviewServiceDependencies): Re
       });
       reviews.set(reviewId, result.review);
       reviewToSnapshot.set(reviewId, snapshotId);
+      reviewMetadata.set(reviewId, sourceMetadata);
     } catch (error) {
       reviews.delete(reviewId);
       reviewToSnapshot.delete(reviewId);
@@ -283,7 +317,14 @@ export function createReviewService(dependencies: ReviewServiceDependencies): Re
         throw new ReviewServiceError("UPLOAD_OWNERSHIP_FAILED");
       }
       const expiresAt = new Date(now().getTime() + RETENTION_MILLISECONDS).toISOString();
-      await dependencies.artifacts?.save({ id: reviewId, expires_at: expiresAt, review: result.review });
+      const sourceMetadata: ReviewSourceMetadata = {
+        sourceType: "git",
+        owner: acquired.repository.owner,
+        name: acquired.repository.name,
+        branch: source.ref ?? "default",
+        displayRevision: acquired.revision.slice(0, 12),
+      };
+      await dependencies.artifacts?.save({ id: reviewId, expires_at: expiresAt, review: result.review, source: sourceMetadata });
       await dependencies.jobs.transition(jobId, processing.version, {
         state: "ready",
         review_id: reviewId,
@@ -301,6 +342,7 @@ export function createReviewService(dependencies: ReviewServiceDependencies): Re
       });
       reviews.set(reviewId, result.review);
       reviewToSnapshot.set(reviewId, snapshotId);
+      reviewMetadata.set(reviewId, sourceMetadata);
     } catch (error) {
       reviews.delete(reviewId);
       reviewToSnapshot.delete(reviewId);
@@ -386,12 +428,23 @@ export function createReviewService(dependencies: ReviewServiceDependencies): Re
       if (!dependencies.artifacts) return null;
       try {
         const loaded = await dependencies.artifacts.get(reviewId);
+        if (loaded.artifact.source) reviewMetadata.set(reviewId, { ...loaded.artifact.source });
         reviews.set(reviewId, loaded.review);
         return loaded.review;
       } catch (error) {
         if (error instanceof ReviewArtifactStoreError && error.code === "ARTIFACT_NOT_FOUND") return null;
         throw error;
       }
+    },
+
+    async getReviewMetadata(reviewId) {
+      const existing = reviewMetadata.get(reviewId);
+      if (existing) return { ...existing };
+      const review = await this.getReview(reviewId);
+      if (!review) return null;
+      const inferred = inferUploadedMetadata(review);
+      reviewMetadata.set(reviewId, inferred);
+      return { ...inferred };
     },
 
     async answerQuestion(reviewId, question) {
@@ -413,6 +466,7 @@ export function createReviewService(dependencies: ReviewServiceDependencies): Re
       reviewToJob.delete(reviewId);
       jobToReview.delete(jobId);
       reviewToSnapshot.delete(reviewId);
+      reviewMetadata.delete(reviewId);
       deletedReviews.add(reviewId);
       await rm(path.join(uploadRoot, `${jobId}.zip`), { force: true });
       return { state: "deleted" };

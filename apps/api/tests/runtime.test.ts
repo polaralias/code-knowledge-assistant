@@ -130,7 +130,10 @@ test("serves and answers from a completed review after an application restart", 
   const root = await mkdtemp(path.join(tmpdir(), "review-restart-runtime-"));
   const dataRoot = path.join(root, "data");
   const zipPath = path.join(root, "repository.zip");
-  await writeZip(zipPath, { "src/main.ts": "export function startServer() { return 'ready'; }\n" });
+  await writeZip(zipPath, {
+    "src/main.ts": "export function startServer() { return 'ready'; }\n",
+    "README.md": "# CozyLife\nRepository: https://github.com/polaralias/homeassistant-cozylife\n",
+  });
   let server = await buildUploadReviewServer({ webRoot: path.resolve("apps/web"), dataRoot });
   server.listen(0, "127.0.0.1");
   await once(server, "listening");
@@ -167,7 +170,10 @@ test("serves and answers from a completed review after an application restart", 
     assert.equal(((await job.json()) as { reviewId: string }).reviewId, accepted.reviewId);
     const review = await fetch(`${origin}/api/reviews/${accepted.reviewId}`);
     assert.equal(review.status, 200);
-    assert.equal(((await review.json()) as Record<string, any>).review.reviewId, accepted.reviewId);
+    const restartedReview = ((await review.json()) as Record<string, any>).review;
+    assert.equal(restartedReview.reviewId, accepted.reviewId);
+    assert.equal(restartedReview.repository.owner, "polaralias");
+    assert.equal(restartedReview.repository.name, "homeassistant-cozylife");
     const question = await fetch(`${origin}/api/reviews/${accepted.reviewId}/questions`, {
       method: "POST",
       headers: { "content-type": "application/json" },

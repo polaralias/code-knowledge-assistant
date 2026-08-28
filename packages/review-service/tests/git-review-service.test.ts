@@ -54,6 +54,9 @@ test("a public Git request becomes a durable review job at its immutable revisio
     const job = await service.getJob("job-1");
     assert.equal(job.state, "ready");
     assert.equal((await service.getReview("review-1"))?.review.source_revision, revision);
+    assert.deepEqual(await service.getReviewMetadata("review-1"), {
+      sourceType: "git", owner: "openai", name: "example", branch: "main", displayRevision: revision.slice(0, 12),
+    });
     assert.equal((await service.answerQuestion("review-1", "Where is startServer defined?")).status, "answered");
     await assert.rejects(access(workspace));
   } finally {

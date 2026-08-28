@@ -330,7 +330,19 @@ function assertCrossLinks(analysis: DemoAnalysis, review: ReviewBundle, evidence
 
 function parseArtifact(value: unknown): DemoArtifact {
   if (!isRecord(value)) throw new DemoReviewError("DEMO_ARTIFACT_SCHEMA_INVALID");
-  exact(value, ["schema_version", "id", "created_at", "expires_at", "analysis", "review", "evidence"]);
+  const hasSource = Object.prototype.hasOwnProperty.call(value, "source");
+  exact(value, hasSource
+    ? ["schema_version", "id", "created_at", "expires_at", "analysis", "review", "evidence", "source"]
+    : ["schema_version", "id", "created_at", "expires_at", "analysis", "review", "evidence"]);
+  if (hasSource && value.source !== null) {
+    if (!isRecord(value.source)) throw new DemoReviewError("DEMO_ARTIFACT_SCHEMA_INVALID");
+    exact(value.source, ["sourceType", "owner", "name", "branch", "displayRevision"]);
+    if ((value.source.sourceType !== "git" && value.source.sourceType !== "zip") ||
+      [value.source.owner, value.source.name, value.source.branch, value.source.displayRevision]
+        .some((item) => typeof item !== "string" || item.length === 0 || item.length > 255 || /[\r\n\0]/u.test(item))) {
+      throw new DemoReviewError("DEMO_ARTIFACT_SCHEMA_INVALID");
+    }
+  }
   if (value.schema_version !== 1) throw new DemoReviewError("DEMO_ARTIFACT_SCHEMA_INVALID");
   const artifactId = opaqueId(value.id);
   const created = timestamp(value.created_at);

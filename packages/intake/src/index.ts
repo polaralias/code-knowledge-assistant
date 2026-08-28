@@ -294,7 +294,9 @@ export async function inventoryRepository(
         throw new IntakePolicyError("SYMLINK_NOT_ALLOWED", repositoryPath(sourceRoot, absolutePath));
       }
       if (child.isDirectory()) {
-        const exclusionReason = inheritedExclusionReason ?? EXCLUDED_DIRECTORIES.get(child.name) ?? null;
+        const relativeDirectory = repositoryPath(sourceRoot, absolutePath);
+        const exclusionReason = inheritedExclusionReason ??
+          (relativeDirectory === "docs/visualizations" ? "generated" : EXCLUDED_DIRECTORIES.get(child.name)) ?? null;
         if (exclusionReason) {
           if (inheritedExclusionReason === null) excludedDirectories += 1;
           await visit(absolutePath, exclusionReason);
