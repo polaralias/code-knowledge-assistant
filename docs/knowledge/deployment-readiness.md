@@ -2,10 +2,10 @@
 type: Deployment Readiness
 title: Deployment Readiness and Outstanding Work
 description: Records the verified deployment-shaped product path, the external launch gates, and the work that can remain deferred.
-timestamp: 2026-08-28T06:33:23Z
+timestamp: 2026-08-28T06:42:12Z
 authority: canonical
 verification: verified-limited
-verified_at: 2026-08-28T06:33:23Z
+verified_at: 2026-08-28T06:42:12Z
 verified_against:
   - pnpm test
   - pnpm typecheck
@@ -22,6 +22,7 @@ verified_against:
   - local Docker browser checks for Review, Findings, Map, responsive mobile, and light/dark emulation
   - Railway production deployment 90c48ad1-2fc4-4380-ac56-ab1b99f9becd at commit 84cc163
   - hosted deploy/smoke.mjs lifecycle against code-knowledge-assistant-production.up.railway.app
+  - https://github.com/polaralias/code-knowledge-assistant/actions/runs/33148773548
   - tasks/index.md
 navigation:
   role: supporting
@@ -61,7 +62,7 @@ The remaining launch work is concentrated in provider-backed generation and eval
 
 1. Establish the Frankfurt Model Studio workspace identifier and per-run ceiling, provide the API key through the local secret store, and run the checked evaluation matrix for `qwen3.6-flash` and `deepseek-v4-flash-0731`. Record exact model snapshots, latency, cost, retrieval, citation, refusal, and security results before enabling provider-backed generation.
 2. Complete a clean hosted-browser ZIP and Git journey, verify restart recovery against retained state, and capture stable screenshots.
-3. Confirm the GitHub CI workflow on `main`, then reconcile the measured model, browser, and release evidence.
+3. Reconcile the measured model and hosted-browser evidence into the final release presentation.
 
 ## Required for a stronger production service, but not the first reference demo
 

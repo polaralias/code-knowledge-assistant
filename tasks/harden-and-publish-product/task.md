@@ -6,7 +6,7 @@ description: Validate, secure, containerise, deploy, document, and publish the p
   for reliable public use.
 status: in-progress
 created: '2026-08-25T20:30:47Z'
-timestamp: '2026-08-28T06:33:23Z'
+timestamp: '2026-08-28T06:42:12Z'
 owner: James Whelan
 depends_on:
 - build-repository-review-pipeline/task
@@ -124,4 +124,5 @@ The application is reproducibly runnable, secured within its declared boundaries
 - Hosted access-code gating, persistent review/question limits, structured body-safe telemetry, CI/release policy, smoke tooling, and an immutable Uptime Kuma demo artifact are implemented and test-covered. The provider adapter exists but is not yet integrated into an evaluated production path; hosted object/database adapters remain intentionally deferred.
 - The public repository is available at `https://github.com/polaralias/code-knowledge-assistant`; the reference service is live at `https://code-knowledge-assistant-production.up.railway.app`.
 - Hosted verification: `deploy/smoke.mjs` passed health, readiness, immutable Uptime Kuma Git intake, asynchronous review generation, review retrieval, cited questioning, deletion, and terminal-state checks. Remaining work is provider evaluation/integration, clean hosted-browser screenshots, restart evidence, and final release reconciliation.
+- GitHub CI run `33148773548` passes the clean Ubuntu test and type gates, production dependency audit, Docker image build, and gitleaks scan on `main`.
 - Current verification: the full repository suite and `pnpm typecheck` pass, targeted Git/deployment tests pass, qualified real-world evidence anchors pass when the ignored immutable intake caches are present, and the corrected Docker image builds locally.

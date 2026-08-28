@@ -7,7 +7,7 @@ description: Run reproducible install, type, test, security, and container polic
   checks in CI with a valid version source and least-privilege workflow permissions.
 status: done
 created: '2026-08-27T22:38:34Z'
-timestamp: '2026-08-27T23:30:31Z'
+timestamp: '2026-08-28T06:42:12Z'
 owner: luna-ci
 ---
 
@@ -32,8 +32,8 @@ Run reproducible install, type, test, security, and container policy checks in C
 
 ## Evidence
 
-- Commit:
-- Validation: `node --test deploy/ci-policy.test.mjs` passes all release-policy checks; workspace validation will run at tranche close.
+- Commit: `c00605f` is the verified `main` revision.
+- Validation: GitHub Actions run `33148773548` passes clean Ubuntu tests, type checking, deployment/release policy, production dependency audit, Docker image build, and gitleaks scanning.
 - Integration: `.github/workflows/ci.yml` gates tests, types, audit, secret/dependency review, and the image build; `release.yml` separates read-only verification from publishing.
 
 ## Handoff
