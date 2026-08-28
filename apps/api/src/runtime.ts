@@ -16,6 +16,7 @@ import { FileSystemObjectStore } from "@code-knowledge-assistant/source-snapshot
 import { createReviewApiServer, ReviewApiError, type ReviewApiDependencies } from "./index.ts";
 import { createLocalReviewApiDependencies, type LocalReviewViewMetadata } from "./local-review.ts";
 import { createReviewServiceController } from "./review-service-controller.ts";
+import { createProviderAnswerer, createProviderClientFromEnvironment } from "./provider-answerer.ts";
 
 export type BuildLocalReviewServerInput = {
   repositoryRoot: string;
@@ -63,6 +64,7 @@ export async function buildUploadReviewServer(input: BuildUploadReviewServerInpu
     intakeWorkspaceRoot,
     rehydratedWorkspaceRoot,
   ].map((directory) => mkdir(directory, { recursive: true })));
+  const provider = createProviderClientFromEnvironment();
   const service = createReviewService({
     jobs: new FileSystemReviewJobStore(path.join(dataRoot, "metadata")),
     artifacts: new FileSystemReviewArtifactStore(path.join(dataRoot, "metadata")),
@@ -71,6 +73,7 @@ export async function buildUploadReviewServer(input: BuildUploadReviewServerInpu
     uploadRoot: path.join(dataRoot, "owned-uploads"),
     intakeWorkspaceRoot,
     rehydratedWorkspaceRoot,
+    questionAnswererFactory: provider ? (review) => createProviderAnswerer(review.evidenceIndex, provider.client, provider.model) : undefined,
   });
   let demoAvailable = input.demoReviewArtifactPath === undefined;
   let demoDependencies: ReviewApiDependencies = {
@@ -89,7 +92,7 @@ export async function buildUploadReviewServer(input: BuildUploadReviewServerInpu
           branch: "snapshot",
           displayRevision: loaded.review.review.source_revision.slice(0, 12),
         },
-        loaded.questionAdapter,
+        provider ? createProviderAnswerer(loaded.review.evidenceIndex, provider.client, provider.model) : loaded.questionAdapter,
       );
     } catch {
       demoAvailable = false;

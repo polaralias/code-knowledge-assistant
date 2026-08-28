@@ -54,6 +54,7 @@ export type ReviewServiceDependencies = {
   gitTransport?: GitTransport;
   gitIntakeOptions?: PublicGitIntakeOptions;
   runMaterializedReview?: (input: MaterializedRepositoryReviewInput) => Promise<ZipRepositoryReview>;
+  questionAnswererFactory?: (review: ZipRepositoryReview["review"]) => { answer(question: string): GroundedAnswer | Promise<GroundedAnswer> };
 };
 export type { MaterializedRepositoryReviewInput } from "@code-knowledge-assistant/review-orchestration";
 
@@ -362,7 +363,7 @@ export function createReviewService(dependencies: ReviewServiceDependencies): Re
     async answerQuestion(reviewId, question) {
       const review = await this.getReview(reviewId);
       if (!review) throw new ReviewServiceError("REVIEW_NOT_FOUND");
-      return createDeterministicAnswerer(review.evidenceIndex).answer(question);
+      return (dependencies.questionAnswererFactory?.(review) ?? createDeterministicAnswerer(review.evidenceIndex)).answer(question);
     },
 
     async deleteReview(reviewId) {

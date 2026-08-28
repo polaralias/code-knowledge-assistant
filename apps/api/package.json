@@ -8,6 +8,7 @@
     "@code-knowledge-assistant/demo-review": "workspace:*",
     "@code-knowledge-assistant/answering": "workspace:*",
     "@code-knowledge-assistant/intake": "workspace:*",
+    "@code-knowledge-assistant/model-provider": "workspace:*",
     "@code-knowledge-assistant/observability": "workspace:*",
     "@code-knowledge-assistant/git-intake": "workspace:*",
     "@code-knowledge-assistant/retrieval": "workspace:*",

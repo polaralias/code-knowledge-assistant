@@ -13,7 +13,7 @@ export type LocalReviewViewMetadata = {
   displayRevision?: string;
 };
 
-export type ReviewQuestionAnswerer = Pick<{ answer(question: string): GroundedAnswer }, "answer">;
+export type ReviewQuestionAnswerer = Pick<{ answer(question: string): GroundedAnswer | Promise<GroundedAnswer> }, "answer">;
 
 function languageForPath(repositoryPath: string): string {
   const extension = path.posix.extname(repositoryPath).toLowerCase();
@@ -131,7 +131,7 @@ export function createLocalReviewApiDependencies(
     async loadReview() { return fixture; },
     async answerQuestion(question, reviewId) {
       if (reviewId !== review.review.review_id) throw new ReviewApiError("REVIEW_NOT_FOUND", 404);
-      const result = answerer.answer(question);
+      const result = await answerer.answer(question);
       return {
         id: `answer-${createHash("sha256").update(question).digest("hex").slice(0, 12)}`,
         question,

@@ -41,6 +41,9 @@ importers:
       '@code-knowledge-assistant/intake':
         specifier: workspace:*
         version: link:../../packages/intake
+      '@code-knowledge-assistant/model-provider':
+        specifier: workspace:*
+        version: link:../../packages/model-provider
       '@code-knowledge-assistant/observability':
         specifier: workspace:*
         version: link:../../packages/observability
