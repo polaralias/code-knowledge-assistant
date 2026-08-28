@@ -2,10 +2,10 @@
 type: Deployment Readiness
 title: Deployment Readiness and Outstanding Work
 description: Records the verified deployment-shaped product path, the external launch gates, and the work that can remain deferred.
-timestamp: 2026-08-28T13:13:28Z
+timestamp: 2026-08-28T13:25:00Z
 authority: canonical
 verification: verified-limited
-verified_at: 2026-08-28T13:13:28Z
+verified_at: 2026-08-28T13:25:00Z
 verified_against:
   - pnpm test
   - pnpm typecheck
@@ -17,6 +17,8 @@ verified_against:
   - packages/model-provider/tests/model-provider.test.ts
   - packages/review-pipeline/tests/review-pipeline.test.ts
   - local provider-backed Cozylife extraction with six validated Qwen 3.6 Flash concepts
+  - Railway production deployment ed6459d9-2512-4192-bb57-5ff086fd03b6 at commit c69956a
+  - hosted Cozylife review review-de0f80d6-03a8-4790-a72a-d33b0f391258 with six non-baseline model-authored documents
   - deploy/policy.test.mjs
   - docker build --tag code-knowledge-assistant:local .
   - local container healthz readyz root endpoint demo review and cited question smoke
@@ -36,16 +38,16 @@ navigation:
 
 ## Executive status
 
-The access-gated reference service is publicly deployed on Railway and supports bounded ZIP uploads and public GitHub intake through the same durable review, cited-question, deletion, and expiry lifecycle. The Dockerfile-backed singleton runs with a persistent `/var/lib/code-atlas` volume. Evidence-constrained initial review generation is implemented and locally verified against Cozylife using six successful Qwen 3.6 Flash passes; DeepSeek V4 Flash and the deterministic baseline remain bounded fallbacks. Production replay of that exact provider-authored path, the wider quality/cost evaluation, and clean hosted-browser evidence remain launch checks.
+The access-gated reference service is publicly deployed on Railway and supports bounded ZIP uploads and public GitHub intake through the same durable review, cited-question, deletion, and expiry lifecycle. The Dockerfile-backed singleton runs with a persistent `/var/lib/code-atlas` volume. Evidence-constrained initial review generation is production-verified against Cozylife: the job reached `ready` and served six repository-specific model-authored documents, while the deterministic-baseline detector remained false. Qwen 3.6 Flash is the primary, with DeepSeek V4 Flash and the deterministic baseline as bounded per-concept fallbacks. The wider quality/cost evaluation and clean hosted-browser presentation evidence remain launch checks.
 
-The remaining launch work is concentrated in production verification of provider-authored extraction, the wider model/retrieval evaluation, public browser evidence, and final release presentation. The deployed allocation is operational, not a final evaluation winner.
+The remaining launch work is concentrated in the wider model/retrieval evaluation, public browser presentation evidence, and final release presentation. The deployed allocation is operational and verified, not a final evaluation winner.
 
 ## Current evidence matrix
 
 | Area | Current state | Evidence class | Launch implication |
 | --- | --- | --- | --- |
 | Repository intake | ZIP and credential-free public GitHub URL/ref intake are bounded, body-safe, and no-execution. | Test-verified; live Git smoke | Core intake can be demonstrated, but private Git provider access is not an MVP path. |
-| Review lifecycle | Inventory, source snapshots, disposable rehydration, six evidence-constrained provider concept passes with strict validation and deterministic fallback, opaque jobs, completed-artifact persistence, restart reconstruction, cited questions, deletion, and 48-hour expiry are implemented for the filesystem adapter. | Test-verified; local live-provider Cozylife extraction | Production provider-authored replay remains required before the public demonstration claim is complete. |
+| Review lifecycle | Inventory, source snapshots, disposable rehydration, six evidence-constrained provider concept passes with strict validation and deterministic fallback, opaque jobs, completed-artifact persistence, restart reconstruction, cited questions, deletion, and 48-hour expiry are implemented for the filesystem adapter. | Test-verified; local and Railway live-provider Cozylife extraction | Provider-authored review generation is demonstrable; broader usefulness and cost remain evaluation questions. |
 | Analysis | Python, TypeScript, and JavaScript are conservative lexical `structured` extraction; unknown eligible text uses labelled `fallback`. No language is currently `enhanced`. | Test-verified | Do not market Tree-sitter or semantic graph coverage as shipped capability. |
 | Conversation | Lexical retrieval and bounded provider-backed cited answering are live, with deterministic insufficiency behaviour. | Test-verified and deployed | The lexical baseline recall is 0.595238 at 10 results against a provisional 0.85 gate; semantic retrieval and answer-time derived-claim verification remain open. |
 | Browser experience | Bundled anonymous demo navigation, cited question interaction, and the ZIP/Git client contracts are local runtime/test verified. | Mixed test-verified and runtime-verified | Capture a clean hosted-browser upload, Git, deletion, and screenshot run before claiming the public journey is demonstrated. |
@@ -60,6 +62,7 @@ The remaining launch work is concentrated in production verification of provider
 1. The public source is published at `polaralias/code-knowledge-assistant`.
 2. Railway project `Code Knowledge Assistant` runs commit `84cc163` as a one-replica Dockerfile service with a persistent volume mounted at `/var/lib/code-atlas`.
 3. `deploy/smoke.mjs` passed against the public HTTPS domain, including pinned Uptime Kuma Git intake and a cited question.
+4. Deployment `ed6459d9-2512-4192-bb57-5ff086fd03b6` served a fresh Cozylife review with six non-baseline model-authored documents; the temporary validation access code was revoked after acceptance.
 
 ## Still required before final presentation
 

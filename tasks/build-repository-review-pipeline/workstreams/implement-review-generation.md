@@ -7,7 +7,7 @@ description: Turn normalized repository evidence into schema-valid review concep
   whose material claims retain resolvable provenance and explicit uncertainty.
 status: done
 created: '2026-08-26T20:51:35Z'
-timestamp: '2026-08-28T13:13:28Z'
+timestamp: '2026-08-28T13:25:00Z'
 owner: codex
 ---
 
@@ -36,10 +36,10 @@ Turn normalized repository evidence into schema-valid review concepts whose mate
 ## Evidence
 
 - Commit:
-- Validation: Review-generation, model-provider, and review-pipeline tests pass; strict TypeScript checking passes. A local live-provider Cozylife run completed all six concept passes through Qwen 3.6 Flash with `generation.generator` set to `model-provider`.
+- Validation: Review-generation, model-provider, and review-pipeline tests pass; strict TypeScript checking passes. Local and Railway live-provider Cozylife runs produced six model-authored concepts/documents; production review `review-de0f80d6-03a8-4790-a72a-d33b0f391258` was explicitly checked as non-baseline.
 - Integration: The local review pipeline maps analysis chunks into normalized evidence, invokes Qwen with thinking disabled for bounded JSON output, validates all six model-authored concept families, falls back to DeepSeek or the deterministic control per concept, and hands primary plus derived records to retrieval.
 
 ## Handoff
 
 - Report the adapter required from capability extraction and the records handed to lexical retrieval.
-- The production allocation is operational but remains evaluation-gated; production replay and the wider quality, latency, and cost comparison are separate evidence obligations.
+- The production allocation is operational and live-verified but remains evaluation-gated; the wider quality, latency, and cost comparison is a separate evidence obligation.

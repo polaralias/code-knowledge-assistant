@@ -2,7 +2,7 @@
 type: Repository Guide
 title: Code Knowledge Assistant
 description: Start here to understand the evidence-backed repository review and conversational code exploration project.
-timestamp: 2026-08-28T13:13:28Z
+timestamp: 2026-08-28T13:25:00Z
 authority: canonical
 navigation:
   role: entry-point
@@ -37,7 +37,7 @@ The repository is intentionally documentation-led. Canonical product and archite
 - Evaluation baseline: deterministic fixtures, scoring controls, and three immutable real-world intake manifests are present; paid provider comparison is paused.
 - Application code: bounded ZIP and public-GitHub intake now pass through durable body-free job metadata, immutable source snapshotting, conservative Python/TypeScript/JavaScript structured extraction (plus unknown-text fallback), six bounded provider interpretation passes, strict claim-to-evidence validation, and bounded cited answering. Qwen hybrid thinking is disabled for these structured passes so its token budget is spent on the validated result; the model supplies interpretation while the application owns stable concept and claim identifiers. If a pass fails validation, DeepSeek is tried for that concept and any still-unavailable concept retains the deterministic evidence-backed control. Completed review artifacts and lexical evidence indexes survive restart, with a 48-hour expiry lifecycle. The browser presents a chat-centred Review, Findings, and Map workspace.
 - Conversation retrieval: bounded lexical retrieval over primary and derived evidence feeds provider-backed cited answers with explicit insufficiency controls. It is retrieval-augmented generation in the broad sense, but not semantic vector RAG; embeddings, reranking, conversation memory, and answer-time derived-claim verification remain evaluated follow-up work.
-- Deployment: the Dockerfile-backed singleton service is live at [code-knowledge-assistant-production.up.railway.app](https://code-knowledge-assistant-production.up.railway.app) with a persistent `/var/lib/code-atlas` volume. The hosted smoke has verified health, readiness, pinned Git intake, review generation and retrieval, cited questions, deletion, and terminal state against commit `84cc163`.
+- Deployment: the Dockerfile-backed singleton service is live at [code-knowledge-assistant-production.up.railway.app](https://code-knowledge-assistant-production.up.railway.app) with a persistent `/var/lib/code-atlas` volume. Production deployment `ed6459d9-2512-4192-bb57-5ff086fd03b6` runs commit `c69956a`; a live Cozylife intake reached `ready` and returned six repository-specific model-authored documents rather than the deterministic control.
 - Public source: [polaralias/code-knowledge-assistant](https://github.com/polaralias/code-knowledge-assistant).
 
 See [Deployment readiness and outstanding work](./docs/knowledge/deployment-readiness.md) for the evidence matrix, launch gates, and explicit deferrals.
