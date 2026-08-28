@@ -34,6 +34,11 @@ test('dockerfile declares a reproducible non-root runtime contract', async () =>
   assert.match(dockerfile, /COPY --from=build \/app\/demo \/app\/demo/);
 });
 
+test('production runtime includes the Git transport required by public repository intake', async () => {
+  const dockerfile = await read('Dockerfile');
+  assert.match(dockerfile, /apt-get install[^\n]*git/);
+});
+
 test('startup policy launches the application runtime and delegates health to the API', async () => {
   const startup = await read('deploy/start.mjs');
   assert.match(startup, /buildUploadReviewServer/);

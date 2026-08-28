@@ -25,7 +25,10 @@ ENV NODE_ENV=production \
 
 WORKDIR /app
 
-RUN mkdir -p /app/apps/api /app/apps/web /app/packages /app/deploy "$DATA_ROOT" \
+RUN apt-get update \
+  && apt-get install --yes --no-install-recommends git ca-certificates \
+  && rm -rf /var/lib/apt/lists/* \
+  && mkdir -p /app/apps/api /app/apps/web /app/packages /app/deploy "$DATA_ROOT" \
   && chown node:node "$DATA_ROOT"
 
 COPY --from=build /app/apps/api /app/apps/api
