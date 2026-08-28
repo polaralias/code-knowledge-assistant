@@ -209,6 +209,7 @@ export function createGitCliTransport(options: GitCliTransportOptions = {}): Git
   };
   return Object.freeze({
     async resolveCommit(input) {
+      if (input.requestedRef !== null && COMMIT_PATTERN.test(input.requestedRef)) return input.requestedRef;
       const result = input.requestedRef === null
         ? await run(["ls-remote", "--symref", "--exit-code", input.repository.cloneUrl, "HEAD"], input.limits)
         : await run(["ls-remote", "--exit-code", input.repository.cloneUrl, input.requestedRef], input.limits);

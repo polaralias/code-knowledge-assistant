@@ -159,6 +159,22 @@ test("the Git CLI transport resolves immutable revisions and fetches a detached 
   assert.ok(checkout.args.includes("--no-recurse-submodules"));
 });
 
+test("a full commit ref is already immutable and does not require ambiguous remote ref resolution", async () => {
+  const commands: Parameters<GitCommandRunner["run"]>[0][] = [];
+  const runner: GitCommandRunner = {
+    async run(command) {
+      commands.push(command);
+      return { stdout: "", stderr: "" };
+    },
+  };
+  const transport = createGitCliTransport({ runner });
+  const repository = parsePublicGitHubRepository("https://github.com/openai/example");
+  const commit = "0123456789abcdef0123456789abcdef01234567";
+
+  assert.equal(await transport.resolveCommit({ repository, requestedRef: commit, limits: { timeoutMs: 9, outputByteLimit: 17 } }), commit);
+  assert.equal(commands.length, 0);
+});
+
 test("the CLI transport normalizes runner failures to stable body-free errors", async () => {
   const repository = parsePublicGitHubRepository("https://github.com/openai/example");
   const limits = { timeoutMs: 1, outputByteLimit: 1 };
