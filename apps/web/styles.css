@@ -245,6 +245,14 @@ h3 { font-size: 13px; line-height: 1.25; letter-spacing: -.01em; }
 .stage-mark.is-active { border-color: var(--accent); background: var(--accent); }
 .stage-mark.is-done { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 30%, transparent); }
 .upload-progress-detail { margin: 6px 0; padding: 14px; border: 1px solid var(--line-soft); border-radius: 5px; color: var(--muted); font-size: 12px; line-height: 1.5; }
+.upload-progress-lead { margin: 0; color: var(--ink); font-size: 13px; font-weight: 650; }
+.extraction-stages { display: grid; gap: 11px; margin: 3px 0; padding: 0; list-style: none; }
+.extraction-stage { display: grid; grid-template-columns: 12px 1fr; gap: 10px; align-items: start; color: var(--muted); font-size: 12px; }
+.extraction-stage > div { display: grid; gap: 3px; }
+.extraction-stage strong { color: var(--ink); font-size: 12px; font-weight: 600; }
+.extraction-stage span:not(.stage-mark) { line-height: 1.45; }
+.extraction-stage.is-active strong { color: var(--accent); }
+.extraction-stage.is-done { color: var(--ink-soft); }
 
 @media (max-width: 1120px) {
   .workbench-grid { grid-template-columns: minmax(190px, 220px) minmax(0, 1fr); }

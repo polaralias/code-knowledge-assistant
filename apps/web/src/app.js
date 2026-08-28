@@ -166,6 +166,21 @@ function uploadCopy(state) {
   }[state] ?? { title: 'Review repository', body: 'Choose a ZIP or public GitHub repository to begin.', action: 'Upload ZIP' };
 }
 
+function renderExtractionStages(state) {
+  const stages = [
+    ['Acquire snapshot', 'Resolve the immutable commit and copy it into an isolated workspace.'],
+    ['Inventory files', 'Read eligible text files; skip metadata, dependencies, build output, binaries, and secrets.'],
+    ['Build evidence', 'Extract supported-language structure and bounded evidence spans for the review.'],
+    ['Generate concepts', 'Ask the configured model for a concise, evidence-linked overview.'],
+  ];
+  const active = state === 'queued' ? -1 : 1;
+  return `<ol class="extraction-stages" aria-label="Review extraction steps">${stages.map(([title, detail], index) => {
+    const done = state === 'processing' && index === 0;
+    const current = index === active;
+    return `<li class="extraction-stage ${done ? 'is-done' : ''} ${current ? 'is-active' : ''}"><span class="stage-mark" aria-hidden="true"></span><div><strong>${title}</strong><span>${detail}</span></div></li>`;
+  }).join('')}</ol>`;
+}
+
 function renderUploadPanel() {
   if (!uploadPanel) return;
   const state = uploadProgress.state;
@@ -178,7 +193,7 @@ function renderUploadPanel() {
   const form = uploadMode === 'github'
     ? `<div class="github-fields"><label for="git-repository-url">Repository URL</label><input class="chat-input" id="git-repository-url" name="repository-url" type="url" inputmode="url" autocomplete="url" placeholder="https://github.com/org/repository" value="${escapeHtml(gitRepositoryUrl)}" /><label for="git-ref">Ref <span class="field-hint">optional</span></label><input class="chat-input" id="git-ref" name="ref" type="text" autocomplete="off" placeholder="main, tag, or commit" value="${escapeHtml(gitRef)}" />${accessCodeField}<p class="upload-feedback ${terminalError ? 'is-error' : ''}" id="upload-feedback" role="status" aria-live="polite">${terminalError ? escapeHtml(copy.body) : 'Only credential-free GitHub HTTPS URLs are accepted. The server resolves the final commit.'}</p></div>`
     : `<label class="upload-drop" for="zip-file"><span class="upload-drop-title">Choose repository ZIP</span><span class="upload-drop-copy">.zip only, up to ${Math.round(DEFAULT_MAX_UPLOAD_BYTES / (1024 * 1024))} MB. Server validation remains authoritative.</span><input class="upload-input" id="zip-file" name="zip-file" type="file" accept=".zip,application/zip" /></label><p class="upload-file-name" id="upload-file-name">${uploadFile ? escapeHtml(uploadFile.name) : 'No file selected'}</p>${accessCodeField}<p class="upload-feedback ${state === 'invalid-file' || terminalError ? 'is-error' : ''}" id="upload-feedback" role="status" aria-live="polite">${state === 'invalid-file' || terminalError ? escapeHtml(copy.body) : 'The browser will check the file before upload.'}</p>`;
-  uploadPanel.innerHTML = `<div class="upload-panel"><div class="evidence-top"><div><p class="panel-kicker">New repository review</p><h2 id="upload-title">${escapeHtml(copy.title)}</h2><p class="panel-summary">${escapeHtml(copy.body)}</p></div><button class="evidence-close" type="button" id="close-upload">Close</button></div>${modeTabs}${formReady ? `<form class="upload-form" id="upload-form" novalidate>${form}<div class="upload-actions"><button class="chat-submit" type="submit">${escapeHtml(state === 'idle' ? copy.action : terminalError && ['failed', 'network-error', 'invalid-response'].includes(state) ? 'Try again' : copy.action)}</button><button class="evidence-close" type="button" id="cancel-upload">Cancel</button></div></form>` : `<div class="upload-progress" role="status" aria-live="polite" aria-busy="${busy}"><div class="upload-stage"><span class="stage-mark ${state === 'queued' ? 'is-active' : state === 'processing' ? 'is-done' : ''}" aria-hidden="true"></span><span>Queue</span></div><div class="upload-stage"><span class="stage-mark ${state === 'processing' ? 'is-active' : ''}" aria-hidden="true"></span><span>Process</span></div><div class="upload-stage"><span class="stage-mark" aria-hidden="true"></span><span>Open review</span></div><p class="upload-progress-detail">${escapeHtml(copy.body)}</p><button class="evidence-close" type="button" id="cancel-upload">${escapeHtml(copy.action)}</button></div>`}</div>`;
+  uploadPanel.innerHTML = `<div class="upload-panel"><div class="evidence-top"><div><p class="panel-kicker">New repository review</p><h2 id="upload-title">${escapeHtml(copy.title)}</h2><p class="panel-summary">${escapeHtml(copy.body)}</p></div><button class="evidence-close" type="button" id="close-upload">Close</button></div>${modeTabs}${formReady ? `<form class="upload-form" id="upload-form" novalidate>${form}<div class="upload-actions"><button class="chat-submit" type="submit">${escapeHtml(state === 'idle' ? copy.action : terminalError && ['failed', 'network-error', 'invalid-response'].includes(state) ? 'Try again' : copy.action)}</button><button class="evidence-close" type="button" id="cancel-upload">Cancel</button></div></form>` : `<div class="upload-progress" role="status" aria-live="polite" aria-busy="${busy}"><p class="upload-progress-lead">${state === 'queued' ? 'Waiting for a worker to begin.' : 'The worker is reading the snapshot in an isolated workspace.'}</p>${renderExtractionStages(state)}<p class="upload-progress-detail">${escapeHtml(copy.body)}</p><button class="evidence-close" type="button" id="cancel-upload">${escapeHtml(copy.action)}</button></div>`}</div>`;
   bindUploadEvents();
 }
 
