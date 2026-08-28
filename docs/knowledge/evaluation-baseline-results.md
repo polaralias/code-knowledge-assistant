@@ -1,17 +1,18 @@
 ---
 type: Evaluation Results
 title: First Evaluation Baseline Results
-description: Records the zero-cost lexical retrieval baseline and the prerequisites that stop the paid model matrix from running prematurely.
-timestamp: 2026-08-26T11:46:00Z
+description: Records the zero-cost lexical retrieval baseline and the first bounded Frankfurt provider safety results.
+timestamp: 2026-08-28T00:00:00Z
 authority: canonical
 verification: verified-limited
-verified_at: 2026-08-26T09:08:00Z
+verified_at: 2026-08-28T00:00:00Z
 verified_against:
   - node eval/scripts/run-lexical-baseline.mjs
   - node --test packages/evaluation/tests/*.test.mjs
   - node eval/scripts/validate-scenarios.mjs
   - eval/results/lexical/baseline-v1.json
   - eval/results/provider-preflight-2026-08-26.json
+  - Alibaba Model Studio Frankfurt workspace live safety run, 2026-08-28
 navigation:
   role: supporting
   order: 49
@@ -23,7 +24,7 @@ navigation:
 
 The dependency-free lexical control achieves **0.595238 retrieval recall@10** across all 42 checked scenarios and does not meet the provisional **0.85** retrieval gate. It made no provider calls, cost nothing, and did not execute repository content. This is a control result, not a product retrieval selection.
 
-The embedding, reranking, and generation comparisons remain intentionally unrun. No supported provider credential or Frankfurt workspace identifier is configured, and the accepted GBP 20 monthly provider budget has no separate per-evaluation run ceiling. Running the paid matrix before those controls exist would breach the evaluation contract.
+The embedding and reranking comparisons remain intentionally unrun. A Frankfurt Model Studio workspace is now configured locally and the first bounded generation safety lane has completed; the full generation matrix and normal-fixture quality comparison remain open.
 
 ## Retrieval result
 
@@ -52,12 +53,23 @@ Official provider documentation checked on 2026-08-26 establishes the following 
 
 Public documentation is not a substitute for an authenticated workspace model listing. The machine-readable preflight therefore keeps region availability false until credentials and a workspace exist: [`eval/results/provider-preflight-2026-08-26.json`](../../eval/results/provider-preflight-2026-08-26.json).
 
+## First Frankfurt provider safety run
+
+On 2026-08-28, the local runner made eight calls per model against the inert `security-content` fixture using the workspace-specific Frankfurt endpoint. The per-call ceiling was USD 0.02, the persistent evaluation ledger ceiling was GBP 1, and the exchange-rate policy input was 0.7363 GBP/USD. The API key was process-local and was not written to results or logs.
+
+| Model | Scenarios | Behaviour matches | Security signals | Measured cost | Total latency |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| `deepseek-v4-flash-0731` | 8 | 8/8 | 0 | USD 0.005115 | 158.5 s |
+| `qwen3.6-flash` | 8 | 4/8 | 0 | USD 0.025285 | 204.2 s |
+
+Both models returned schema-valid structured output and preserved all four adversarial security invariants. DeepSeek also qualified all four unsupported questions as required. Qwen refused those four questions instead of qualifying them, so it is currently safer but less compliant with the boundary contract. These are safety-lane observations, not a final generation-role selection. The normal Python-fixture run needs a bounded result-capture path before its quality metrics can be recorded.
+
 ## Next controlled run
 
-Before any provider call:
+Before the next provider call:
 
-1. configure a Frankfurt Model Studio workspace and key without committing either value;
-2. set a separate maximum GBP spend for this evaluation run;
+1. run the normal Python and TypeScript fixture generation comparison with bounded in-process result capture;
+2. set a separate maximum GBP spend for the complete comparison and retain per-model result artefacts without prompts or credentials;
 3. resolve and record the exact available model snapshots and prices in that workspace;
 4. estimate the matrix cost from the checked corpus and abort if it exceeds the run ceiling;
 5. run `text-embedding-v4` at 1,024 dimensions against the same chunks, then apply `qwen3-rerank` to the same candidate sets;
