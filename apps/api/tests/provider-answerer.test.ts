@@ -22,5 +22,6 @@ test("provider answerer sends bounded retrieved evidence and returns only verifi
   assert.match(request?.prompt ?? "", /conversational/u);
   assert.match(request?.prompt ?? "", /Synthesize/u);
   assert.match(request?.prompt ?? "", /Do not merely list matching documents/u);
+  assert.match(request?.prompt ?? "", /Answer the question itself/u);
   assert.equal((request?.prompt ?? "").includes("invented"), false);
 });
