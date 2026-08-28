@@ -1,0 +1,33 @@
+{
+  "schema_version": "1.0",
+  "run": {
+    "id": "",
+    "started_at": "",
+    "evaluator_version": "0.1.0",
+    "source": { "id": "", "revision": "" },
+    "capability_tier": "enhanced",
+    "extractor": { "name": "", "version": "" },
+    "chunking": { "strategy": "", "version": "", "parameters": {} },
+    "prompt": { "id": "", "digest": "" },
+    "output_schema": { "id": "", "digest": "" },
+    "generation": { "provider": "", "region": "", "model_id": "", "parameters": {} },
+    "retrieval": {
+      "lexical": { "name": "", "version": "" },
+      "embedding": null,
+      "reranking": null
+    }
+  },
+  "inventory": {
+    "expected_eligible": [],
+    "observed_eligible": [],
+    "expected_excluded": [],
+    "observed_excluded": []
+  },
+  "extraction": {
+    "expected_symbols": [],
+    "observed_symbols": [],
+    "expected_imports": [],
+    "observed_imports": []
+  },
+  "scenarios": []
+}

@@ -1,0 +1,74 @@
+name: Publish release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Version from VERSION, without a v prefix
+        required: true
+        type: string
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    outputs:
+      version: ${{ steps.version.outputs.value }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+      - name: Verify requested version
+        id: version
+        env:
+          REQUESTED_VERSION: ${{ inputs.version }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          repository_version="$(tr -d '\r\n' < VERSION)"
+          [[ "${repository_version}" =~ ^0\.[1-9][0-9]*\.[0-9]+$ ]]
+          test "${repository_version}" = "${REQUESTED_VERSION}"
+          echo "value=${repository_version}" >> "${GITHUB_OUTPUT}"
+      - name: Enable pinned pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@11.24.0 --activate
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm test
+      - run: docker build --tag code-knowledge-assistant:release-candidate .
+
+  publish:
+    needs: verify
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - name: Create immutable GitHub release
+        uses: actions/github-script@v8
+        env:
+          RELEASE_VERSION: ${{ needs.verify.outputs.version }}
+          TARGET_SHA: ${{ github.sha }}
+        with:
+          script: |
+            const version = process.env.RELEASE_VERSION;
+            await github.rest.repos.createRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag_name: `v${version}`,
+              target_commitish: process.env.TARGET_SHA,
+              name: `v${version}`,
+              generate_release_notes: true,
+              draft: false,
+              prerelease: false,
+            });

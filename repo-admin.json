@@ -1,0 +1,16 @@
+{
+  "repoType": "application",
+  "license": "Apache-2.0",
+  "summary": "Evidence-backed repository documentation and conversational code exploration.",
+  "descriptionWip": true,
+  "enforcePrs": true,
+  "releaseProfile": "generic",
+  "codeOwners": [
+    "@polaralias"
+  ],
+  "rulesetName": "Protect default branch",
+  "requiredApprovals": 1,
+  "requireCodeOwnerReview": true,
+  "requireReviewThreadResolution": true,
+  "organizationAdminBypass": false
+}

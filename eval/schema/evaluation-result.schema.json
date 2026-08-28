@@ -1,0 +1,185 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://code-knowledge-assistant.invalid/schema/evaluation-result-1.0.json",
+  "title": "Code Knowledge Assistant evaluation result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "run", "inventory", "extraction", "scenarios"],
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "run": { "$ref": "#/$defs/run" },
+    "inventory": { "$ref": "#/$defs/inventory" },
+    "extraction": { "$ref": "#/$defs/extraction" },
+    "scenarios": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/scenario" } }
+  },
+  "$defs": {
+    "versionedComponent": {
+      "type": "object",
+      "required": ["name", "version"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "version": { "type": "string", "minLength": 1 }
+      }
+    },
+    "run": {
+      "type": "object",
+      "required": ["id", "started_at", "evaluator_version", "source", "capability_tier", "extractor", "chunking", "prompt", "output_schema", "generation", "retrieval"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "started_at": { "type": "string", "format": "date-time" },
+        "evaluator_version": { "type": "string", "minLength": 1 },
+        "source": {
+          "type": "object",
+          "required": ["id", "revision"],
+          "properties": {
+            "id": { "type": "string", "minLength": 1 },
+            "revision": { "type": "string", "minLength": 1 }
+          }
+        },
+        "capability_tier": { "enum": ["enhanced", "structured", "fallback"] },
+        "extractor": { "$ref": "#/$defs/versionedComponent" },
+        "chunking": {
+          "type": "object",
+          "required": ["strategy", "version", "parameters"],
+          "properties": {
+            "strategy": { "type": "string", "minLength": 1 },
+            "version": { "type": "string", "minLength": 1 },
+            "parameters": { "type": "object" }
+          }
+        },
+        "prompt": { "$ref": "#/$defs/digestRecord" },
+        "output_schema": { "$ref": "#/$defs/digestRecord" },
+        "generation": {
+          "type": "object",
+          "required": ["provider", "region", "model_id", "parameters"],
+          "properties": {
+            "provider": { "type": "string", "minLength": 1 },
+            "region": { "type": "string", "minLength": 1 },
+            "model_id": { "type": "string", "minLength": 1 },
+            "parameters": { "type": "object" }
+          }
+        },
+        "retrieval": {
+          "type": "object",
+          "required": ["lexical", "embedding", "reranking"],
+          "properties": {
+            "lexical": { "$ref": "#/$defs/versionedComponent" },
+            "embedding": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/modelComponent" }] },
+            "reranking": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/modelComponent" }] }
+          }
+        }
+      }
+    },
+    "digestRecord": {
+      "type": "object",
+      "required": ["id", "digest"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "digest": { "type": "string", "minLength": 1 }
+      }
+    },
+    "modelComponent": {
+      "type": "object",
+      "required": ["provider", "model_id", "version", "parameters"],
+      "properties": {
+        "provider": { "type": "string", "minLength": 1 },
+        "model_id": { "type": "string", "minLength": 1 },
+        "version": { "type": "string", "minLength": 1 },
+        "parameters": { "type": "object" }
+      }
+    },
+    "inventory": {
+      "type": "object",
+      "required": ["expected_eligible", "observed_eligible", "expected_excluded", "observed_excluded"],
+      "properties": {
+        "expected_eligible": { "$ref": "#/$defs/stringArray" },
+        "observed_eligible": { "$ref": "#/$defs/stringArray" },
+        "expected_excluded": { "$ref": "#/$defs/stringArray" },
+        "observed_excluded": { "$ref": "#/$defs/stringArray" }
+      }
+    },
+    "extraction": {
+      "type": "object",
+      "required": ["expected_symbols", "observed_symbols", "expected_imports", "observed_imports"],
+      "properties": {
+        "expected_symbols": { "$ref": "#/$defs/stringArray" },
+        "observed_symbols": { "$ref": "#/$defs/stringArray" },
+        "expected_imports": { "$ref": "#/$defs/stringArray" },
+        "observed_imports": { "$ref": "#/$defs/stringArray" }
+      }
+    },
+    "stringArray": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+    "evidence": {
+      "type": "object",
+      "required": ["path", "start_line", "end_line"],
+      "properties": {
+        "path": { "type": "string", "minLength": 1 },
+        "start_line": { "type": "integer", "minimum": 1 },
+        "end_line": { "type": "integer", "minimum": 1 },
+        "rank": { "type": "integer", "minimum": 1 },
+        "resolved": { "type": "boolean" }
+      }
+    },
+    "scenario": {
+      "type": "object",
+      "required": ["id", "group", "expected_behavior", "observed_behavior", "expected_evidence", "retrieved_evidence", "citations", "material_claims", "security", "capability_disclosed", "latency_ms", "usage", "human_review"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "group": { "enum": ["deterministic_fixture", "real_world", "unsupported_or_ambiguous", "adversarial"] },
+        "expected_behavior": { "enum": ["answer", "qualify", "refuse"] },
+        "observed_behavior": { "enum": ["answer", "qualify", "refuse"] },
+        "expected_evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/evidence" } },
+        "retrieved_evidence": { "type": "array", "items": { "$ref": "#/$defs/evidence" } },
+        "citations": { "type": "array", "items": { "$ref": "#/$defs/evidence" } },
+        "material_claims": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["text", "evidence"],
+            "properties": {
+              "text": { "type": "string", "minLength": 1 },
+              "evidence": { "type": "array", "items": { "$ref": "#/$defs/evidence" } }
+            }
+          }
+        },
+        "security": {
+          "type": "object",
+          "required": ["followed_repository_instruction", "executed_source", "expanded_authority", "disclosed_secret"],
+          "properties": {
+            "followed_repository_instruction": { "type": "boolean" },
+            "executed_source": { "type": "boolean" },
+            "expanded_authority": { "type": "boolean" },
+            "disclosed_secret": { "type": "boolean" }
+          }
+        },
+        "capability_disclosed": { "type": "boolean" },
+        "latency_ms": { "type": "number", "minimum": 0 },
+        "usage": {
+          "type": "object",
+          "required": ["input_tokens", "output_tokens", "cached_tokens", "retries", "cost_usd"],
+          "properties": {
+            "input_tokens": { "type": "number", "minimum": 0 },
+            "output_tokens": { "type": "number", "minimum": 0 },
+            "cached_tokens": { "type": "number", "minimum": 0 },
+            "retries": { "type": "number", "minimum": 0 },
+            "cost_usd": { "type": "number", "minimum": 0 }
+          }
+        },
+        "human_review": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/humanReview" }] }
+      }
+    },
+    "humanReview": {
+      "type": "object",
+      "required": ["reviewer_type", "orientation", "clarity", "actionability"],
+      "properties": {
+        "reviewer_type": { "enum": ["human", "judge-assisted"] },
+        "orientation": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "clarity": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "actionability": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "notes": { "type": "string" },
+        "model_id": { "type": "string" },
+        "prompt_digest": { "type": "string" }
+      }
+    }
+  }
+}

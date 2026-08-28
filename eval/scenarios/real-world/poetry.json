@@ -1,0 +1,73 @@
+{
+  "schema_version": "1.0",
+  "intake_id": "poetry",
+  "source_commit": "5370f1397073fb885f2ad80816d03fc07c81c978",
+  "scenarios": [
+    {
+      "id": "poetry-cli-entrypoint",
+      "category": "orientation",
+      "question": "Where does the installed `poetry` command enter the application, and what does that entrypoint run?",
+      "expected_behavior": "answer",
+      "answer_summary": "The project script maps `poetry` to `poetry.console.application:main`; `main()` constructs `Application`, runs it, and returns the exit code.",
+      "evidence": [
+        { "path": "pyproject.toml", "start_line": 57, "end_line": 58, "contains": "poetry.console.application:main" },
+        { "path": "src/poetry/console/application.py", "start_line": 649, "end_line": 651, "contains": "Application().run()" }
+      ]
+    },
+    {
+      "id": "poetry-project-composition",
+      "category": "cross-file",
+      "question": "How does the console application turn the selected project directory into Poetry's configured project object?",
+      "expected_behavior": "answer",
+      "answer_summary": "The application lazily calls `Factory.create_poetry()` for its project directory; the factory constructs the locker and configuration, creates the `Poetry` object, and attaches a repository pool.",
+      "evidence": [
+        { "path": "src/poetry/console/application.py", "start_line": 201, "end_line": 214, "contains": "Factory().create_poetry(" },
+        { "path": "src/poetry/factory.py", "start_line": 98, "end_line": 140, "contains": "poetry.set_pool(" }
+      ]
+    },
+    {
+      "id": "poetry-project-plugin-activation",
+      "category": "extension",
+      "question": "When project plugins are enabled, where are they loaded and activated against the configured Poetry instance?",
+      "expected_behavior": "answer",
+      "answer_summary": "`Factory.create_poetry()` creates a manager for the Poetry plugin group, loads its entry points, and activates every loaded plugin against the `Poetry` object and IO.",
+      "evidence": [
+        { "path": "src/poetry/factory.py", "start_line": 142, "end_line": 145, "contains": "plugin_manager.activate(poetry, io)" },
+        { "path": "src/poetry/plugins/plugin_manager.py", "start_line": 75, "end_line": 86, "contains": "metadata.entry_points(group=self._group)" }
+      ]
+    },
+    {
+      "id": "poetry-installer-update-path",
+      "category": "execution-flow",
+      "question": "What happens when the installer runs without an existing lock file, and where is dependency solving initiated?",
+      "expected_behavior": "answer",
+      "answer_summary": "`Installer.run()` forces update mode when no lock exists and delegates to `_do_install()`; the update branch constructs `Solver` from the package, pool, installed packages, and locked packages before solving.",
+      "evidence": [
+        { "path": "src/poetry/installation/installer.py", "start_line": 101, "end_line": 113, "contains": "self._update = True" },
+        { "path": "src/poetry/installation/installer.py", "start_line": 224, "end_line": 253, "contains": "solver = Solver(" }
+      ]
+    },
+    {
+      "id": "poetry-lock-freshness",
+      "category": "integrity",
+      "question": "How does Poetry decide whether `poetry.lock` is fresh relative to `pyproject.toml`?",
+      "expected_behavior": "answer",
+      "answer_summary": "The locker compares the lock metadata content hash with a SHA-256 hash derived from relevant project, dependency-group, and Poetry configuration content, with a legacy compatibility calculation for older locks.",
+      "evidence": [
+        { "path": "src/poetry/packages/locker.py", "start_line": 95, "end_line": 124, "contains": "self._content_hash == metadata[\"content-hash\"]" },
+        { "path": "src/poetry/packages/locker.py", "start_line": 292, "end_line": 318, "contains": "Returns the sha256 hash" }
+      ]
+    },
+    {
+      "id": "poetry-application-plugin-loading",
+      "category": "extension",
+      "question": "How are console application plugins discovered, and how can a caller disable them?",
+      "expected_behavior": "answer",
+      "answer_summary": "The application checks `--no-plugins`; otherwise it adds the project plugin path, loads entry points for the application-plugin group, and activates them on the application.",
+      "evidence": [
+        { "path": "src/poetry/console/application.py", "start_line": 631, "end_line": 646, "contains": "--no-plugins" },
+        { "path": "src/poetry/plugins/plugin_manager.py", "start_line": 75, "end_line": 86, "contains": "plugin.activate(*args, **kwargs)" }
+      ]
+    }
+  ]
+}

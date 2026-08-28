@@ -1,0 +1,44 @@
+{
+  "schema_version": "1.0",
+  "checked_at": "2026-08-26T09:07:00Z",
+  "provider_calls": 0,
+  "cost_usd": 0,
+  "approved_route": {
+    "provider": "Alibaba Cloud Model Studio",
+    "region": "Germany (Frankfurt)",
+    "region_id": "eu-central-1",
+    "openai_compatible_base_url": "https://{WorkspaceId}.eu-central-1.maas.aliyuncs.com/compatible-mode/v1"
+  },
+  "credentials": {
+    "DEEPSEEK_API_KEY_present": false,
+    "DASHSCOPE_API_KEY_present": false,
+    "ALIBABA_CLOUD_API_KEY_present": false,
+    "workspace_id_configured": false
+  },
+  "budget": {
+    "monthly_provider_budget_gbp": 20,
+    "evaluation_run_ceiling_gbp": null,
+    "ready": false
+  },
+  "documented_candidates": {
+    "deepseek_direct_api": ["deepseek-v4-flash", "deepseek-v4-pro"],
+    "qwen_generation": ["qwen3.7-plus", "qwen3.6-flash"],
+    "embedding": { "model_id": "text-embedding-v4", "dimensions": 1024 },
+    "reranking": { "model_id": "qwen3-rerank" }
+  },
+  "authenticated_region_availability_verified": false,
+  "ready_for_billable_run": false,
+  "blocked_reasons": [
+    "No supported provider credential is present in the evaluation environment.",
+    "No Frankfurt Model Studio workspace identifier is configured.",
+    "The monthly provider budget has no separately configured per-evaluation ceiling.",
+    "Exact candidate availability in the selected Frankfurt workspace has not been verified through an authenticated model listing."
+  ],
+  "official_sources": [
+    "https://api-docs.deepseek.com/quick_start/pricing/",
+    "https://www.alibabacloud.com/help/en/model-studio/regions/",
+    "https://www.alibabacloud.com/help/en/model-studio/model-pricing",
+    "https://www.alibabacloud.com/help/en/model-studio/embedding-rerank-model/",
+    "https://www.alibabacloud.com/help/en/model-studio/text-embedding-synchronous-api"
+  ]
+}

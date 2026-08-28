@@ -1,0 +1,12 @@
+{
+  "name": "@code-knowledge-assistant/analysis",
+  "private": true,
+  "type": "module",
+  "exports": "./src/index.ts",
+  "scripts": {
+    "test": "node --test tests/*.test.ts"
+  },
+  "dependencies": {
+    "@code-knowledge-assistant/intake": "workspace:*"
+  }
+}

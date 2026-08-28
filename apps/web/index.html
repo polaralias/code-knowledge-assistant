@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#eef1f3" />
+    <!-- Set this to an origin/path with no query or credentials to enable the live adapter. -->
+    <meta name="code-atlas-review-endpoint" content="" />
+    <!-- Set this to the API base, for example /api, to enable ZIP upload and job polling. -->
+    <meta name="code-atlas-api-base" content="" />
+    <title>Code Atlas | Review workspace</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#workspace-main">Skip to workspace</a>
+    <div id="app" class="app-shell"></div>
+    <dialog id="evidence-dialog" class="evidence-dialog" aria-labelledby="evidence-title">
+      <div id="evidence-panel"></div>
+    </dialog>
+    <dialog id="upload-dialog" class="evidence-dialog" aria-labelledby="upload-title">
+      <div id="upload-panel"></div>
+    </dialog>
+    <script type="module" src="./src/app.js"></script>
+  </body>
+</html>

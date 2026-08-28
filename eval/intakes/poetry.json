@@ -1,0 +1,29 @@
+{
+  "schema_version": "1.0",
+  "intake": {
+    "id": "poetry",
+    "upstream_url": "https://github.com/python-poetry/poetry.git",
+    "commit": "5370f1397073fb885f2ad80816d03fc07c81c978",
+    "tree": "2a96ab6cba75a7efd0b6e70e09678dbd2edd4006",
+    "capability_tier": "enhanced",
+    "primary_language": "Python",
+    "license": {
+      "spdx": "MIT",
+      "path": "LICENSE",
+      "blob": "81a8e1e4739866071bf412c851e60ef0660f76a1",
+      "checked_at": "2026-08-26T07:09:17Z"
+    }
+  },
+  "observed_inventory": {
+    "tracked_files": 1010,
+    "documentation_like_files": 43
+  },
+  "exclusion_profile": [
+    "dependency directories",
+    "generated and build output",
+    "binary and media content",
+    "files larger than the configured analysis limit"
+  ],
+  "scenario_file": "eval/scenarios/real-world/poetry.json",
+  "replacement_rule": "Replace only if the pinned source or licence becomes unavailable, or measured intake exceeds product limits; record a new decision and preserve previous result provenance."
+}

@@ -1,0 +1,33 @@
+name: Release Drafter
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: read
+
+concurrency:
+  group: release-drafter
+  cancel-in-progress: true
+
+jobs:
+  update-release-draft:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+      - name: Read repository version
+        id: version
+        shell: bash
+        run: echo "value=$(tr -d '\r\n' < VERSION)" >> "${GITHUB_OUTPUT}"
+      - uses: release-drafter/release-drafter@v7
+        with:
+          config-name: release-drafter.yml
+          version: ${{ steps.version.outputs.value }}
+          name: v${{ steps.version.outputs.value }}
+          tag: v${{ steps.version.outputs.value }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}

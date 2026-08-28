@@ -1,0 +1,16 @@
+{
+  "name": "@code-knowledge-assistant/review-service",
+  "private": true,
+  "type": "module",
+  "exports": "./src/index.ts",
+  "dependencies": {
+    "@code-knowledge-assistant/answering": "workspace:*",
+    "@code-knowledge-assistant/git-intake": "workspace:*",
+    "@code-knowledge-assistant/review-artifacts": "workspace:*",
+    "@code-knowledge-assistant/intake": "workspace:*",
+    "@code-knowledge-assistant/review-jobs": "workspace:*",
+    "@code-knowledge-assistant/review-orchestration": "workspace:*",
+    "@code-knowledge-assistant/retrieval": "workspace:*",
+    "@code-knowledge-assistant/source-snapshots": "workspace:*"
+  }
+}

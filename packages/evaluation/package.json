@@ -1,0 +1,13 @@
+{
+  "name": "@code-knowledge-assistant/evaluation",
+  "private": true,
+  "type": "module",
+  "exports": "./src/index.mjs",
+  "dependencies": {
+    "@code-knowledge-assistant/model-provider": "workspace:*",
+    "@code-knowledge-assistant/provider-budget": "workspace:*"
+  },
+  "scripts": {
+    "test": "node --test tests/*.test.mjs"
+  }
+}

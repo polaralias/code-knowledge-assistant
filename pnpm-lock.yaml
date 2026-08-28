@@ -1,0 +1,259 @@
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+
+  .:
+    devDependencies:
+      '@types/node':
+        specifier: 24.3.0
+        version: 24.3.0
+      '@types/yauzl':
+        specifier: 3.4.0
+        version: 3.4.0
+      '@types/yazl':
+        specifier: 3.3.1
+        version: 3.3.1
+      typescript:
+        specifier: 5.9.2
+        version: 5.9.2
+      yazl:
+        specifier: 3.3.1
+        version: 3.3.1
+
+  apps/api:
+    dependencies:
+      '@code-knowledge-assistant/access-control':
+        specifier: workspace:*
+        version: link:../../packages/access-control
+      '@code-knowledge-assistant/answering':
+        specifier: workspace:*
+        version: link:../../packages/answering
+      '@code-knowledge-assistant/demo-review':
+        specifier: workspace:*
+        version: link:../../packages/demo-review
+      '@code-knowledge-assistant/git-intake':
+        specifier: workspace:*
+        version: link:../../packages/git-intake
+      '@code-knowledge-assistant/intake':
+        specifier: workspace:*
+        version: link:../../packages/intake
+      '@code-knowledge-assistant/observability':
+        specifier: workspace:*
+        version: link:../../packages/observability
+      '@code-knowledge-assistant/retrieval':
+        specifier: workspace:*
+        version: link:../../packages/retrieval
+      '@code-knowledge-assistant/review-artifacts':
+        specifier: workspace:*
+        version: link:../../packages/review-artifacts
+      '@code-knowledge-assistant/review-jobs':
+        specifier: workspace:*
+        version: link:../../packages/review-jobs
+      '@code-knowledge-assistant/review-pipeline':
+        specifier: workspace:*
+        version: link:../../packages/review-pipeline
+      '@code-knowledge-assistant/review-service':
+        specifier: workspace:*
+        version: link:../../packages/review-service
+      '@code-knowledge-assistant/source-snapshots':
+        specifier: workspace:*
+        version: link:../../packages/source-snapshots
+
+  apps/web: {}
+
+  packages/access-control: {}
+
+  packages/analysis:
+    dependencies:
+      '@code-knowledge-assistant/intake':
+        specifier: workspace:*
+        version: link:../intake
+
+  packages/answering:
+    dependencies:
+      '@code-knowledge-assistant/retrieval':
+        specifier: workspace:*
+        version: link:../retrieval
+
+  packages/demo-review:
+    dependencies:
+      '@code-knowledge-assistant/answering':
+        specifier: workspace:*
+        version: link:../answering
+      '@code-knowledge-assistant/retrieval':
+        specifier: workspace:*
+        version: link:../retrieval
+      '@code-knowledge-assistant/review-generation':
+        specifier: workspace:*
+        version: link:../review-generation
+
+  packages/evaluation:
+    dependencies:
+      '@code-knowledge-assistant/model-provider':
+        specifier: workspace:*
+        version: link:../model-provider
+      '@code-knowledge-assistant/provider-budget':
+        specifier: workspace:*
+        version: link:../provider-budget
+
+  packages/git-intake: {}
+
+  packages/intake:
+    dependencies:
+      yauzl:
+        specifier: 3.4.0
+        version: 3.4.0
+
+  packages/model-provider: {}
+
+  packages/observability: {}
+
+  packages/provider-budget: {}
+
+  packages/retrieval: {}
+
+  packages/review-artifacts:
+    dependencies:
+      '@code-knowledge-assistant/analysis':
+        specifier: workspace:*
+        version: link:../analysis
+      '@code-knowledge-assistant/retrieval':
+        specifier: workspace:*
+        version: link:../retrieval
+      '@code-knowledge-assistant/review-generation':
+        specifier: workspace:*
+        version: link:../review-generation
+      '@code-knowledge-assistant/review-pipeline':
+        specifier: workspace:*
+        version: link:../review-pipeline
+
+  packages/review-generation: {}
+
+  packages/review-jobs: {}
+
+  packages/review-orchestration:
+    dependencies:
+      '@code-knowledge-assistant/intake':
+        specifier: workspace:*
+        version: link:../intake
+      '@code-knowledge-assistant/review-pipeline':
+        specifier: workspace:*
+        version: link:../review-pipeline
+      '@code-knowledge-assistant/source-snapshots':
+        specifier: workspace:*
+        version: link:../source-snapshots
+
+  packages/review-pipeline:
+    dependencies:
+      '@code-knowledge-assistant/analysis':
+        specifier: workspace:*
+        version: link:../analysis
+      '@code-knowledge-assistant/intake':
+        specifier: workspace:*
+        version: link:../intake
+      '@code-knowledge-assistant/retrieval':
+        specifier: workspace:*
+        version: link:../retrieval
+      '@code-knowledge-assistant/review-generation':
+        specifier: workspace:*
+        version: link:../review-generation
+
+  packages/review-service:
+    dependencies:
+      '@code-knowledge-assistant/answering':
+        specifier: workspace:*
+        version: link:../answering
+      '@code-knowledge-assistant/git-intake':
+        specifier: workspace:*
+        version: link:../git-intake
+      '@code-knowledge-assistant/intake':
+        specifier: workspace:*
+        version: link:../intake
+      '@code-knowledge-assistant/retrieval':
+        specifier: workspace:*
+        version: link:../retrieval
+      '@code-knowledge-assistant/review-artifacts':
+        specifier: workspace:*
+        version: link:../review-artifacts
+      '@code-knowledge-assistant/review-jobs':
+        specifier: workspace:*
+        version: link:../review-jobs
+      '@code-knowledge-assistant/review-orchestration':
+        specifier: workspace:*
+        version: link:../review-orchestration
+      '@code-knowledge-assistant/source-snapshots':
+        specifier: workspace:*
+        version: link:../source-snapshots
+
+  packages/source-snapshots:
+    dependencies:
+      '@code-knowledge-assistant/intake':
+        specifier: workspace:*
+        version: link:../intake
+
+packages:
+
+  '@types/node@24.3.0':
+    resolution: {integrity: sha512-aPTXCrfwnDLj4VvXrm+UUCQjNEvJgNA8s5F1cvwQU+3KNltTOkBm1j30uNLyqqPNe7gE3KFzImYoZEfLhp4Yow==}
+
+  '@types/yauzl@3.4.0':
+    resolution: {integrity: sha512-NRPn5w6h8dhcnmx3YIRQcqMywY/+nND/uOkJessedcrowO3C0AssHp3tMJpxKAwOhFOo0OV1y9VtsC5hbKKBAw==}
+
+  '@types/yazl@3.3.1':
+    resolution: {integrity: sha512-DIWfCKpsTp6hE5BDBHV3+fIL/bLUF9Bv13iDrWnMlmhQpH67buNvI291ZauQ1xcccxK3FqQ9honnXpq4R8NMuQ==}
+
+  buffer-crc32@1.0.0:
+    resolution: {integrity: sha512-Db1SbgBS/fg/392AblrMJk97KggmvYhr4pB5ZIMTWtaivCPMWLkmb7m21cJvpvgK+J3nsU2CmmixNBZx4vFj/w==}
+    engines: {node: '>=8.0.0'}
+
+  pend@1.2.0:
+    resolution: {integrity: sha512-F3asv42UuXchdzt+xXqfW1OGlVBe+mxa2mqI0pg5yAHZPvFmY3Y6drSf/GQ1A86WgWEN9Kzh/WrgKa6iGcHXLg==}
+
+  typescript@5.9.2:
+    resolution: {integrity: sha512-CWBzXQrc/qOkhidw1OzBTQuYRbfyxDXJMVJ1XNwUHGROVmuaeiEm3OslpZ1RV96d7SKKjZKrSJu3+t/xlw3R9A==}
+    engines: {node: '>=14.17'}
+    hasBin: true
+
+  undici-types@7.10.0:
+    resolution: {integrity: sha512-t5Fy/nfn+14LuOc2KNYg75vZqClpAiqscVvMygNnlsHBFpSXdJaYtXMcdNLpl/Qvc3P2cB3s6lOV51nqsFq4ag==}
+
+  yauzl@3.4.0:
+    resolution: {integrity: sha512-jIH9yLR9wqr0wOS0TpBvo/g/2UgZH5qePVbjgRliiF0BYvOZyaBknKsF+x9Iht0O6sqgnB93rCICdOZFecJuDw==}
+    engines: {node: '>=12'}
+
+  yazl@3.3.1:
+    resolution: {integrity: sha512-BbETDVWG+VcMUle37k5Fqp//7SDOK2/1+T7X8TD96M3D9G8jK5VLUdQVdVjGi8im7FGkazX7kk5hkU8X4L5Bng==}
+
+snapshots:
+
+  '@types/node@24.3.0':
+    dependencies:
+      undici-types: 7.10.0
+
+  '@types/yauzl@3.4.0':
+    dependencies:
+      '@types/node': 24.3.0
+
+  '@types/yazl@3.3.1':
+    dependencies:
+      '@types/node': 24.3.0
+
+  buffer-crc32@1.0.0: {}
+
+  pend@1.2.0: {}
+
+  typescript@5.9.2: {}
+
+  undici-types@7.10.0: {}
+
+  yauzl@3.4.0:
+    dependencies:
+      pend: 1.2.0
+
+  yazl@3.3.1:
+    dependencies:
+      buffer-crc32: 1.0.0

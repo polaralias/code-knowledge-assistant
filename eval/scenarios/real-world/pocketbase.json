@@ -1,0 +1,71 @@
+{
+  "schema_version": "1.0",
+  "intake_id": "pocketbase",
+  "source_commit": "bc8ffed4e7265a70a6e8de76c0b0b48b945e19ef",
+  "scenarios": [
+    {
+      "id": "pocketbase-example-composition",
+      "category": "orientation",
+      "question": "What does the base executable compose before starting PocketBase?",
+      "expected_behavior": "answer",
+      "answer_summary": "The example creates the app, defines plugin and static-serving flags, registers the JavaScript VM, migration, and update plugins, binds a fallback static route, and finally calls `app.Start()`.",
+      "evidence": [
+        { "path": "examples/base/main.go", "start_line": 19, "end_line": 32, "contains": "app := pocketbase.New()" },
+        { "path": "examples/base/main.go", "start_line": 88, "end_line": 121, "contains": "if err := app.Start(); err != nil" }
+      ]
+    },
+    {
+      "id": "pocketbase-construction-and-start",
+      "category": "lifecycle",
+      "question": "Does `pocketbase.New()` fully initialize the application, and what does `Start()` add?",
+      "expected_behavior": "answer",
+      "answer_summary": "Construction creates the configured base app but does not bootstrap database connections or migrations. `Start()` registers the built-in superuser and serve commands, then executes the root command, which performs initialization.",
+      "evidence": [
+        { "path": "pocketbase.go", "start_line": 65, "end_line": 88, "contains": "application will not be initialized/bootstrapped yet" },
+        { "path": "pocketbase.go", "start_line": 165, "end_line": 180, "contains": "return pb.Execute()" }
+      ]
+    },
+    {
+      "id": "pocketbase-serve-command",
+      "category": "execution-flow",
+      "question": "How does the built-in `serve` command choose listener defaults and start the web server?",
+      "expected_behavior": "answer",
+      "answer_summary": "With domain arguments it defaults empty HTTP/HTTPS addresses to ports 80/443; without domains it defaults HTTP to `127.0.0.1:8090`. It passes those values and allowed origins into `apis.Serve()` and treats normal server closure as success.",
+      "evidence": [
+        { "path": "cmd/serve.go", "start_line": 19, "end_line": 51, "contains": "err := apis.Serve(app, apis.ServeConfig{" }
+      ]
+    },
+    {
+      "id": "pocketbase-js-hook-configuration",
+      "category": "extension",
+      "question": "How are JavaScript hooks configured and selected for loading?",
+      "expected_behavior": "answer",
+      "answer_summary": "The base executable passes hook directory, watch, and pool flags into the JS VM plugin. The plugin defaults the directory beside `pb_data` and selects files ending in `.pb.js` or `.pb.ts` when no pattern is supplied.",
+      "evidence": [
+        { "path": "examples/base/main.go", "start_line": 88, "end_line": 94, "contains": "HooksPoolSize: hooksPool" },
+        { "path": "plugins/jsvm/jsvm.go", "start_line": 128, "end_line": 142, "contains": "^.*(\\.pb\\.js|\\.pb\\.ts)$" }
+      ]
+    },
+    {
+      "id": "pocketbase-migration-command",
+      "category": "extension",
+      "question": "Where is the migration command added, and what language/template mode does the base executable select?",
+      "expected_behavior": "answer",
+      "answer_summary": "The base executable registers `migratecmd` on the root command using JavaScript templates, the configured automigrate flag, and the user-selected migrations directory.",
+      "evidence": [
+        { "path": "examples/base/main.go", "start_line": 96, "end_line": 101, "contains": "TemplateLang: migratecmd.TemplateLangJS" }
+      ]
+    },
+    {
+      "id": "pocketbase-runtime-hooks-limit",
+      "category": "limitation",
+      "question": "Which concrete user-defined JavaScript hooks and routes will run in a deployed PocketBase instance?",
+      "expected_behavior": "qualify",
+      "answer_summary": "The repository proves how hook files are discovered and loaded, but not which user-defined hooks exist in a deployment. Those files come from a configurable external `pb_hooks` directory; the answer must identify that boundary and request or inspect the deployed hook directory rather than inventing routes.",
+      "evidence": [
+        { "path": "plugins/jsvm/jsvm.go", "start_line": 73, "end_line": 83, "contains": "pb_data/../pb_hooks" },
+        { "path": "plugins/jsvm/jsvm.go", "start_line": 237, "end_line": 271, "contains": "filesContent(p.config.HooksDir" }
+      ]
+    }
+  ]
+}

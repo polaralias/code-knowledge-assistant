@@ -1,0 +1,21 @@
+{
+  "name": "code-knowledge-assistant",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@11.24.0",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "test": "node --test eval/tests/*.test.mjs packages/evaluation/tests/*.test.mjs packages/model-provider/tests/*.test.ts packages/provider-budget/tests/*.test.ts packages/access-control/tests/*.test.ts packages/demo-review/tests/*.test.ts packages/intake/tests/*.test.ts packages/git-intake/tests/*.test.ts packages/source-snapshots/tests/*.test.ts packages/analysis/tests/*.test.ts packages/review-generation/tests/*.test.ts packages/retrieval/tests/*.test.ts packages/answering/tests/*.test.ts packages/review-pipeline/tests/*.test.ts packages/review-orchestration/tests/*.test.ts packages/review-jobs/tests/*.test.ts packages/review-artifacts/tests/*.test.ts packages/review-service/tests/*.test.ts packages/observability/tests/*.test.ts apps/api/tests/*.test.ts apps/web/tests/*.test.mjs deploy/*.test.mjs",
+    "test:intake": "node --test packages/intake/tests/*.test.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "24.3.0",
+    "@types/yauzl": "3.4.0",
+    "@types/yazl": "3.3.1",
+    "typescript": "5.9.2",
+    "yazl": "3.3.1"
+  }
+}

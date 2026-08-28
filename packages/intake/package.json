@@ -1,0 +1,12 @@
+{
+  "name": "@code-knowledge-assistant/intake",
+  "private": true,
+  "type": "module",
+  "exports": "./src/index.ts",
+  "scripts": {
+    "test": "node --test tests/*.test.ts"
+  },
+  "dependencies": {
+    "yauzl": "3.4.0"
+  }
+}

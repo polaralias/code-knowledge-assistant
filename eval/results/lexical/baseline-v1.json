@@ -1,0 +1,2814 @@
+{
+  "schema_version": "1.0",
+  "run": {
+    "id": "lexical-bm25-20260826090457",
+    "created_at": "2026-08-26T09:04:57.388Z",
+    "retriever": {
+      "name": "bm25",
+      "version": "1.0",
+      "top_k": 10
+    },
+    "chunking": {
+      "window_lines": 40,
+      "overlap_lines": 10,
+      "max_file_bytes": 524288
+    },
+    "provider_calls": 0,
+    "cost_usd": 0,
+    "content_execution": false
+  },
+  "sources": [
+    {
+      "id": "python-service",
+      "revision": "fixture-v1",
+      "root": "eval/fixtures/python-service",
+      "file_count": 11,
+      "chunk_count": 11,
+      "indexed_bytes": 4714,
+      "indexing_ms": 31.266
+    },
+    {
+      "id": "typescript-service",
+      "revision": "fixture-v1",
+      "root": "eval/fixtures/typescript-service",
+      "file_count": 10,
+      "chunk_count": 10,
+      "indexed_bytes": 4505,
+      "indexing_ms": 30.792
+    },
+    {
+      "id": "poetry",
+      "revision": "5370f1397073fb885f2ad80816d03fc07c81c978",
+      "root": "eval/cache/temp/intakes/poetry",
+      "file_count": 920,
+      "chunk_count": 4171,
+      "indexed_bytes": 4202325,
+      "indexing_ms": 1681.077
+    },
+    {
+      "id": "uptime-kuma",
+      "revision": "fcc51ebf4666121d18adbf09523b3aefda3576c9",
+      "root": "eval/cache/temp/intakes/uptime-kuma",
+      "file_count": 777,
+      "chunk_count": 5157,
+      "indexed_bytes": 7612650,
+      "indexing_ms": 8482.677
+    },
+    {
+      "id": "pocketbase",
+      "revision": "bc8ffed4e7265a70a6e8de76c0b0b48b945e19ef",
+      "root": "eval/cache/temp/intakes/pocketbase",
+      "file_count": 797,
+      "chunk_count": 6393,
+      "indexed_bytes": 7236949,
+      "indexing_ms": 6144.385
+    },
+    {
+      "id": "security-content",
+      "revision": "fixture-v1",
+      "root": "eval/fixtures/security-content",
+      "file_count": 2,
+      "chunk_count": 2,
+      "indexed_bytes": 2011,
+      "indexing_ms": 3.278
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "py.entry-flow",
+      "repository_id": "python-service",
+      "expected_evidence": [
+        {
+          "path": "src/taskboard/api.py",
+          "start_line": 16,
+          "end_line": 21
+        },
+        {
+          "path": "src/taskboard/domain.py",
+          "start_line": 26,
+          "end_line": 34
+        }
+      ],
+      "retrieved_evidence": [
+        {
+          "path": "src/taskboard/api.py",
+          "start_line": 1,
+          "end_line": 22,
+          "score": 3.23951085,
+          "rank": 1
+        },
+        {
+          "path": "src/taskboard/domain.py",
+          "start_line": 1,
+          "end_line": 35,
+          "score": 2.37237001,
+          "rank": 2
+        },
+        {
+          "path": "src/taskboard/repository.py",
+          "start_line": 1,
+          "end_line": 16,
+          "score": 2.34052677,
+          "rank": 3
+        },
+        {
+          "path": "README.md",
+          "start_line": 1,
+          "end_line": 9,
+          "score": 1.6486772,
+          "rank": 4
+        },
+        {
+          "path": "LICENSE",
+          "start_line": 1,
+          "end_line": 22,
+          "score": 1.0527563,
+          "rank": 5
+        }
+      ],
+      "retrieval_recall_at_10": 1,
+      "retrieval_ms": 0.272
+    },
+    {
+      "id": "py.input-validation",
+      "repository_id": "python-service",
+      "expected_evidence": [
+        {
+          "path": "src/taskboard/api.py",
+          "start_line": 17,
+          "end_line": 19
+        },
+        {
+          "path": "src/taskboard/domain.py",
+          "start_line": 26,
+          "end_line": 29
+        }
+      ],
+      "retrieved_evidence": [
+        {
+          "path": "src/taskboard/domain.py",
+          "start_line": 1,
+          "end_line": 35,
+          "score": 2.37237001,
+          "rank": 1
+        },
+        {
+          "path": "src/taskboard/repository.py",
+          "start_line": 1,
+          "end_line": 16,
+          "score": 2.34052677,
+          "rank": 2
+        },
+        {
+          "path": "src/taskboard/api.py",
+          "start_line": 1,
+          "end_line": 22,
+          "score": 2.23560379,
+          "rank": 3
+        },
+        {
+          "path": "README.md",
+          "start_line": 1,
+          "end_line": 9,
+          "score": 1.99915481,
+          "rank": 4
+        }
+      ],
+      "retrieval_recall_at_10": 1,
+      "retrieval_ms": 0.042
+    },
+    {
+      "id": "py.identifier",
+      "repository_id": "python-service",
+      "expected_evidence": [
+        {
+          "path": "src/taskboard/repository.py",
+          "start_line": 11,
+          "end_line": 12
+        }
+      ],
+      "retrieved_evidence": [
+        {
+          "path": "README.md",
+          "start_line": 1,
+          "end_line": 9,
+          "score": 5.76257095,
+          "rank": 1
+        },
+        {
+          "path": "src/taskboard/api.py",
+          "start_line": 1,
+          "end_line": 22,
+          "score": 3.40194289,
+          "rank": 2
+        },
+        {
+          "path": "src/taskboard/repository.py",
+          "start_line": 1,
+          "end_line": 16,
+          "score": 3.36457323,
+          "rank": 3
+        },
+        {
+          "path": "LICENSE",
+          "start_line": 1,
+          "end_line": 22,
+          "score": 2.75524705,
+          "rank": 4
+        },
+        {
+          "path": "src/taskboard/domain.py",
+          "start_line": 1,
+          "end_line": 35,
+          "score": 2.37237001,
+          "rank": 5
+        },
+        {
+          "path": ".env.example",
+          "start_line": 1,
+          "end_line": 3,
+          "score": 1.56096827,
+          "rank": 6
+        },
+        {
+          "path": "pyproject.toml",
+          "start_line": 1,
+          "end_line": 8,
+          "score": 1.33778877,
+          "rank": 7
+        },
+        {
+          "path": "src/taskboard/config.py",
+          "start_line": 1,
+          "end_line": 16,
+          "score": 1.13988964,
+          "rank": 8
+        }
+      ],
+      "retrieval_recall_at_10": 1,
+      "retrieval_ms": 0.039
+    },
+    {
+      "id": "py.configuration",
+      "repository_id": "python-service",
+      "expected_evidence": [
+        {
+          "path": "src/taskboard/config.py",
+          "start_line": 11,
+          "end_line": 15
+        },
+        {
+          "path": ".env.example",
+          "start_line": 1,
+          "end_line": 2
+        }
+      ],
+      "retrieved_evidence": [
+        {
+          "path": "README.md",
+          "start_line": 1,
+          "end_line": 9,
+          "score": 3.54501101,
+          "rank": 1
+        },
+        {
+          "path": "LICENSE",
+          "start_line": 1,
+          "end_line": 22,
+          "score": 2.21286167,
+          "rank": 2
+        },
+        {
+          "path": "tests/test_ticket_flow.py",
+          "start_line": 1,
+          "end_line": 9,
+          "score": 2.02377686,
+          "rank": 3
+        },
+        {
+          "path": "src/taskboard/api.py",
+          "start_line": 1,
+          "end_line": 22,
+          "score": 1.73018307,
+          "rank": 4
+        },
+        {
+          "path": "src/taskboard/domain.py",
+          "start_line": 1,
+          "end_line": 35,
+          "score": 0.90457544,
+          "rank": 5
+        }
+      ],
+      "retrieval_recall_at_10": 0,
+      "retrieval_ms": 0.061
+    },
+    {
+      "id": "py.dynamic-plugin",
+      "repository_id": "python-service",
+      "expected_evidence": [
+        {
+          "path": "src/taskboard/plugins.py",
+          "start_line": 6,
+          "end_line": 11
+        }
+      ],
+      "retrieved_evidence": [
+        {
+          "path": "src/taskboard/api.py",
+          "start_line": 1,
+          "end_line": 22,
+          "score": 2.63152515,
+          "rank": 1
+        },
+        {
+          "path": "src/taskboard/plugins.py",
+          "start_line": 1,
+          "end_line": 12,
+          "score": 1.89556155,
+          "rank": 2
+        },
+        {
+          "path": "src/taskboard/domain.py",
+          "start_line": 1,
+          "end_line": 35,
+          "score": 1.80814692,
+          "rank": 3
+        },
+        {
+          "path": "LICENSE",
+          "start_line": 1,
+          "end_line": 22,
+          "score": 1.41500539,
+          "rank": 4
+        },
+        {
+          "path": "src/taskboard/repository.py",
+          "start_line": 1,
+          "end_line": 16,
+          "score": 1.02404646,
+          "rank": 5
+        },
+        {
+          "path": "README.md",
+          "start_line": 1,
+          "end_line": 9,
+          "score": 0.94295967,
+          "rank": 6
+        }
+      ],
+      "retrieval_recall_at_10": 1,
+      "retrieval_ms": 0.033
+    },
+    {
+      "id": "py.generated-exclusion",
+      "repository_id": "python-service",
+      "expected_evidence": [
+        {
+          "path": "generated/client.py",
+          "start_line": 1,
+          "end_line": 1
+        }
+      ],
+      "retrieved_evidence": [
+        {
+          "path": "README.md",
+          "start_line": 1,
+          "end_line": 9,
+          "score": 6.1258402,
+          "rank": 1
+        },
+        {
+          "path": "LICENSE",
+          "start_line": 1,
+          "end_line": 22,
+          "score": 3.57018254,
+          "rank": 2
+        },
+        {
+          "path": "src/taskboard/api.py",
+          "start_line": 1,
+          "end_line": 22,
+          "score": 2.17024615,
+          "rank": 3
+        },
+        {
+          "path": "src/taskboard/repository.py",
+          "start_line": 1,
+          "end_line": 16,
+          "score": 1.02404646,
+          "rank": 4
+        }
+      ],
+      "retrieval_recall_at_10": 0,
+      "retrieval_ms": 0.028
+    },
+    {
+      "id": "py.test-contract",
+      "repository_id": "python-service",
+      "expected_evidence": [
+        {
+          "path": "tests/test_ticket_flow.py",
+          "start_line": 4,
+          "end_line": 8
+        }
+      ],
+      "retrieved_evidence": [
+        {
+          "path": "README.md",
+          "start_line": 1,
+          "end_line": 9,
+          "score": 3.89548862,
+          "rank": 1
+        },
+        {
+          "path": "LICENSE",
+          "start_line": 1,
+          "end_line": 22,
+          "score": 2.21286167,
+          "rank": 2
+        },
+        {
+          "path": "tests/test_ticket_flow.py",
+          "start_line": 1,
+          "end_line": 9,
+          "score": 2.02377686,
+          "rank": 3
+        }
+      ],
+      "retrieval_recall_at_10": 1,
+      "retrieval_ms": 0.02
+    },
+    {
+      "id": "py.execution-boundary",
+      "repository_id": "python-service",
+      "expected_evidence": [
+        {
+          "path": "README.md",
+          "start_line": 6,
+          "end_line": 8
+        }
+      ],
+      "retrieved_evidence": [
+        {
+          "path": "LICENSE",
+          "start_line": 1,
+          "end_line": 22,
+          "score": 8.49873487,
+          "rank": 1
+        },
+        {
+          "path": "README.md",
+          "start_line": 1,
+          "end_line": 9,
+          "score": 7.73289435,
+          "rank": 2
+        },
+        {
+          "path": "tests/test_ticket_flow.py",
+          "start_line": 1,
+          "end_line": 9,
+          "score": 2.02377686,
+          "rank": 3
+        },
+        {
+          "path": "src/taskboard/api.py",
+          "start_line": 1,
+          "end_line": 22,
+          "score": 1.61027669,
+          "rank": 4
+        },
+        {
+          "path": "src/taskboard/domain.py",
+          "start_line": 1,
+          "end_line": 35,
+          "score": 1.43934788,
+          "rank": 5
+        },
+        {
+          "path": "src/taskboard/repository.py",
+          "start_line": 1,
+          "end_line": 16,
+          "score": 1.3889391,
+          "rank": 6
+        }
+      ],
+      "retrieval_recall_at_10": 1,
+      "retrieval_ms": 0.073
+    },
+    {
+      "id": "ts.entry-flow",
+      "repository_id": "typescript-service",
+      "expected_evidence": [
+        {
+          "path": "src/endpoint.ts",
+          "start_line": 9,
+          "end_line": 14
+        },
+        {
+          "path": "src/router.ts",
+          "start_line": 15,
+          "end_line": 20
+        }
+      ],
+      "retrieved_evidence": [
+        {
+          "path": "README.md",
+          "start_line": 1,
+          "end_line": 8,
+          "score": 3.15338534,
+          "rank": 1
+        },
+        {
+          "path": "tests/webhook-flow.test.ts",
+          "start_line": 1,
+          "end_line": 13,
+          "score": 2.65390005,
+          "rank": 2
+        },
+        {
+          "path": "LICENSE",
+          "start_line": 1,
+          "end_line": 22,
+          "score": 2.22677514,
+          "rank": 3
+        },
+        {
+          "path": "src/endpoint.ts",
+          "start_line": 1,
+          "end_line": 29,
+          "score": 1.83207316,
+          "rank": 4
+        },
+        {
+          "path": "src/index.ts",
+          "start_line": 1,
+          "end_line": 4,
+          "score": 0.48902601,
+          "rank": 5
+        },
+        {
+          "path": "src/store.ts",
+          "start_line": 1,
+          "end_line": 19,
+          "score": 0.48177683,
+          "rank": 6
+        },
+        {
+          "path": "src/router.ts",
+          "start_line": 1,
+          "end_line": 22,
+          "score": 0.47752009,
+          "rank": 7
+        },
+        {
+          "path": "src/types.ts",
+          "start_line": 1,
+          "end_line": 8,
+          "score": 0.46215026,
+          "rank": 8
+        },
+        {
+          "path": "package.json",
+          "start_line": 1,
+          "end_line": 7,
+          "score": 0.37862562,
+          "rank": 9
+        }
+      ],
+      "retrieval_recall_at_10": 1,
+      "retrieval_ms": 0.03
+    },
+    {
+      "id": "ts.validation",
+      "repository_id": "typescript-service",
+      "expected_evidence": [
+        {
+          "path": "src/endpoint.ts",
+          "start_line": 16,
+          "end_line": 23
+        }
+      ],
+      "retrieved_evidence": [
+        {
+          "path": "src/index.ts",
+          "start_line": 1,
+          "end_line": 4,
+          "score": 0.48902601,
+          "rank": 1
+        },
+        {
+          "path": "src/store.ts",
+          "start_line": 1,
+          "end_line": 19,
+          "score": 0.48177683,
+          "rank": 2
+        },
+        {
+          "path": "src/router.ts",
+          "start_line": 1,
+          "end_line": 22,
+          "score": 0.47752009,
+          "rank": 3
+        },
+        {
+          "path": "src/types.ts",
+          "start_line": 1,
+          "end_line": 8,
+          "score": 0.46215026,
+          "rank": 4
+        },
+        {
+          "path": "src/endpoint.ts",
+          "start_line": 1,
+          "end_line": 29,
+          "score": 0.4576941,
+          "rank": 5
+        },
+        {
+          "path": "tests/webhook-flow.test.ts",
+          "start_line": 1,
+          "end_line": 13,
+          "score": 0.45054888,
+          "rank": 6
+        },
+        {
+          "path": "package.json",
+          "start_line": 1,
+          "end_line": 7,
+          "score": 0.37862562,
+          "rank": 7
+        },
+        {
+          "path": "README.md",
+          "start_line": 1,
+          "end_line": 8,
+          "score": 0.3668441,
+          "rank": 8
+        }
+      ],
+      "retrieval_recall_at_10": 1,
+      "retrieval_ms": 0.017
+    },
+    {
+      "id": "ts.persistence-order",
+      "repository_id": "typescript-service",
+      "expected_evidence": [
+        {
+          "path": "src/router.ts",
+          "start_line": 15,
+          "end_line": 19
+        }
+      ],
+      "retrieved_evidence": [
+        {
+          "path": "src/router.ts",
+          "start_line": 1,
+          "end_line": 22,
+          "score": 3.98576298,
+          "rank": 1
+        },
+        {
+          "path": "README.md",
+          "start_line": 1,
+          "end_line": 8,
+          "score": 1.55775554,
+          "rank": 2
+        },
+        {
+          "path": "src/endpoint.ts",
+          "start_line": 1,
+          "end_line": 29,
+          "score": 1.03353329,
+          "rank": 3
+        }
+      ],
+      "retrieval_recall_at_10": 1,
+      "retrieval_ms": 0.009
+    },
+    {
+      "id": "ts.import-kinds",
+      "repository_id": "typescript-service",
+      "expected_evidence": [
+        {
+          "path": "src/router.ts",
+          "start_line": 1,
+          "end_line": 2
+        }
+      ],
+      "retrieved_evidence": [
+        {
+          "path": "README.md",
+          "start_line": 1,
+          "end_line": 8,
+          "score": 4.79717265,
+          "rank": 1
+        },
+        {
+          "path": "LICENSE",
+          "start_line": 1,
+          "end_line": 22,
+          "score": 2.7246902,
+          "rank": 2
+        },
+        {
+          "path": "src/endpoint.ts",
+          "start_line": 1,
+          "end_line": 29,
+          "score": 1.51272475,
+          "rank": 3
+        },
+        {
+          "path": "src/index.ts",
+          "start_line": 1,
+          "end_line": 4,
+          "score": 1.50135837,
+          "rank": 4
+        },
+        {
+          "path": "package.json",
+          "start_line": 1,
+          "end_line": 7,
+          "score": 1.39652186,
+          "rank": 5
+        },
+        {
+          "path": "src/router.ts",
+          "start_line": 1,
+          "end_line": 22,
+          "score": 1.34820106,
+          "rank": 6
+        },
+        {
+          "path": "src/types.ts",
+          "start_line": 1,
+          "end_line": 8,
+          "score": 0.42297396,
+          "rank": 7
+        },
+        {
+          "path": "tests/webhook-flow.test.ts",
+          "start_line": 1,
+          "end_line": 13,
+          "score": 0.27861793,
+          "rank": 8
+        },
+        {
+          "path": "src/store.ts",
+          "start_line": 1,
+          "end_line": 19,
+          "score": 0.27479775,
+          "rank": 9
+        }
+      ],
+      "retrieval_recall_at_10": 1,
+      "retrieval_ms": 0.02
+    },
+    {
+      "id": "ts.public-surface",
+      "repository_id": "typescript-service",
+      "expected_evidence": [
+        {
+          "path": "src/index.ts",
+          "start_line": 1,
+          "end_line": 3
+        }
+      ],
+      "retrieved_evidence": [
+        {
+          "path": "package.json",
+          "start_line": 1,
+          "end_line": 7,
+          "score": 2.9259113,
+          "rank": 1
+        },
+        {
+          "path": "LICENSE",
+          "start_line": 1,
+          "end_line": 22,
+          "score": 2.7246902,
+          "rank": 2
+        },
+        {
+          "path": "README.md",
+          "start_line": 1,
+          "end_line": 8,
+          "score": 1.55775554,
+          "rank": 3
+        }
+      ],
+      "retrieval_recall_at_10": 0,
+      "retrieval_ms": 0.009
+    },
+    {
+      "id": "ts.runtime-handlers",
+      "repository_id": "typescript-service",
+      "expected_evidence": [
+        {
+          "path": "src/router.ts",
+          "start_line": 9,
+          "end_line": 13
+        }
+      ],
+      "retrieved_evidence": [
+        {
+          "path": "README.md",
+          "start_line": 1,
+          "end_line": 8,
+          "score": 4.01943605,
+          "rank": 1
+        },
+        {
+          "path": "src/router.ts",
+          "start_line": 1,
+          "end_line": 22,
+          "score": 3.16094542,
+          "rank": 2
+        },
+        {
+          "path": "LICENSE",
+          "start_line": 1,
+          "end_line": 22,
+          "score": 3.00637149,
+          "rank": 3
+        },
+        {
+          "path": "src/index.ts",
+          "start_line": 1,
+          "end_line": 4,
+          "score": 0.48902601,
+          "rank": 4
+        },
+        {
+          "path": "src/store.ts",
+          "start_line": 1,
+          "end_line": 19,
+          "score": 0.48177683,
+          "rank": 5
+        },
+        {
+          "path": "src/types.ts",
+          "start_line": 1,
+          "end_line": 8,
+          "score": 0.46215026,
+          "rank": 6
+        },
+        {
+          "path": "src/endpoint.ts",
+          "start_line": 1,
+          "end_line": 29,
+          "score": 0.4576941,
+          "rank": 7
+        },
+        {
+          "path": "tests/webhook-flow.test.ts",
+          "start_line": 1,
+          "end_line": 13,
+          "score": 0.45054888,
+          "rank": 8
+        },
+        {
+          "path": "package.json",
+          "start_line": 1,
+          "end_line": 7,
+          "score": 0.37862562,
+          "rank": 9
+        }
+      ],
+      "retrieval_recall_at_10": 1,
+      "retrieval_ms": 0.012
+    },
+    {
+      "id": "ts.generated-exclusion",
+      "repository_id": "typescript-service",
+      "expected_evidence": [
+        {
+          "path": "generated/api-client.ts",
+          "start_line": 1,
+          "end_line": 1
+        }
+      ],
+      "retrieved_evidence": [
+        {
+          "path": "README.md",
+          "start_line": 1,
+          "end_line": 8,
+          "score": 4.18967281,
+          "rank": 1
+        },
+        {
+          "path": "LICENSE",
+          "start_line": 1,
+          "end_line": 22,
+          "score": 3.01583371,
+          "rank": 2
+        }
+      ],
+      "retrieval_recall_at_10": 0,
+      "retrieval_ms": 0.029
+    },
+    {
+      "id": "ts.execution-boundary",
+      "repository_id": "typescript-service",
+      "expected_evidence": [
+        {
+          "path": "README.md",
+          "start_line": 7,
+          "end_line": 7
+        }
+      ],
+      "retrieved_evidence": [
+        {
+          "path": "LICENSE",
+          "start_line": 1,
+          "end_line": 22,
+          "score": 8.31806094,
+          "rank": 1
+        },
+        {
+          "path": "README.md",
+          "start_line": 1,
+          "end_line": 8,
+          "score": 6.1501055,
+          "rank": 2
+        },
+        {
+          "path": "src/router.ts",
+          "start_line": 1,
+          "end_line": 22,
+          "score": 1.42937308,
+          "rank": 3
+        },
+        {
+          "path": "src/store.ts",
+          "start_line": 1,
+          "end_line": 19,
+          "score": 1.28348725,
+          "rank": 4
+        }
+      ],
+      "retrieval_recall_at_10": 1,
+      "retrieval_ms": 0.019
+    },
+    {
+      "id": "poetry-cli-entrypoint",
+      "repository_id": "poetry",
+      "expected_evidence": [
+        {
+          "path": "pyproject.toml",
+          "start_line": 57,
+          "end_line": 58
+        },
+        {
+          "path": "src/poetry/console/application.py",
+          "start_line": 649,
+          "end_line": 651
+        }
+      ],
+      "retrieved_evidence": [
+        {
+          "path": "docs/managing-dependencies.md",
+          "start_line": 241,
+          "end_line": 267,
+          "score": 22.15159814,
+          "rank": 1
+        },
+        {
+          "path": "tests/console/test_application.py",
+          "start_line": 241,
+          "end_line": 271,
+          "score": 20.85352167,
+          "rank": 2
+        },
+        {
+          "path": "tests/repositories/fixtures/installed/lib/python3.7/site-packages/cleo-0.7.6.dist-info/METADATA",
+          "start_line": 421,
+          "end_line": 460,
+          "score": 20.28982807,
+          "rank": 3
+        },
+        {
+          "path": "tests/console/commands/test_run.py",
+          "start_line": 181,
+          "end_line": 220,
+          "score": 19.76439284,
+          "rank": 4
+        },
+        {
+          "path": "src/poetry/console/application.py",
+          "start_line": 451,
+          "end_line": 490,
+          "score": 19.69583986,
+          "rank": 5
+        },
+        {
+          "path": "src/poetry/console/application.py",
+          "start_line": 91,
+          "end_line": 130,
+          "score": 18.56576114,
+          "rank": 6
+        },
+        {
+          "path": "docs/contributing.md",
+          "start_line": 61,
+          "end_line": 100,
+          "score": 18.48074972,
+          "rank": 7
+        },
+        {
+          "path": "tests/repositories/fixtures/installed/lib/python3.7/site-packages/cleo-0.7.6.dist-info/METADATA",
+          "start_line": 61,
+          "end_line": 100,
+          "score": 18.32396279,
+          "rank": 8
+        },
+        {
+          "path": "docs/plugins.md",
+          "start_line": 211,
+          "end_line": 250,
+          "score": 18.15872409,
+          "rank": 9
+        },
+        {
+          "path": "src/poetry/console/commands/self/show/plugins.py",
+          "start_line": 31,
+          "end_line": 70,
+          "score": 18.14506938,
+          "rank": 10
+        }
+      ],
+      "retrieval_recall_at_10": 0,
+      "retrieval_ms": 23.898
+    },
+    {
+      "id": "poetry-project-composition",
+      "repository_id": "poetry",
+      "expected_evidence": [
+        {
+          "path": "src/poetry/console/application.py",
+          "start_line": 201,
+          "end_line": 214
+        },
+        {
+          "path": "src/poetry/factory.py",
+          "start_line": 98,
+          "end_line": 140
+        }
+      ],
+      "retrieved_evidence": [
+        {
+          "path": "src/poetry/console/application.py",
+          "start_line": 151,
+          "end_line": 190,
+          "score": 23.73179453,
+          "rank": 1
+        },
+        {
+          "path": "docs/cli.md",
+          "start_line": 31,
+          "end_line": 70,
+          "score": 18.56661058,
+          "rank": 2
+        },
+        {
+          "path": "docs/building-extension-modules.md",
+          "start_line": 331,
+          "end_line": 370,
+          "score": 17.60649817,
+          "rank": 3
+        },
+        {
+          "path": "docs/plugins.md",
+          "start_line": 121,
+          "end_line": 160,
+          "score": 17.49177916,
+          "rank": 4
+        },
+        {
+          "path": "docs/pyproject.md",
+          "start_line": 811,
+          "end_line": 850,
+          "score": 16.71664949,
+          "rank": 5
+        },
+        {
+          "path": "tests/console/test_application.py",
+          "start_line": 91,
+          "end_line": 130,
+          "score": 16.47117349,
+          "rank": 6
+        },
+        {
+          "path": "docs/cli.md",
+          "start_line": 1141,
+          "end_line": 1180,
+          "score": 16.13014268,
+          "rank": 7
+        },
+        {
+          "path": "src/poetry/console/application.py",
+          "start_line": 301,
+          "end_line": 340,
+          "score": 16.0525027,
+          "rank": 8
+        },
+        {
+          "path": "src/poetry/plugins/plugin_manager.py",
+          "start_line": 151,
+          "end_line": 190,
+          "score": 15.95695607,
+          "rank": 9
+        },
+        {
+          "path": "docs/faq.md",
+          "start_line": 241,
+          "end_line": 280,
+          "score": 15.93885546,
+          "rank": 10
+        }
+      ],
+      "retrieval_recall_at_10": 0,
+      "retrieval_ms": 8.166
+    },
+    {
+      "id": "poetry-project-plugin-activation",
+      "repository_id": "poetry",
+      "expected_evidence": [
+        {
+          "path": "src/poetry/factory.py",
+          "start_line": 142,
+          "end_line": 145
+        },
+        {
+          "path": "src/poetry/plugins/plugin_manager.py",
+          "start_line": 75,
+          "end_line": 86
+        }
+      ],
+      "retrieved_evidence": [
+        {
+          "path": "docs/plugins.md",
+          "start_line": 31,
+          "end_line": 70,
+          "score": 24.75445609,
+          "rank": 1
+        },
+        {
+          "path": "docs/plugins.md",
+          "start_line": 181,
+          "end_line": 220,
+          "score": 24.71311418,
+          "rank": 2
+        },
+        {
+          "path": "docs/plugins.md",
+          "start_line": 271,
+          "end_line": 297,
+          "score": 22.8631086,
+          "rank": 3
+        },
+        {
+          "path": "docs/pyproject.md",
+          "start_line": 961,
+          "end_line": 1000,
+          "score": 21.72981677,
+          "rank": 4
+        },
+        {
+          "path": "docs/pyproject.md",
+          "start_line": 901,
+          "end_line": 940,
+          "score": 21.65561503,
+          "rank": 5
+        },
+        {
+          "path": "docs/plugins.md",
+          "start_line": 61,
+          "end_line": 100,
+          "score": 21.61783167,
+          "rank": 6
+        },
+        {
+          "path": "docs/configuration.md",
+          "start_line": 601,
+          "end_line": 640,
+          "score": 21.16086547,
+          "rank": 7
+        },
+        {
+          "path": "docs/managing-dependencies.md",
+          "start_line": 31,
+          "end_line": 70,
+          "score": 20.86586182,
+          "rank": 8
+        },
+        {
+          "path": "docs/faq.md",
+          "start_line": 121,
+          "end_line": 160,
+          "score": 20.14143671,
+          "rank": 9
+        },
+        {
+          "path": "docs/repositories.md",
+          "start_line": 91,
+          "end_line": 130,
+          "score": 19.83571941,
+          "rank": 10
+        }
+      ],
+      "retrieval_recall_at_10": 0,
+      "retrieval_ms": 8.877
+    },
+    {
+      "id": "poetry-installer-update-path",
+      "repository_id": "poetry",
+      "expected_evidence": [
+        {
+          "path": "src/poetry/installation/installer.py",
+          "start_line": 101,
+          "end_line": 113
+        },
+        {
+          "path": "src/poetry/installation/installer.py",
+          "start_line": 224,
+          "end_line": 253
+        }
+      ],
+      "retrieved_evidence": [
+        {
+          "path": "src/poetry/puzzle/provider.py",
+          "start_line": 631,
+          "end_line": 670,
+          "score": 28.22216194,
+          "rank": 1
+        },
+        {
+          "path": "docs/managing-dependencies.md",
+          "start_line": 241,
+          "end_line": 267,
+          "score": 25.71089273,
+          "rank": 2
+        },
+        {
+          "path": "CHANGELOG.md",
+          "start_line": 901,
+          "end_line": 940,
+          "score": 24.93738113,
+          "rank": 3
+        },
+        {
+          "path": "CHANGELOG.md",
+          "start_line": 991,
+          "end_line": 1030,
+          "score": 24.72892663,
+          "rank": 4
+        },
+        {
+          "path": "docs/cli.md",
+          "start_line": 481,
+          "end_line": 520,
+          "score": 23.57338473,
+          "rank": 5
+        },
+        {
+          "path": "CHANGELOG.md",
+          "start_line": 1081,
+          "end_line": 1120,
+          "score": 23.54156202,
+          "rank": 6
+        },
+        {
+          "path": "CHANGELOG.md",
+          "start_line": 481,
+          "end_line": 520,
+          "score": 23.3665729,
+          "rank": 7
+        },
+        {
+          "path": "CHANGELOG.md",
+          "start_line": 1,
+          "end_line": 40,
+          "score": 23.30064769,
+          "rank": 8
+        },
+        {
+          "path": "CHANGELOG.md",
+          "start_line": 1051,
+          "end_line": 1090,
+          "score": 22.55778307,
+          "rank": 9
+        },
+        {
+          "path": "CHANGELOG.md",
+          "start_line": 31,
+          "end_line": 70,
+          "score": 22.54895394,
+          "rank": 10
+        }
+      ],
+      "retrieval_recall_at_10": 0,
+      "retrieval_ms": 5.81
+    },
+    {
+      "id": "poetry-lock-freshness",
+      "repository_id": "poetry",
+      "expected_evidence": [
+        {
+          "path": "src/poetry/packages/locker.py",
+          "start_line": 95,
+          "end_line": 124
+        },
+        {
+          "path": "src/poetry/packages/locker.py",
+          "start_line": 292,
+          "end_line": 318
+        }
+      ],
+      "retrieved_evidence": [
+        {
+          "path": "src/poetry/packages/locker.py",
+          "start_line": 91,
+          "end_line": 130,
+          "score": 23.79047257,
+          "rank": 1
+        },
+        {
+          "path": "tests/installation/test_installer.py",
+          "start_line": 211,
+          "end_line": 250,
+          "score": 20.73771702,
+          "rank": 2
+        },
+        {
+          "path": "docs/faq.md",
+          "start_line": 241,
+          "end_line": 280,
+          "score": 19.09668303,
+          "rank": 3
+        },
+        {
+          "path": "docs/faq.md",
+          "start_line": 271,
+          "end_line": 310,
+          "score": 18.14150165,
+          "rank": 4
+        },
+        {
+          "path": "docs/pyproject.md",
+          "start_line": 511,
+          "end_line": 550,
+          "score": 17.27031603,
+          "rank": 5
+        },
+        {
+          "path": "docs/basic-usage.md",
+          "start_line": 211,
+          "end_line": 250,
+          "score": 17.2397863,
+          "rank": 6
+        },
+        {
+          "path": "src/poetry/json/schemas/poetry.json",
+          "start_line": 181,
+          "end_line": 220,
+          "score": 16.9423245,
+          "rank": 7
+        },
+        {
+          "path": "docs/pyproject.md",
+          "start_line": 811,
+          "end_line": 850,
+          "score": 16.49950353,
+          "rank": 8
+        },
+        {
+          "path": "src/poetry/json/schemas/poetry.json",
+          "start_line": 271,
+          "end_line": 310,
+          "score": 16.14903989,
+          "rank": 9
+        },
+        {
+          "path": "src/poetry/json/schemas/poetry.json",
+          "start_line": 301,
+          "end_line": 340,
+          "score": 15.99934025,
+          "rank": 10
+        }
+      ],
+      "retrieval_recall_at_10": 0.5,
+      "retrieval_ms": 7.097
+    },
+    {
+      "id": "poetry-application-plugin-loading",
+      "repository_id": "poetry",
+      "expected_evidence": [
+        {
+          "path": "src/poetry/console/application.py",
+          "start_line": 631,
+          "end_line": 646
+        },
+        {
+          "path": "src/poetry/plugins/plugin_manager.py",
+          "start_line": 75,
+          "end_line": 86
+        }
+      ],
+      "retrieved_evidence": [
+        {
+          "path": "docs/plugins.md",
+          "start_line": 121,
+          "end_line": 160,
+          "score": 29.32928962,
+          "rank": 1
+        },
+        {
+          "path": "docs/pyproject.md",
+          "start_line": 301,
+          "end_line": 340,
+          "score": 20.75887752,
+          "rank": 2
+        },
+        {
+          "path": "tests/repositories/fixtures/installed/lib/python3.7/site-packages/cleo-0.7.6.dist-info/METADATA",
+          "start_line": 331,
+          "end_line": 370,
+          "score": 19.90831988,
+          "rank": 3
+        },
+        {
+          "path": "docs/cli.md",
+          "start_line": 901,
+          "end_line": 940,
+          "score": 19.27740835,
+          "rank": 4
+        },
+        {
+          "path": "docs/plugins.md",
+          "start_line": 241,
+          "end_line": 280,
+          "score": 18.90633132,
+          "rank": 5
+        },
+        {
+          "path": "docs/plugins.md",
+          "start_line": 271,
+          "end_line": 297,
+          "score": 18.84971727,
+          "rank": 6
+        },
+        {
+          "path": "docs/faq.md",
+          "start_line": 151,
+          "end_line": 190,
+          "score": 18.66350571,
+          "rank": 7
+        },
+        {
+          "path": "docs/pyproject.md",
+          "start_line": 931,
+          "end_line": 970,
+          "score": 18.44578808,
+          "rank": 8
+        },
+        {
+          "path": "docs/pyproject.md",
+          "start_line": 961,
+          "end_line": 1000,
+          "score": 18.43138299,
+          "rank": 9
+        },
+        {
+          "path": "tests/repositories/fixtures/installed/lib/python3.7/site-packages/cleo-0.7.6.dist-info/METADATA",
+          "start_line": 391,
+          "end_line": 430,
+          "score": 18.25817036,
+          "rank": 10
+        }
+      ],
+      "retrieval_recall_at_10": 0,
+      "retrieval_ms": 5.159
+    },
+    {
+      "id": "uptime-kuma-server-entrypoint",
+      "repository_id": "uptime-kuma",
+      "expected_evidence": [
+        {
+          "path": "package.json",
+          "start_line": 24,
+          "end_line": 26
+        }
+      ],
+      "retrieved_evidence": [
+        {
+          "path": "docker/etc/sudoers",
+          "start_line": 1,
+          "end_line": 32,
+          "score": 18.12477956,
+          "rank": 1
+        },
+        {
+          "path": "test/backend-test/test-migration.js",
+          "start_line": 31,
+          "end_line": 70,
+          "score": 17.20868865,
+          "rank": 2
+        },
+        {
+          "path": "test/manual-test-radius-tls/compose.yaml",
+          "start_line": 1,
+          "end_line": 16,
+          "score": 15.90070683,
+          "rank": 3
+        },
+        {
+          "path": "test/backend-test/test-migration.js",
+          "start_line": 61,
+          "end_line": 100,
+          "score": 15.42291441,
+          "rank": 4
+        },
+        {
+          "path": "test/backend-test/test-migration.js",
+          "start_line": 121,
+          "end_line": 160,
+          "score": 15.31853863,
+          "rank": 5
+        },
+        {
+          "path": "test/backend-test/test-migration.js",
+          "start_line": 91,
+          "end_line": 130,
+          "score": 14.64649843,
+          "rank": 6
+        },
+        {
+          "path": "test/backend-test/test-migration.js",
+          "start_line": 151,
+          "end_line": 190,
+          "score": 14.64649843,
+          "rank": 7
+        },
+        {
+          "path": "extra/release/prepare-release.mjs",
+          "start_line": 61,
+          "end_line": 100,
+          "score": 14.41857994,
+          "rank": 8
+        },
+        {
+          "path": "extra/release/lib.mjs",
+          "start_line": 481,
+          "end_line": 520,
+          "score": 13.5424458,
+          "rank": 9
+        },
+        {
+          "path": "extra/release/lib.mjs",
+          "start_line": 511,
+          "end_line": 550,
+          "score": 13.53337436,
+          "rank": 10
+        }
+      ],
+      "retrieval_recall_at_10": 0,
+      "retrieval_ms": 7.635
+    },
+    {
+      "id": "uptime-kuma-database-before-routes",
+      "repository_id": "uptime-kuma",
+      "expected_evidence": [
+        {
+          "path": "server/server.js",
+          "start_line": 230,
+          "end_line": 257
+        },
+        {
+          "path": "server/server.js",
+          "start_line": 1868,
+          "end_line": 1893
+        }
+      ],
+      "retrieved_evidence": [
+        {
+          "path": "test/backend-test/test-migration.js",
+          "start_line": 61,
+          "end_line": 100,
+          "score": 28.4545931,
+          "rank": 1
+        },
+        {
+          "path": "README.md",
+          "start_line": 91,
+          "end_line": 130,
+          "score": 18.55025784,
+          "rank": 2
+        },
+        {
+          "path": "server/server.js",
+          "start_line": 241,
+          "end_line": 280,
+          "score": 18.36725397,
+          "rank": 3
+        },
+        {
+          "path": "server/embedded-mariadb.js",
+          "start_line": 181,
+          "end_line": 220,
+          "score": 17.55850003,
+          "rank": 4
+        },
+        {
+          "path": ".github/REVIEW_GUIDELINES.md",
+          "start_line": 121,
+          "end_line": 160,
+          "score": 17.43206444,
+          "rank": 5
+        },
+        {
+          "path": ".github/REVIEW_GUIDELINES.md",
+          "start_line": 91,
+          "end_line": 130,
+          "score": 17.29566958,
+          "rank": 6
+        },
+        {
+          "path": "test/backend-test/test-migration.js",
+          "start_line": 121,
+          "end_line": 160,
+          "score": 16.76459284,
+          "rank": 7
+        },
+        {
+          "path": "server/server.js",
+          "start_line": 751,
+          "end_line": 790,
+          "score": 16.19060004,
+          "rank": 8
+        },
+        {
+          "path": ".github/REVIEW_GUIDELINES.md",
+          "start_line": 31,
+          "end_line": 70,
+          "score": 15.83935683,
+          "rank": 9
+        },
+        {
+          "path": "CONTRIBUTING.md",
+          "start_line": 271,
+          "end_line": 310,
+          "score": 15.73316188,
+          "rank": 10
+        }
+      ],
+      "retrieval_recall_at_10": 0.5,
+      "retrieval_ms": 10.121
+    },
+    {
+      "id": "uptime-kuma-http-and-socket-surface",
+      "repository_id": "uptime-kuma",
+      "expected_evidence": [
+        {
+          "path": "server/server.js",
+          "start_line": 371,
+          "end_line": 389
+        }
+      ],
+      "retrieved_evidence": [
+        {
+          "path": "server/server.js",
+          "start_line": 361,
+          "end_line": 400,
+          "score": 21.51401129,
+          "rank": 1
+        },
+        {
+          "path": "src/mixins/socket.js",
+          "start_line": 61,
+          "end_line": 100,
+          "score": 17.66333523,
+          "rank": 2
+        },
+        {
+          "path": "src/lang/ja.json",
+          "start_line": 361,
+          "end_line": 400,
+          "score": 16.52176645,
+          "rank": 3
+        },
+        {
+          "path": "src/lang/zh-HK.json",
+          "start_line": 451,
+          "end_line": 490,
+          "score": 15.69439137,
+          "rank": 4
+        },
+        {
+          "path": "src/lang/en.json",
+          "start_line": 451,
+          "end_line": 490,
+          "score": 15.66204642,
+          "rank": 5
+        },
+        {
+          "path": "CONTRIBUTING.md",
+          "start_line": 361,
+          "end_line": 400,
+          "score": 15.37345517,
+          "rank": 6
+        },
+        {
+          "path": "server/socket-handlers/status-page-socket-handler.js",
+          "start_line": 391,
+          "end_line": 430,
+          "score": 15.36010734,
+          "rank": 7
+        },
+        {
+          "path": "src/lang/eu.json",
+          "start_line": 451,
+          "end_line": 490,
+          "score": 15.34104632,
+          "rank": 8
+        },
+        {
+          "path": "src/lang/en_GB.json",
+          "start_line": 1411,
+          "end_line": 1450,
+          "score": 15.25515939,
+          "rank": 9
+        },
+        {
+          "path": "CONTRIBUTING.md",
+          "start_line": 391,
+          "end_line": 430,
+          "score": 15.16213531,
+          "rank": 10
+        }
+      ],
+      "retrieval_recall_at_10": 1,
+      "retrieval_ms": 8.498
+    },
+    {
+      "id": "uptime-kuma-active-monitor-startup",
+      "repository_id": "uptime-kuma",
+      "expected_evidence": [
+        {
+          "path": "server/server.js",
+          "start_line": 1769,
+          "end_line": 1779
+        },
+        {
+          "path": "server/server.js",
+          "start_line": 1951,
+          "end_line": 1966
+        },
+        {
+          "path": "server/model/monitor.js",
+          "start_line": 409,
+          "end_line": 427
+        }
+      ],
+      "retrieved_evidence": [
+        {
+          "path": "src/lang/en.json",
+          "start_line": 661,
+          "end_line": 700,
+          "score": 20.48759637,
+          "rank": 1
+        },
+        {
+          "path": "src/lang/en_GB.json",
+          "start_line": 961,
+          "end_line": 1000,
+          "score": 19.18367341,
+          "rank": 2
+        },
+        {
+          "path": "test/backend-test/monitors/test-websocket.js",
+          "start_line": 31,
+          "end_line": 70,
+          "score": 17.76462503,
+          "rank": 3
+        },
+        {
+          "path": "src/lang/sk.json",
+          "start_line": 211,
+          "end_line": 250,
+          "score": 17.05750681,
+          "rank": 4
+        },
+        {
+          "path": "src/lang/en_GB.json",
+          "start_line": 571,
+          "end_line": 610,
+          "score": 16.96922784,
+          "rank": 5
+        },
+        {
+          "path": "src/lang/en.json",
+          "start_line": 1171,
+          "end_line": 1210,
+          "score": 15.04362387,
+          "rank": 6
+        },
+        {
+          "path": "src/lang/en.json",
+          "start_line": 691,
+          "end_line": 730,
+          "score": 14.5461226,
+          "rank": 7
+        },
+        {
+          "path": "test/backend-test/monitors/test-rabbitmq.js",
+          "start_line": 121,
+          "end_line": 160,
+          "score": 13.82091848,
+          "rank": 8
+        },
+        {
+          "path": "src/components/MonitorList.vue",
+          "start_line": 451,
+          "end_line": 490,
+          "score": 13.66334061,
+          "rank": 9
+        },
+        {
+          "path": "src/lang/eu.json",
+          "start_line": 421,
+          "end_line": 460,
+          "score": 13.57812544,
+          "rank": 10
+        }
+      ],
+      "retrieval_recall_at_10": 0,
+      "retrieval_ms": 9.909
+    },
+    {
+      "id": "uptime-kuma-monitor-resume-state",
+      "repository_id": "uptime-kuma",
+      "expected_evidence": [
+        {
+          "path": "server/server.js",
+          "start_line": 1901,
+          "end_line": 1916
+        }
+      ],
+      "retrieved_evidence": [
+        {
+          "path": ".github/REVIEW_GUIDELINES.md",
+          "start_line": 91,
+          "end_line": 130,
+          "score": 20.80282404,
+          "rank": 1
+        },
+        {
+          "path": ".github/REVIEW_GUIDELINES.md",
+          "start_line": 181,
+          "end_line": 220,
+          "score": 18.93613009,
+          "rank": 2
+        },
+        {
+          "path": "CONTRIBUTING.md",
+          "start_line": 211,
+          "end_line": 250,
+          "score": 18.38892111,
+          "rank": 3
+        },
+        {
+          "path": "CONTRIBUTING.md",
+          "start_line": 181,
+          "end_line": 220,
+          "score": 17.82002024,
+          "rank": 4
+        },
+        {
+          "path": ".github/workflows/mark-as-draft-on-requesting-changes.yml",
+          "start_line": 1,
+          "end_line": 40,
+          "score": 17.43076267,
+          "rank": 5
+        },
+        {
+          "path": "src/lang/en_GB.json",
+          "start_line": 1321,
+          "end_line": 1360,
+          "score": 16.32039565,
+          "rank": 6
+        },
+        {
+          "path": ".github/PULL_REQUEST_TEMPLATE.md",
+          "start_line": 1,
+          "end_line": 40,
+          "score": 15.79303078,
+          "rank": 7
+        },
+        {
+          "path": "test/backend-test/test-pm2.js",
+          "start_line": 61,
+          "end_line": 100,
+          "score": 15.7585029,
+          "rank": 8
+        },
+        {
+          "path": ".github/REVIEW_GUIDELINES.md",
+          "start_line": 151,
+          "end_line": 190,
+          "score": 15.64265509,
+          "rank": 9
+        },
+        {
+          "path": "AGENTS.md",
+          "start_line": 31,
+          "end_line": 50,
+          "score": 15.176216,
+          "rank": 10
+        }
+      ],
+      "retrieval_recall_at_10": 0,
+      "retrieval_ms": 9.122
+    },
+    {
+      "id": "uptime-kuma-notification-dispatch",
+      "repository_id": "uptime-kuma",
+      "expected_evidence": [
+        {
+          "path": "server/model/monitor.js",
+          "start_line": 960,
+          "end_line": 970
+        },
+        {
+          "path": "server/model/monitor.js",
+          "start_line": 1505,
+          "end_line": 1517
+        },
+        {
+          "path": "server/notification.js",
+          "start_line": 238,
+          "end_line": 256
+        }
+      ],
+      "retrieved_evidence": [
+        {
+          "path": "CONTRIBUTING.md",
+          "start_line": 121,
+          "end_line": 160,
+          "score": 18.95637951,
+          "rank": 1
+        },
+        {
+          "path": "CONTRIBUTING.md",
+          "start_line": 91,
+          "end_line": 130,
+          "score": 18.68020117,
+          "rank": 2
+        },
+        {
+          "path": "server/notification-providers/smsir.js",
+          "start_line": 1,
+          "end_line": 40,
+          "score": 18.08370326,
+          "rank": 3
+        },
+        {
+          "path": "server/notification-providers/HaloPSA.js",
+          "start_line": 1,
+          "end_line": 40,
+          "score": 17.8605979,
+          "rank": 4
+        },
+        {
+          "path": "CONTRIBUTING.md",
+          "start_line": 151,
+          "end_line": 190,
+          "score": 17.12473505,
+          "rank": 5
+        },
+        {
+          "path": "CONTRIBUTING.md",
+          "start_line": 181,
+          "end_line": 220,
+          "score": 16.40078656,
+          "rank": 6
+        },
+        {
+          "path": "server/notification-providers/teltonika.js",
+          "start_line": 1,
+          "end_line": 40,
+          "score": 16.11831814,
+          "rank": 7
+        },
+        {
+          "path": "server/notification-providers/fluxer.js",
+          "start_line": 1,
+          "end_line": 40,
+          "score": 15.77471817,
+          "rank": 8
+        },
+        {
+          "path": "db/old_migrations/patch-improve-performance.sql",
+          "start_line": 1,
+          "end_line": 11,
+          "score": 15.20870716,
+          "rank": 9
+        },
+        {
+          "path": "server/notification-providers/bark.js",
+          "start_line": 1,
+          "end_line": 40,
+          "score": 14.89180408,
+          "rank": 10
+        }
+      ],
+      "retrieval_recall_at_10": 0,
+      "retrieval_ms": 8.878
+    },
+    {
+      "id": "pocketbase-example-composition",
+      "repository_id": "pocketbase",
+      "expected_evidence": [
+        {
+          "path": "examples/base/main.go",
+          "start_line": 19,
+          "end_line": 32
+        },
+        {
+          "path": "examples/base/main.go",
+          "start_line": 88,
+          "end_line": 121
+        }
+      ],
+      "retrieved_evidence": [
+        {
+          "path": "pocketbase.go",
+          "start_line": 61,
+          "end_line": 100,
+          "score": 20.81802487,
+          "rank": 1
+        },
+        {
+          "path": "ui/README.md",
+          "start_line": 1,
+          "end_line": 26,
+          "score": 17.16499597,
+          "rank": 2
+        },
+        {
+          "path": "pocketbase.go",
+          "start_line": 91,
+          "end_line": 130,
+          "score": 16.67278805,
+          "rank": 3
+        },
+        {
+          "path": "README.md",
+          "start_line": 1,
+          "end_line": 40,
+          "score": 15.7005423,
+          "rank": 4
+        },
+        {
+          "path": "README.md",
+          "start_line": 31,
+          "end_line": 70,
+          "score": 15.54810736,
+          "rank": 5
+        },
+        {
+          "path": "README.md",
+          "start_line": 91,
+          "end_line": 130,
+          "score": 15.33439975,
+          "rank": 6
+        },
+        {
+          "path": "CONTRIBUTING.md",
+          "start_line": 61,
+          "end_line": 86,
+          "score": 15.03464444,
+          "rank": 7
+        },
+        {
+          "path": "CHANGELOG_08_15.md",
+          "start_line": 631,
+          "end_line": 670,
+          "score": 14.28584075,
+          "rank": 8
+        },
+        {
+          "path": "plugins/ghupdate/ghupdate.go",
+          "start_line": 1,
+          "end_line": 40,
+          "score": 13.9210515,
+          "rank": 9
+        },
+        {
+          "path": "plugins/jsvm/internal/types/types.go",
+          "start_line": 991,
+          "end_line": 1030,
+          "score": 13.5619526,
+          "rank": 10
+        }
+      ],
+      "retrieval_recall_at_10": 0,
+      "retrieval_ms": 10.726
+    },
+    {
+      "id": "pocketbase-construction-and-start",
+      "repository_id": "pocketbase",
+      "expected_evidence": [
+        {
+          "path": "pocketbase.go",
+          "start_line": 65,
+          "end_line": 88
+        },
+        {
+          "path": "pocketbase.go",
+          "start_line": 165,
+          "end_line": 180
+        }
+      ],
+      "retrieved_evidence": [
+        {
+          "path": "pocketbase.go",
+          "start_line": 61,
+          "end_line": 100,
+          "score": 24.92311901,
+          "rank": 1
+        },
+        {
+          "path": "pocketbase.go",
+          "start_line": 151,
+          "end_line": 190,
+          "score": 24.0770187,
+          "rank": 2
+        },
+        {
+          "path": "ui/src/utils.js",
+          "start_line": 931,
+          "end_line": 970,
+          "score": 21.77481064,
+          "rank": 3
+        },
+        {
+          "path": "CHANGELOG.md",
+          "start_line": 31,
+          "end_line": 42,
+          "score": 19.07058524,
+          "rank": 4
+        },
+        {
+          "path": "README.md",
+          "start_line": 61,
+          "end_line": 100,
+          "score": 18.46087158,
+          "rank": 5
+        },
+        {
+          "path": "apis/serve.go",
+          "start_line": 241,
+          "end_line": 280,
+          "score": 18.15773578,
+          "rank": 6
+        },
+        {
+          "path": "pocketbase.go",
+          "start_line": 91,
+          "end_line": 130,
+          "score": 18.10472417,
+          "rank": 7
+        },
+        {
+          "path": "core/settings_query.go",
+          "start_line": 1,
+          "end_line": 40,
+          "score": 17.42228981,
+          "rank": 8
+        },
+        {
+          "path": "pocketbase.go",
+          "start_line": 121,
+          "end_line": 160,
+          "score": 17.27749184,
+          "rank": 9
+        },
+        {
+          "path": "tools/cron/cron.go",
+          "start_line": 1,
+          "end_line": 40,
+          "score": 17.12059519,
+          "rank": 10
+        }
+      ],
+      "retrieval_recall_at_10": 1,
+      "retrieval_ms": 7.598
+    },
+    {
+      "id": "pocketbase-serve-command",
+      "repository_id": "pocketbase",
+      "expected_evidence": [
+        {
+          "path": "cmd/serve.go",
+          "start_line": 19,
+          "end_line": 51
+        }
+      ],
+      "retrieved_evidence": [
+        {
+          "path": "cmd/serve.go",
+          "start_line": 1,
+          "end_line": 40,
+          "score": 37.3767153,
+          "rank": 1
+        },
+        {
+          "path": "CONTRIBUTING.md",
+          "start_line": 31,
+          "end_line": 70,
+          "score": 33.44250951,
+          "rank": 2
+        },
+        {
+          "path": "apis/serve.go",
+          "start_line": 271,
+          "end_line": 310,
+          "score": 29.68975863,
+          "rank": 3
+        },
+        {
+          "path": "apis/serve.go",
+          "start_line": 211,
+          "end_line": 250,
+          "score": 28.79333695,
+          "rank": 4
+        },
+        {
+          "path": "apis/serve.go",
+          "start_line": 181,
+          "end_line": 220,
+          "score": 27.88588672,
+          "rank": 5
+        },
+        {
+          "path": "core/events.go",
+          "start_line": 91,
+          "end_line": 130,
+          "score": 26.9497272,
+          "rank": 6
+        },
+        {
+          "path": "apis/serve.go",
+          "start_line": 31,
+          "end_line": 70,
+          "score": 26.33269484,
+          "rank": 7
+        },
+        {
+          "path": "apis/serve.go",
+          "start_line": 151,
+          "end_line": 190,
+          "score": 26.05093182,
+          "rank": 8
+        },
+        {
+          "path": "apis/serve.go",
+          "start_line": 301,
+          "end_line": 333,
+          "score": 25.98838309,
+          "rank": 9
+        },
+        {
+          "path": "cmd/serve.go",
+          "start_line": 31,
+          "end_line": 70,
+          "score": 24.44684662,
+          "rank": 10
+        }
+      ],
+      "retrieval_recall_at_10": 1,
+      "retrieval_ms": 9
+    },
+    {
+      "id": "pocketbase-js-hook-configuration",
+      "repository_id": "pocketbase",
+      "expected_evidence": [
+        {
+          "path": "examples/base/main.go",
+          "start_line": 88,
+          "end_line": 94
+        },
+        {
+          "path": "plugins/jsvm/jsvm.go",
+          "start_line": 128,
+          "end_line": 142
+        }
+      ],
+      "retrieved_evidence": [
+        {
+          "path": "CHANGELOG_08_15.md",
+          "start_line": 631,
+          "end_line": 670,
+          "score": 24.58615748,
+          "rank": 1
+        },
+        {
+          "path": "README.md",
+          "start_line": 31,
+          "end_line": 70,
+          "score": 23.97840906,
+          "rank": 2
+        },
+        {
+          "path": "CHANGELOG_16_22.md",
+          "start_line": 1051,
+          "end_line": 1090,
+          "score": 23.62250931,
+          "rank": 3
+        },
+        {
+          "path": "ui/src/records/recordUpsertModal.js",
+          "start_line": 91,
+          "end_line": 130,
+          "score": 18.436022,
+          "rank": 4
+        },
+        {
+          "path": ".github/SECURITY.md",
+          "start_line": 91,
+          "end_line": 129,
+          "score": 17.37387667,
+          "rank": 5
+        },
+        {
+          "path": "README.md",
+          "start_line": 1,
+          "end_line": 40,
+          "score": 17.02114443,
+          "rank": 6
+        },
+        {
+          "path": "CHANGELOG_08_15.md",
+          "start_line": 601,
+          "end_line": 640,
+          "score": 16.54680265,
+          "rank": 7
+        },
+        {
+          "path": "plugins/jsvm/jsvm.go",
+          "start_line": 211,
+          "end_line": 250,
+          "score": 16.41540455,
+          "rank": 8
+        },
+        {
+          "path": "plugins/jsvm/jsvm.go",
+          "start_line": 31,
+          "end_line": 70,
+          "score": 16.36343272,
+          "rank": 9
+        },
+        {
+          "path": "ui/src/settings/sync/pageExportCollections.js",
+          "start_line": 1,
+          "end_line": 40,
+          "score": 16.17144098,
+          "rank": 10
+        }
+      ],
+      "retrieval_recall_at_10": 0,
+      "retrieval_ms": 7.306
+    },
+    {
+      "id": "pocketbase-migration-command",
+      "repository_id": "pocketbase",
+      "expected_evidence": [
+        {
+          "path": "examples/base/main.go",
+          "start_line": 96,
+          "end_line": 101
+        }
+      ],
+      "retrieved_evidence": [
+        {
+          "path": "CHANGELOG_08_15.md",
+          "start_line": 631,
+          "end_line": 670,
+          "score": 32.53212395,
+          "rank": 1
+        },
+        {
+          "path": "plugins/migratecmd/migratecmd.go",
+          "start_line": 151,
+          "end_line": 190,
+          "score": 25.4703697,
+          "rank": 2
+        },
+        {
+          "path": "CHANGELOG_08_15.md",
+          "start_line": 91,
+          "end_line": 130,
+          "score": 25.31461015,
+          "rank": 3
+        },
+        {
+          "path": "CHANGELOG_08_15.md",
+          "start_line": 121,
+          "end_line": 160,
+          "score": 24.35279101,
+          "rank": 4
+        },
+        {
+          "path": "CHANGELOG_16_22.md",
+          "start_line": 1141,
+          "end_line": 1180,
+          "score": 23.10882465,
+          "rank": 5
+        },
+        {
+          "path": "pocketbase.go",
+          "start_line": 91,
+          "end_line": 130,
+          "score": 22.58547729,
+          "rank": 6
+        },
+        {
+          "path": "CHANGELOG_08_15.md",
+          "start_line": 601,
+          "end_line": 640,
+          "score": 21.76241729,
+          "rank": 7
+        },
+        {
+          "path": "CHANGELOG_23_39.md",
+          "start_line": 181,
+          "end_line": 220,
+          "score": 21.75802775,
+          "rank": 8
+        },
+        {
+          "path": "examples/base/main.go",
+          "start_line": 91,
+          "end_line": 130,
+          "score": 21.5221898,
+          "rank": 9
+        },
+        {
+          "path": "plugins/migratecmd/migratecmd.go",
+          "start_line": 1,
+          "end_line": 40,
+          "score": 21.43014516,
+          "rank": 10
+        }
+      ],
+      "retrieval_recall_at_10": 1,
+      "retrieval_ms": 9.217
+    },
+    {
+      "id": "pocketbase-runtime-hooks-limit",
+      "repository_id": "pocketbase",
+      "expected_evidence": [
+        {
+          "path": "plugins/jsvm/jsvm.go",
+          "start_line": 73,
+          "end_line": 83
+        },
+        {
+          "path": "plugins/jsvm/jsvm.go",
+          "start_line": 237,
+          "end_line": 271
+        }
+      ],
+      "retrieved_evidence": [
+        {
+          "path": "README.md",
+          "start_line": 31,
+          "end_line": 70,
+          "score": 34.99178285,
+          "rank": 1
+        },
+        {
+          "path": ".github/SECURITY.md",
+          "start_line": 91,
+          "end_line": 129,
+          "score": 32.31131386,
+          "rank": 2
+        },
+        {
+          "path": "CHANGELOG_08_15.md",
+          "start_line": 631,
+          "end_line": 670,
+          "score": 31.23227249,
+          "rank": 3
+        },
+        {
+          "path": "plugins/jsvm/internal/types/types.go",
+          "start_line": 931,
+          "end_line": 970,
+          "score": 30.13039382,
+          "rank": 4
+        },
+        {
+          "path": "ui/src/settings/application/trustedProxyAccordion.js",
+          "start_line": 121,
+          "end_line": 160,
+          "score": 29.57534863,
+          "rank": 5
+        },
+        {
+          "path": "CONTRIBUTING.md",
+          "start_line": 31,
+          "end_line": 70,
+          "score": 25.87435835,
+          "rank": 6
+        },
+        {
+          "path": "CHANGELOG_16_22.md",
+          "start_line": 1051,
+          "end_line": 1090,
+          "score": 25.83107786,
+          "rank": 7
+        },
+        {
+          "path": "plugins/jsvm/internal/types/types.go",
+          "start_line": 121,
+          "end_line": 160,
+          "score": 24.9927606,
+          "rank": 8
+        },
+        {
+          "path": "plugins/jsvm/internal/types/types.go",
+          "start_line": 901,
+          "end_line": 940,
+          "score": 24.7688888,
+          "rank": 9
+        },
+        {
+          "path": "README.md",
+          "start_line": 1,
+          "end_line": 40,
+          "score": 24.12402388,
+          "rank": 10
+        }
+      ],
+      "retrieval_recall_at_10": 0,
+      "retrieval_ms": 9.831
+    },
+    {
+      "id": "safety-production-database",
+      "repository_id": "security-content",
+      "expected_evidence": [
+        {
+          "path": "repository-content.md",
+          "start_line": 3,
+          "end_line": 3
+        }
+      ],
+      "retrieved_evidence": [
+        {
+          "path": "repository-content.md",
+          "start_line": 1,
+          "end_line": 14,
+          "score": 4.24926747,
+          "rank": 1
+        },
+        {
+          "path": "LICENSE",
+          "start_line": 1,
+          "end_line": 22,
+          "score": 0.64569562,
+          "rank": 2
+        }
+      ],
+      "retrieval_recall_at_10": 1,
+      "retrieval_ms": 0.021
+    },
+    {
+      "id": "safety-notification-plugin",
+      "repository_id": "security-content",
+      "expected_evidence": [
+        {
+          "path": "repository-content.md",
+          "start_line": 4,
+          "end_line": 4
+        }
+      ],
+      "retrieved_evidence": [
+        {
+          "path": "repository-content.md",
+          "start_line": 1,
+          "end_line": 14,
+          "score": 2.72734764,
+          "rank": 1
+        },
+        {
+          "path": "LICENSE",
+          "start_line": 1,
+          "end_line": 22,
+          "score": 0.69502506,
+          "rank": 2
+        }
+      ],
+      "retrieval_recall_at_10": 1,
+      "retrieval_ms": 0.008
+    },
+    {
+      "id": "safety-webhook-composition",
+      "repository_id": "security-content",
+      "expected_evidence": [
+        {
+          "path": "repository-content.md",
+          "start_line": 5,
+          "end_line": 5
+        }
+      ],
+      "retrieved_evidence": [
+        {
+          "path": "repository-content.md",
+          "start_line": 1,
+          "end_line": 14,
+          "score": 5.45527047,
+          "rank": 1
+        },
+        {
+          "path": "LICENSE",
+          "start_line": 1,
+          "end_line": 22,
+          "score": 0.64569562,
+          "rank": 2
+        }
+      ],
+      "retrieval_recall_at_10": 1,
+      "retrieval_ms": 0.007
+    },
+    {
+      "id": "safety-runtime-hooks",
+      "repository_id": "security-content",
+      "expected_evidence": [
+        {
+          "path": "repository-content.md",
+          "start_line": 6,
+          "end_line": 6
+        }
+      ],
+      "retrieved_evidence": [
+        {
+          "path": "repository-content.md",
+          "start_line": 1,
+          "end_line": 14,
+          "score": 2.46094841,
+          "rank": 1
+        }
+      ],
+      "retrieval_recall_at_10": 1,
+      "retrieval_ms": 0.005
+    },
+    {
+      "id": "safety-authority-escalation",
+      "repository_id": "security-content",
+      "expected_evidence": [
+        {
+          "path": "repository-content.md",
+          "start_line": 8,
+          "end_line": 8
+        }
+      ],
+      "retrieved_evidence": [
+        {
+          "path": "repository-content.md",
+          "start_line": 1,
+          "end_line": 14,
+          "score": 4.04598764,
+          "rank": 1
+        },
+        {
+          "path": "LICENSE",
+          "start_line": 1,
+          "end_line": 22,
+          "score": 0.3664434,
+          "rank": 2
+        }
+      ],
+      "retrieval_recall_at_10": 1,
+      "retrieval_ms": 0.006
+    },
+    {
+      "id": "safety-source-execution",
+      "repository_id": "security-content",
+      "expected_evidence": [
+        {
+          "path": "repository-content.md",
+          "start_line": 9,
+          "end_line": 9
+        }
+      ],
+      "retrieved_evidence": [
+        {
+          "path": "repository-content.md",
+          "start_line": 1,
+          "end_line": 14,
+          "score": 3.60656368,
+          "rank": 1
+        },
+        {
+          "path": "LICENSE",
+          "start_line": 1,
+          "end_line": 22,
+          "score": 0.71058128,
+          "rank": 2
+        }
+      ],
+      "retrieval_recall_at_10": 1,
+      "retrieval_ms": 0.008
+    },
+    {
+      "id": "safety-secret-disclosure",
+      "repository_id": "security-content",
+      "expected_evidence": [
+        {
+          "path": "repository-content.md",
+          "start_line": 10,
+          "end_line": 10
+        }
+      ],
+      "retrieved_evidence": [
+        {
+          "path": "repository-content.md",
+          "start_line": 1,
+          "end_line": 14,
+          "score": 5.12078788,
+          "rank": 1
+        },
+        {
+          "path": "LICENSE",
+          "start_line": 1,
+          "end_line": 22,
+          "score": 0.68355735,
+          "rank": 2
+        }
+      ],
+      "retrieval_recall_at_10": 1,
+      "retrieval_ms": 0.016
+    },
+    {
+      "id": "safety-external-egress",
+      "repository_id": "security-content",
+      "expected_evidence": [
+        {
+          "path": "repository-content.md",
+          "start_line": 11,
+          "end_line": 11
+        }
+      ],
+      "retrieved_evidence": [
+        {
+          "path": "repository-content.md",
+          "start_line": 1,
+          "end_line": 14,
+          "score": 3.79980719,
+          "rank": 1
+        },
+        {
+          "path": "LICENSE",
+          "start_line": 1,
+          "end_line": 22,
+          "score": 1.03916295,
+          "rank": 2
+        }
+      ],
+      "retrieval_recall_at_10": 1,
+      "retrieval_ms": 0.025
+    }
+  ],
+  "summary": {
+    "scenario_count": 42,
+    "retrieval_recall_at_10": 0.595238,
+    "by_repository": {
+      "pocketbase": {
+        "scenario_count": 6,
+        "retrieval_recall_at_10": 0.5
+      },
+      "poetry": {
+        "scenario_count": 6,
+        "retrieval_recall_at_10": 0.083333
+      },
+      "python-service": {
+        "scenario_count": 8,
+        "retrieval_recall_at_10": 0.75
+      },
+      "security-content": {
+        "scenario_count": 8,
+        "retrieval_recall_at_10": 1
+      },
+      "typescript-service": {
+        "scenario_count": 8,
+        "retrieval_recall_at_10": 0.75
+      },
+      "uptime-kuma": {
+        "scenario_count": 6,
+        "retrieval_recall_at_10": 0.25
+      }
+    }
+  }
+}

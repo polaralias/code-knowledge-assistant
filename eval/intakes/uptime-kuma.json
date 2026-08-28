@@ -1,0 +1,29 @@
+{
+  "schema_version": "1.0",
+  "intake": {
+    "id": "uptime-kuma",
+    "upstream_url": "https://github.com/louislam/uptime-kuma.git",
+    "commit": "fcc51ebf4666121d18adbf09523b3aefda3576c9",
+    "tree": "7c07d0ca773d83a740edc57c3f41e5c92799ac30",
+    "capability_tier": "enhanced",
+    "primary_language": "JavaScript",
+    "license": {
+      "spdx": "MIT",
+      "path": "LICENSE",
+      "blob": "b811362292eb825167805e277a3b66909d5175b5",
+      "checked_at": "2026-08-26T07:09:17Z"
+    }
+  },
+  "observed_inventory": {
+    "tracked_files": 785,
+    "documentation_like_files": 7
+  },
+  "exclusion_profile": [
+    "dependency directories",
+    "generated and build output",
+    "binary and media content",
+    "files larger than the configured analysis limit"
+  ],
+  "scenario_file": "eval/scenarios/real-world/uptime-kuma.json",
+  "replacement_rule": "Replace only if the pinned source or licence becomes unavailable, the generated review fails the public-demo quality gate, or measured intake exceeds product limits; record a new decision and preserve previous result provenance."
+}

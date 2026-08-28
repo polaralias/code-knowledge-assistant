@@ -1,0 +1,29 @@
+{
+  "schema_version": "1.0",
+  "intake": {
+    "id": "pocketbase",
+    "upstream_url": "https://github.com/pocketbase/pocketbase.git",
+    "commit": "bc8ffed4e7265a70a6e8de76c0b0b48b945e19ef",
+    "tree": "457709acf32e831c690c7ecdf827553900aecf56",
+    "capability_tier": "structured",
+    "primary_language": "Go",
+    "license": {
+      "spdx": "MIT",
+      "path": "LICENSE.md",
+      "blob": "e3b8465b63df5a3e6dc26a4df8d2d89fa9468448",
+      "checked_at": "2026-08-26T07:09:17Z"
+    }
+  },
+  "observed_inventory": {
+    "tracked_files": 923,
+    "documentation_like_files": 3
+  },
+  "exclusion_profile": [
+    "dependency directories",
+    "generated and build output",
+    "binary and media content",
+    "files larger than the configured analysis limit"
+  ],
+  "scenario_file": "eval/scenarios/real-world/pocketbase.json",
+  "replacement_rule": "Replace only if the pinned source or licence becomes unavailable, structured analysis cannot produce a useful general overview, or measured intake exceeds product limits; record a new decision and preserve previous result provenance."
+}

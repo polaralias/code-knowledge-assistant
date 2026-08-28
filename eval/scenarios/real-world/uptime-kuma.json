@@ -1,0 +1,72 @@
+{
+  "schema_version": "1.0",
+  "intake_id": "uptime-kuma",
+  "source_commit": "fcc51ebf4666121d18adbf09523b3aefda3576c9",
+  "scenarios": [
+    {
+      "id": "uptime-kuma-server-entrypoint",
+      "category": "orientation",
+      "question": "What file does the production start command execute?",
+      "expected_behavior": "answer",
+      "answer_summary": "`npm start` delegates to `start-server`, which starts Node with `server/server.js`.",
+      "evidence": [
+        { "path": "package.json", "start_line": 24, "end_line": 26, "contains": "node server/server.js" }
+      ]
+    },
+    {
+      "id": "uptime-kuma-database-before-routes",
+      "category": "execution-flow",
+      "question": "How does startup ensure the database is ready before normal server initialization continues?",
+      "expected_behavior": "answer",
+      "answer_summary": "The startup IIFE initializes the data directory, runs any database-selection setup, awaits `initDatabase()`, exits on preparation failure, and only then performs post-database server initialization and route setup.",
+      "evidence": [
+        { "path": "server/server.js", "start_line": 230, "end_line": 257, "contains": "await initDatabase(testMode)" },
+        { "path": "server/server.js", "start_line": 1868, "end_line": 1893, "contains": "await Database.patch(port, hostname)" }
+      ]
+    },
+    {
+      "id": "uptime-kuma-http-and-socket-surface",
+      "category": "interface",
+      "question": "Where are HTTP API routes and the Socket.IO connection surface attached?",
+      "expected_behavior": "answer",
+      "answer_summary": "`server/server.js` mounts the API and status-page routers before its universal route, then registers the Socket.IO `connection` handler and begins public socket event registration.",
+      "evidence": [
+        { "path": "server/server.js", "start_line": 371, "end_line": 389, "contains": "io.on(\"connection\"" }
+      ]
+    },
+    {
+      "id": "uptime-kuma-active-monitor-startup",
+      "category": "cross-file",
+      "question": "How are active monitors resumed after the HTTP server begins listening?",
+      "expected_behavior": "answer",
+      "answer_summary": "The listen callback invokes `startMonitors()`, which loads active monitor records, puts them in the server monitor list, and calls each model's `start(io)` method; `Monitor.start()` then establishes the recurring beat function.",
+      "evidence": [
+        { "path": "server/server.js", "start_line": 1769, "end_line": 1779, "contains": "await startMonitors()" },
+        { "path": "server/server.js", "start_line": 1951, "end_line": 1966, "contains": "await monitor.start(io)" },
+        { "path": "server/model/monitor.js", "start_line": 409, "end_line": 427, "contains": "const beat = async () =>" }
+      ]
+    },
+    {
+      "id": "uptime-kuma-monitor-resume-state",
+      "category": "state-change",
+      "question": "What state and in-memory changes occur when a user resumes a monitor?",
+      "expected_behavior": "answer",
+      "answer_summary": "Ownership is checked, the monitor's database `active` flag is set, any existing in-memory instance is stopped, the loaded model replaces it in `server.monitorList`, and monitoring starts.",
+      "evidence": [
+        { "path": "server/server.js", "start_line": 1901, "end_line": 1916, "contains": "UPDATE monitor SET active = 1" }
+      ]
+    },
+    {
+      "id": "uptime-kuma-notification-dispatch",
+      "category": "cross-file",
+      "question": "How does an important heartbeat reach the configured notification provider implementation?",
+      "expected_behavior": "answer",
+      "answer_summary": "An important heartbeat calls `Monitor.sendNotification()`, which loads the monitor's notification rows and calls `Notification.send()` for each; the notification registry dispatches by `notification.type` to the matching provider.",
+      "evidence": [
+        { "path": "server/model/monitor.js", "start_line": 960, "end_line": 970, "contains": "Monitor.sendNotification" },
+        { "path": "server/model/monitor.js", "start_line": 1505, "end_line": 1517, "contains": "await Notification.send(" },
+        { "path": "server/notification.js", "start_line": 238, "end_line": 256, "contains": "this.providerList[notification.type].send" }
+      ]
+    }
+  ]
+}
