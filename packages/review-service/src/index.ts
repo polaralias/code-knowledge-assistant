@@ -59,6 +59,16 @@ export type ReviewServiceDependencies = {
   runMaterializedReview?: (input: MaterializedRepositoryReviewInput) => Promise<ZipRepositoryReview>;
   questionAnswererFactory?: (review: ZipRepositoryReview["review"]) => { answer(question: string): GroundedAnswer | Promise<GroundedAnswer> };
   reviewGeneration?: { client: StructuredGenerationClient; model: string };
+  onPipelineProgress?: (event: {
+    source: "git" | "zip";
+    phase: "acquire" | "inventory" | "snapshot" | "analysis" | "generation";
+    state: "started" | "completed" | "failed";
+    files: number;
+    excludedFiles: number;
+    bytes: number;
+    durationMs: number;
+    errorCode: string | null;
+  }) => void;
 };
 export type { MaterializedRepositoryReviewInput } from "@code-knowledge-assistant/review-orchestration";
 
@@ -172,6 +182,9 @@ export function createReviewService(dependencies: ReviewServiceDependencies): Re
   const runReview = dependencies.runReview ?? orchestrateZipRepositoryReview;
   const runMaterializedReview = dependencies.runMaterializedReview ?? orchestrateMaterializedRepositoryReview;
   const schedule = dependencies.schedule ?? ((work) => queueMicrotask(() => void work()));
+  const report = (event: Parameters<NonNullable<ReviewServiceDependencies["onPipelineProgress"]>>[0]) => {
+    try { dependencies.onPipelineProgress?.(event); } catch { /* progress reporting cannot fail a review */ }
+  };
   const uploadRoot = path.resolve(dependencies.uploadRoot);
   const reviews = new Map<string, ZipRepositoryReview["review"]>();
   const reviewToJob = new Map<string, string>();
@@ -235,10 +248,19 @@ export function createReviewService(dependencies: ReviewServiceDependencies): Re
     const queued = await dependencies.jobs.get(jobId);
     const processing = await dependencies.jobs.transition(jobId, queued.version, { state: "processing" });
     let acquired: Awaited<ReturnType<typeof intakePublicGitRepository>> | undefined;
+    const startedAt = Date.now();
+    report({ source: "git", phase: "acquire", state: "started", files: 0, excludedFiles: 0, bytes: 0, durationMs: 0, errorCode: null });
     try {
       if (!dependencies.gitTransport) throw new ReviewServiceError("GIT_REVIEW_UNAVAILABLE");
       acquired = await intakePublicGitRepository(source, dependencies.gitTransport, dependencies.gitIntakeOptions);
+      const inventoryStartedAt = Date.now();
+      report({ source: "git", phase: "inventory", state: "started", files: 0, excludedFiles: 0, bytes: 0, durationMs: 0, errorCode: null });
       const inventory = await inventoryRepository(acquired.workspacePath, dependencies.gitInventoryPolicy);
+      report({ source: "git", phase: "acquire", state: "completed", files: inventory.summary.discovered_files, excludedFiles: inventory.summary.excluded_files, bytes: inventory.summary.total_bytes, durationMs: Math.max(0, Date.now() - startedAt), errorCode: null });
+      report({ source: "git", phase: "inventory", state: "completed", files: inventory.summary.eligible_files, excludedFiles: inventory.summary.excluded_files, bytes: inventory.summary.total_bytes, durationMs: Math.max(0, Date.now() - inventoryStartedAt), errorCode: null });
+      report({ source: "git", phase: "snapshot", state: "started", files: inventory.summary.eligible_files, excludedFiles: inventory.summary.excluded_files, bytes: inventory.summary.total_bytes, durationMs: 0, errorCode: null });
+      report({ source: "git", phase: "analysis", state: "started", files: inventory.summary.eligible_files, excludedFiles: inventory.summary.excluded_files, bytes: inventory.summary.total_bytes, durationMs: 0, errorCode: null });
+      report({ source: "git", phase: "generation", state: "started", files: inventory.summary.eligible_files, excludedFiles: inventory.summary.excluded_files, bytes: inventory.summary.total_bytes, durationMs: 0, errorCode: null });
       const result = await runMaterializedReview({
         sourceRoot: acquired.workspacePath,
         inventory,
@@ -252,6 +274,9 @@ export function createReviewService(dependencies: ReviewServiceDependencies): Re
         now,
         generation: dependencies.reviewGeneration,
       });
+      report({ source: "git", phase: "snapshot", state: "completed", files: inventory.summary.eligible_files, excludedFiles: inventory.summary.excluded_files, bytes: inventory.summary.total_bytes, durationMs: 0, errorCode: null });
+      report({ source: "git", phase: "analysis", state: "completed", files: result.review.analysis.files.length, excludedFiles: inventory.summary.excluded_files, bytes: inventory.summary.total_bytes, durationMs: 0, errorCode: null });
+      report({ source: "git", phase: "generation", state: "completed", files: result.review.analysis.files.length, excludedFiles: inventory.summary.excluded_files, bytes: inventory.summary.total_bytes, durationMs: 0, errorCode: null });
       if (result.snapshot.id !== snapshotId || result.review.review.review_id !== reviewId || result.review.review.source_revision !== acquired.revision) {
         throw new ReviewServiceError("UPLOAD_OWNERSHIP_FAILED");
       }
@@ -282,6 +307,7 @@ export function createReviewService(dependencies: ReviewServiceDependencies): Re
       const current = await dependencies.jobs.get(jobId);
       if (current.state === "processing") {
         const code = error instanceof Error && /^[A-Z][A-Z0-9_]{0,79}$/u.test(error.message) ? error.message : "GIT_REVIEW_PROCESSING_FAILED";
+        report({ source: "git", phase: "generation", state: "failed", files: 0, excludedFiles: 0, bytes: 0, durationMs: Math.max(0, Date.now() - startedAt), errorCode: code });
         await dependencies.jobs.transition(jobId, current.version, { state: "failed", error: { code } });
       }
     } finally {

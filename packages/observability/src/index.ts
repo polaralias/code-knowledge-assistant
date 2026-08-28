@@ -31,6 +31,17 @@ export type OperationalEvent =
       outcome: "failure" | "success";
       expiredCount: number;
       durationMs: number;
+    }
+  | {
+      event: "review.pipeline.progress";
+      source: "git" | "zip";
+      phase: "acquire" | "inventory" | "snapshot" | "analysis" | "generation";
+      state: "started" | "completed" | "failed";
+      files: number;
+      excludedFiles: number;
+      bytes: number;
+      durationMs: number;
+      errorCode: string | null;
     };
 
 export type OperationalMetrics = Readonly<{
@@ -121,7 +132,7 @@ export function createOperationalTelemetry(input: {
   }
 
   function record(event: OperationalEvent): void {
-    let output: Record<string, string | number>;
+    let output: Record<string, string | number | null>;
     if (typeof event !== "object" || event === null) throw new OperationalTelemetryError("TELEMETRY_EVENT_INVALID");
     if (event.event === "http.request.completed") {
       if (!exactKeys(event, ["durationMs", "event", "method", "route", "status"])
@@ -162,6 +173,29 @@ export function createOperationalTelemetry(input: {
         outcome: event.outcome,
         expired_count: event.expiredCount,
         duration_ms: event.durationMs,
+      };
+    } else if (event.event === "review.pipeline.progress") {
+      if (!exactKeys(event, ["bytes", "durationMs", "errorCode", "event", "excludedFiles", "files", "phase", "source", "state"])
+        || !["git", "zip"].includes(event.source) || !["acquire", "inventory", "snapshot", "analysis", "generation"].includes(event.phase)
+        || !["started", "completed", "failed"].includes(event.state)
+        || !isBoundedInteger(event.files, 1_000_000) || !isBoundedInteger(event.excludedFiles, 1_000_000)
+        || !isBoundedInteger(event.bytes, 1_000_000_000_000) || !isBoundedInteger(event.durationMs, 86_400_000)
+        || (event.errorCode !== null && (typeof event.errorCode !== "string" || !/^[A-Z][A-Z0-9_]{0,79}$/u.test(event.errorCode)))) {
+        throw new OperationalTelemetryError("TELEMETRY_EVENT_INVALID");
+      }
+      const recordedAt = timestamp();
+      output = {
+        schema: SCHEMA,
+        timestamp: recordedAt,
+        event: event.event,
+        source: event.source,
+        phase: event.phase,
+        state: event.state,
+        files: event.files,
+        excluded_files: event.excludedFiles,
+        bytes: event.bytes,
+        duration_ms: event.durationMs,
+        error_code: event.errorCode,
       };
     } else {
       throw new OperationalTelemetryError("TELEMETRY_EVENT_INVALID");

@@ -53,6 +53,16 @@ test("records bounded expiry outcomes and never throws when the writer fails", (
   });
 });
 
+test("records bounded extraction phases without source content or identifiers", () => {
+  const records: string[] = [];
+  const telemetry = createOperationalTelemetry({ now: () => new Date("2026-08-27T12:00:00.000Z"), write: (record) => records.push(record) });
+  telemetry.record({ event: "review.pipeline.progress", source: "git", phase: "inventory", state: "completed", files: 76, excludedFiles: 43, bytes: 9_461_517, durationMs: 182, errorCode: null });
+  assert.deepEqual(JSON.parse(records[0]!), {
+    schema: "code-knowledge-assistant.telemetry.v1", timestamp: "2026-08-27T12:00:00.000Z", event: "review.pipeline.progress",
+    source: "git", phase: "inventory", state: "completed", files: 76, excluded_files: 43, bytes: 9_461_517, duration_ms: 182, error_code: null,
+  });
+});
+
 test("rejects raw paths, unknown fields, invalid values, and unsafe clock output", () => {
   const telemetry = createOperationalTelemetry({ write() {} });
   for (const event of [

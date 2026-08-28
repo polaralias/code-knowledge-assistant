@@ -85,6 +85,7 @@ export async function buildUploadReviewServer(input: BuildUploadReviewServerInpu
       maxAnalyzedFileBytes: 5 * 1024 * 1024,
       maxAnalyzedBytes: 100 * 1024 * 1024,
     },
+    onPipelineProgress: input.telemetry ? (event) => input.telemetry!.record({ event: "review.pipeline.progress", ...event }) : undefined,
     questionAnswererFactory: provider ? (review) => createProviderAnswerer(review.evidenceIndex, provider.client, provider.model) : undefined,
     reviewGeneration: provider ? { client: provider.client, model: provider.model } : undefined,
   });
