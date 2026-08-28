@@ -58,7 +58,7 @@ export type ReviewServiceDependencies = {
   gitInventoryPolicy?: Partial<InventoryPolicy>;
   runMaterializedReview?: (input: MaterializedRepositoryReviewInput) => Promise<ZipRepositoryReview>;
   questionAnswererFactory?: (review: ZipRepositoryReview["review"]) => { answer(question: string): GroundedAnswer | Promise<GroundedAnswer> };
-  reviewGeneration?: { client: StructuredGenerationClient; model: string };
+  reviewGeneration?: { client: StructuredGenerationClient; models: string[] };
   onPipelineProgress?: (event: {
     source: "git" | "zip";
     phase: "acquire" | "inventory" | "snapshot" | "analysis" | "generation";

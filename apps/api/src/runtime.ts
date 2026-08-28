@@ -87,7 +87,7 @@ export async function buildUploadReviewServer(input: BuildUploadReviewServerInpu
     },
     onPipelineProgress: input.telemetry ? (event) => input.telemetry!.record({ event: "review.pipeline.progress", ...event }) : undefined,
     questionAnswererFactory: provider ? (review) => createProviderAnswerer(review.evidenceIndex, provider.client, provider.model) : undefined,
-    reviewGeneration: provider ? { client: provider.client, model: provider.model } : undefined,
+    reviewGeneration: provider ? { client: provider.client, models: provider.models } : undefined,
   });
   let demoAvailable = input.demoReviewArtifactPath === undefined;
   let demoDependencies: ReviewApiDependencies = {

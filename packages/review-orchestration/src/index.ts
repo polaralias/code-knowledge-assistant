@@ -30,7 +30,7 @@ export type ZipRepositoryReviewInput = {
   generatedAt: string;
   now?: () => Date;
   zipPolicy?: Partial<ZipIntakePolicy>;
-  generation?: { client: StructuredGenerationClient; model: string };
+  generation?: { client: StructuredGenerationClient; models: string[] };
 };
 
 export type ZipRepositoryReview = {
@@ -52,7 +52,7 @@ export type MaterializedRepositoryReviewInput = {
   sourceRevision: string;
   generatedAt: string;
   now?: () => Date;
-  generation?: { client: StructuredGenerationClient; model: string };
+  generation?: { client: StructuredGenerationClient; models: string[] };
 };
 
 export type MaterializedRepositoryReview = ZipRepositoryReview;

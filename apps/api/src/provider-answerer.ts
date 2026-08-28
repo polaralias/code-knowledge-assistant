@@ -46,7 +46,7 @@ export function createProviderAnswerer(index: LexicalEvidenceIndex, client: Stru
   });
 }
 
-export function createProviderClientFromEnvironment(): { client: StructuredGenerationClient; model: string } | null {
+export function createProviderClientFromEnvironment(): { client: StructuredGenerationClient; model: string; models: string[] } | null {
   const apiKey = process.env.MODEL_PROVIDER_API_KEY;
   const endpoint = process.env.MODEL_PROVIDER_ENDPOINT;
   const model = process.env.MODEL_PROVIDER_MODEL;
@@ -60,5 +60,6 @@ export function createProviderClientFromEnvironment(): { client: StructuredGener
     budgets: { maxInputTokens: envNumber("MODEL_PROVIDER_MAX_INPUT_TOKENS", 16_000), maxOutputTokens: envNumber("MODEL_PROVIDER_MAX_OUTPUT_TOKENS", 900), maxTotalTokens: envNumber("MODEL_PROVIDER_MAX_TOTAL_TOKENS", 17_000), maxCostUsd: envNumber("MODEL_PROVIDER_MAX_COST_USD", 0.02) },
     pricing: { inputCostPerMillionUsd: Number(process.env.MODEL_PROVIDER_INPUT_COST_USD ?? 0.165), outputCostPerMillionUsd: Number(process.env.MODEL_PROVIDER_OUTPUT_COST_USD ?? 0.99) },
   });
-  return { client, model };
+  const modelB = process.env.MODEL_PROVIDER_MODEL_B;
+  return { client, model, models: [...new Set([model, ...(modelB ? [modelB] : [])])] };
 }
