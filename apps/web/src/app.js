@@ -183,11 +183,11 @@ function renderExtractionStages(state) {
     ['Build evidence', 'Extract supported-language structure and bounded evidence spans for the review.'],
     ['Generate concepts', 'Ask the configured model for a concise, evidence-linked overview.'],
   ];
-  const active = state === 'queued' ? -1 : 1;
+  const active = state === 'processing' ? 1 : 0;
   return `<ol class="extraction-stages" aria-label="Review extraction steps">${stages.map(([title, detail], index) => {
     const done = state === 'processing' && index === 0;
     const current = index === active;
-    return `<li class="extraction-stage ${done ? 'is-done' : ''} ${current ? 'is-active' : ''}"><span class="stage-mark" aria-hidden="true"></span><div><strong>${title}</strong><span>${detail}</span></div></li>`;
+    return `<li class="extraction-stage ${done ? 'is-done' : ''} ${current ? 'is-active' : ''}"${current ? ' aria-current="step"' : ''}><span class="stage-mark" aria-hidden="true"></span><div><strong>${title}</strong><span>${detail}</span></div></li>`;
   }).join('')}</ol>`;
 }
 

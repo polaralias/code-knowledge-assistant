@@ -254,6 +254,11 @@ h3 { font-size: 13px; line-height: 1.25; letter-spacing: -.01em; }
 .extraction-stage span:not(.stage-mark) { line-height: 1.45; }
 .extraction-stage.is-active strong { color: var(--accent); }
 .extraction-stage.is-done { color: var(--ink-soft); }
+.extraction-stage.is-active .stage-mark { width: 12px; height: 12px; border: 2px solid color-mix(in srgb, var(--accent) 28%, var(--line)); border-top-color: var(--accent); border-radius: 50%; animation: extraction-spin .8s linear infinite; }
+.extraction-stage.is-done .stage-mark { position: relative; border-color: var(--accent); border-radius: 50%; background: var(--accent); }
+.extraction-stage.is-done .stage-mark::after { content: ''; position: absolute; left: 2px; top: 0; width: 3px; height: 6px; border: solid var(--surface); border-width: 0 1.5px 1.5px 0; transform: rotate(45deg); }
+@keyframes extraction-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .extraction-stage.is-active .stage-mark { animation: none; border-color: var(--accent); background: color-mix(in srgb, var(--accent) 18%, transparent); } }
 
 @media (max-width: 1120px) {
   .workbench-grid { grid-template-columns: minmax(190px, 220px) minmax(0, 1fr); }

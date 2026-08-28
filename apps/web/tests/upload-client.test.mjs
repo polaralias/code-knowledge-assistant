@@ -80,6 +80,14 @@ test('the re-rendered upload form delegates file presence validation to retained
   assert.doesNotMatch(source, /id="zip-file"[^>]*\srequired(?:\s|\/?>)/u);
 });
 
+test('the extraction tracker identifies and animates only the active step accessibly', async () => {
+  const appSource = await readFile(new URL('../src/app.js', import.meta.url), 'utf8');
+  const styles = await readFile(new URL('../styles.css', import.meta.url), 'utf8');
+  assert.match(appSource, /aria-current="step"/u);
+  assert.match(styles, /extraction-stage\.is-active \.stage-mark[^}]*animation: extraction-spin/su);
+  assert.match(styles, /prefers-reduced-motion: reduce/su);
+});
+
 test('review access code is rendered as an in-memory-only field', async () => {
   const source = await readFile(new URL('../src/app.js', import.meta.url), 'utf8');
   assert.match(source, /id="review-access-code"[^>]*type="password"[^>]*autocomplete="off"/u);
