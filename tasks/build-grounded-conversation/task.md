@@ -6,7 +6,7 @@ description: Answer repository questions through hierarchical retrieval with sou
   verification, citations, qualification, and refusal behaviour.
 status: in-progress
 created: '2026-08-25T20:30:44Z'
-timestamp: '2026-08-28T02:56:30Z'
+timestamp: '2026-08-28T16:05:00Z'
 owner: James Whelan
 depends_on:
 - build-repository-review-pipeline/task
@@ -83,4 +83,4 @@ A user can ask questions about a reviewed repository and receive concise, useful
 - Six focused retrieval tests plus the integrated local-review test cover ranking, mixed layers, ties, invalid input, immutable snapshots, query bounds, insufficient evidence, and source citation recovery.
 - `pnpm test` passes 233 tests, including restart reconstruction and cited follow-up questions through the real local service.
 - The product workspace now presents this bounded retrieval path through a chat-centred Review tab with cited answers, while the Findings tab exposes the underlying generated documents and source inspection boundary.
-- Provider-backed answer synthesis, source verification of derived claims at answer time, conversation history, and the agreed-corpus quality gate remain open; the zero-cost lexical control is 0.595238 recall@10 against a provisional 0.85 gate.
+- Provider-backed answer synthesis is implemented and deployed: live questions combine lexical hits with review concepts and bounded primary excerpts before cited composition. Answer-time derived-claim verification, bounded conversation history, semantic retrieval/reranking, and the agreed-corpus quality gate remain open; the zero-cost lexical control is 0.595238 recall@10 against a provisional 0.85 gate.

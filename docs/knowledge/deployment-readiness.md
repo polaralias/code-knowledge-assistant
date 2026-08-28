@@ -2,10 +2,10 @@
 type: Deployment Readiness
 title: Deployment Readiness and Outstanding Work
 description: Records the verified deployment-shaped product path, the external launch gates, and the work that can remain deferred.
-timestamp: 2026-08-28T13:25:00Z
+timestamp: 2026-08-28T16:10:00Z
 authority: canonical
 verification: verified-limited
-verified_at: 2026-08-28T13:25:00Z
+verified_at: 2026-08-28T16:10:00Z
 verified_against:
   - pnpm test
   - pnpm typecheck
@@ -17,7 +17,7 @@ verified_against:
   - packages/model-provider/tests/model-provider.test.ts
   - packages/review-pipeline/tests/review-pipeline.test.ts
   - local provider-backed Cozylife extraction with six validated Qwen 3.6 Flash concepts
-  - Railway production deployment ed6459d9-2512-4192-bb57-5ff086fd03b6 at commit c69956a
+  - Railway production deployment 51feeb96-da65-41d5-99a0-31b4b33cbdfe at commit 9cc72b9
   - hosted Cozylife review review-de0f80d6-03a8-4790-a72a-d33b0f391258 with six non-baseline model-authored documents
   - deploy/policy.test.mjs
   - docker build --tag code-knowledge-assistant:local .
@@ -25,7 +25,7 @@ verified_against:
   - packages/review-service/tests/git-review-service.test.ts
   - direct runtime smoke against https://github.com/pallets/click at main
   - local Docker browser checks for Review, Findings, Map, responsive mobile, and light/dark emulation
-  - Railway production deployment 90c48ad1-2fc4-4380-ac56-ab1b99f9becd at commit 84cc163
+  - Railway production deployment 51feeb96-da65-41d5-99a0-31b4b33cbdfe at commit 9cc72b9
   - hosted deploy/smoke.mjs lifecycle against code-knowledge-assistant-production.up.railway.app
   - https://github.com/polaralias/code-knowledge-assistant/actions/runs/33148773548
   - tasks/index.md
@@ -66,7 +66,7 @@ The remaining launch work is concentrated in the wider model/retrieval evaluatio
 
 ## Still required before final presentation
 
-1. Establish the Frankfurt Model Studio workspace identifier and per-run ceiling, provide the API key through the local secret store, and run the checked evaluation matrix for `qwen3.6-flash` and `deepseek-v4-flash-0731`. Record exact model snapshots, latency, cost, retrieval, citation, refusal, and security results before enabling provider-backed generation.
+1. Run the checked comparative evaluation matrix for `qwen3.6-flash` and `deepseek-v4-flash-0731` using the configured provider budget. Record exact model snapshots, latency, cost, retrieval, citation, refusal, and security results; this determines whether the current allocation remains the default.
 2. Complete a clean hosted-browser ZIP and Git journey, verify restart recovery against retained state, and capture stable screenshots.
 3. Reconcile the measured model and hosted-browser evidence into the final release presentation.
 
@@ -74,14 +74,14 @@ The remaining launch work is concentrated in the wider model/retrieval evaluatio
 
 - Replace filesystem JSON/object stores with hosted PostgreSQL and S3-compatible storage when more than one replica, larger repositories, or independent worker scaling is needed.
 - Add distributed expiry coordination, lifecycle rules, backup deletion, structured logs, metrics, traces, dashboards, and alerts that never record source bodies or secrets.
-- Add provider-backed generation, embeddings, reranking, conversation history, answer-time derived-claim verification, and measured model fallback only after the evaluation contract passes.
+- Add semantic embeddings, reranking, bounded conversation history, answer-time derived-claim verification, and measured model fallback only after the evaluation contract passes. Provider-backed review and chat generation are already implemented with strict validation and deterministic fallback.
 - Add enhanced Tree-sitter adapters and evidence-supported relationships only where evaluation demonstrates material usefulness; complete call-graph reconstruction is not an MVP requirement.
 
 ## Next execution tranches
 
-1. Resume provider evaluation once the Frankfurt Workspace ID is available; compare `qwen3.6-flash` and `deepseek-v4-flash-0731` within the checked cost and safety ceilings.
+1. Run the configured Qwen/DeepSeek evaluation matrix within the checked cost and safety ceilings.
 2. Run the clean hosted-browser journey and restart/persistence check, then capture stable public screenshots.
-3. Reconcile the measured model and retrieval result into the evaluation and hosting decisions, then decide whether semantic retrieval or provider synthesis earns a separate implementation tranche.
+3. Implement semantic retrieval only if the measured hybrid-RAG comparison clears the retrieval and cost gates; follow the [roadmap](roadmap-and-known-gaps.md) for the tranche shape.
 
 ## Safe to defer after the reference demo
 

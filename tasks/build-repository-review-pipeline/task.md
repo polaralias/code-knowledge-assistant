@@ -358,4 +358,4 @@ A supported repository can be ingested without executing its content, transforme
 - `pnpm test` passes 233 tests across evaluation, intake, Git, snapshots, analysis, review generation, retrieval, answering, orchestration, local API integration, browser contracts, and deployment policy.
 - `pnpm typecheck` passes with the strict root TypeScript configuration.
 - A production-shaped smoke against `https://github.com/pallets/click` (`main`) returned a queued response and reached `ready` without exposing source details.
-- Hosted S3-compatible evidence storage, multi-instance expiry coordination, enhanced Tree-sitter analysis, evaluated provider-backed review/answer generation, and public deployment remain open acceptance scope.
+- Hosted S3-compatible evidence storage, multi-instance expiry coordination, enhanced Tree-sitter analysis, and the comparative quality gate remain open follow-on scope. Provider-backed review/answer generation and the Railway reference deployment are implemented and separately evidenced.

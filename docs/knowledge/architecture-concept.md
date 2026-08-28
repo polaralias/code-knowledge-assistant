@@ -2,10 +2,10 @@
 type: Architecture Concept
 title: Initial Repository Knowledge Architecture
 description: Describes the evidence, review, retrieval, model, storage, and deployment boundaries, including provider-interpreted review generation and its deterministic safety control.
-timestamp: 2026-08-28T13:13:28Z
+timestamp: 2026-08-28T16:10:00Z
 authority: canonical
 verification: verified-limited
-verified_at: 2026-08-28T13:13:28Z
+verified_at: 2026-08-28T16:10:00Z
 verified_against:
   - packages/intake/tests/inventory.test.ts
   - packages/intake/tests/zip-intake.test.ts
@@ -39,7 +39,7 @@ navigation:
 
 # Initial repository knowledge architecture
 
-The path from a browser-submitted ZIP or public GitHub URL through bounded intake, durable body-free job transitions, deterministic inventory, immutable snapshotting, conservative lexical analysis, evidence-constrained provider interpretation, restart-safe artifact reconstruction, bounded cited answering, scheduled expiry, access-code enforcement, and the browser workspace is implementation-verified. Initial review generation runs one bounded model pass for each required concept family. The model receives selected source evidence and may author titles, summaries, and claims, but the application assigns internal identifiers and accepts only exact evidence references. Qwen 3.6 Flash runs with hybrid thinking disabled for predictable structured-output budgets; DeepSeek V4 Flash is a per-concept fallback, followed by the deterministic evidence-backed control. Enhanced parsing, semantic vector retrieval, and multi-instance hosted storage remain proposed boundaries.
+The path from a browser-submitted ZIP or public GitHub URL through bounded intake, durable body-free job transitions, deterministic inventory, immutable snapshotting, conservative lexical analysis, evidence-constrained provider interpretation, restart-safe artifact reconstruction, summary-plus-source conversational answering, scheduled expiry, access-code enforcement, and the browser workspace is implementation-verified. Initial review generation runs one bounded model pass for each required concept family. The model receives selected source evidence and may author titles, summaries, and claims, but the application assigns internal identifiers and accepts only exact evidence references. Live questions combine lexical hits with review concepts and bounded primary excerpts before provider composition; the deterministic control remains available when provider output is unavailable or unverifiable. Qwen 3.6 Flash runs with hybrid thinking disabled for predictable structured-output budgets; DeepSeek V4 Flash is a per-concept fallback. Enhanced parsing, semantic vector retrieval, and multi-instance hosted storage remain proposed boundaries.
 
 ## Logical flow
 
@@ -51,8 +51,8 @@ Repository input
   -> six evidence-constrained model interpretation passes
   -> schema and claim-to-evidence validation
   -> derived documentation index
-  -> hierarchical retrieval
-  -> source verification
+  -> bounded lexical retrieval plus summary/source context assembly
+  -> provider composition and citation validation
   -> cited conversational answer
 ```
 
@@ -91,7 +91,7 @@ The review pipeline exposes a provider-independent inventory core, safe ZIP adap
 
 - **Web application:** repository selection, review status, documentation navigation, chat, and evidence inspection.
 - **Review pipeline:** safe Git or zip intake, capability classification, extraction, chunking, review generation, validation, and indexing.
-- **Retrieval pipeline:** lexical and vector retrieval across both knowledge layers, optional reranking, provenance expansion, and context assembly.
+- **Retrieval pipeline:** deterministic lexical retrieval across both knowledge layers, exact-path prioritisation, bounded summary/source context assembly, and a documented future vector/reranking seam.
 - **Generation adapter:** OpenAI-compatible provider boundary supporting configurable review and chat models.
 - **Persistence:** local job metadata and integrity-wrapped completed-review artifacts are stored as atomic versioned JSON records. Lexical indexes are deterministically rebuilt from persisted evidence after restart. PostgreSQL with pgvector remains the proposed hosted store for multi-instance metadata and vector retrieval.
 - **Object storage:** a provider-independent object-store contract now implements immutable, policy-filtered source snapshots. Its filesystem adapter is verified for local self-hosting and tests; a hosted S3-compatible adapter remains to be implemented. Snapshots store eligible source and an exclusion manifest, not raw ZIP uploads or excluded sensitive file bodies.
@@ -119,7 +119,7 @@ The implemented service gives queued/processing work a one-hour deadline, replac
 
 ## Open architecture decisions
 
-The selected model allocation, embedding model, reranking threshold, exact extraction libraries, provider privacy terms, evidence thresholds, and public-demo access limits remain open in the [decision queue](./decision-queue.md).
+The selected model allocation is operational but still subject to the measured evaluation matrix. Embedding model, reranking threshold, conversation-memory contract, answer-time verification depth, exact enhanced extraction libraries, provider privacy terms, and public-demo access limits remain open in the [decision queue](./decision-queue.md) and [roadmap](./roadmap-and-known-gaps.md).
 
 ## Related knowledge
 

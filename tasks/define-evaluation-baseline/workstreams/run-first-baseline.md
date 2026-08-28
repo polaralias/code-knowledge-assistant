@@ -5,9 +5,9 @@ workstream: run-first-baseline
 title: Run and publish the first baseline
 description: Execute the accepted extraction, retrieval, model, embedding, and reranking
   matrix and publish costs, latency, failures, and selection evidence.
-status: blocked
+status: in-progress
 created: '2026-08-25T22:17:57Z'
-timestamp: '2026-08-28T03:00:46Z'
+timestamp: '2026-08-28T16:10:00Z'
 owner: James Whelan
 ---
 
@@ -41,7 +41,7 @@ Execute the accepted extraction, retrieval, model, embedding, and reranking matr
 
 ## Handoff
 
-- Blocked pending an approved provider workspace/key, exact model and endpoint values, and a separately configured spend ceiling. Resume with public-source DeepSeek/Qwen comparisons first, then the private-source Frankfurt lane; publish measured quality, citation, refusal, latency, token, and cost results before enabling provider-backed generation.
+- Provider credentials, exact model/endpoint values, and a spend ceiling are configured and provider-backed generation is enabled behind strict validation and deterministic fallback. The remaining work is the measured public-source DeepSeek/Qwen comparison and publication of quality, citation, refusal, latency, token, and cost results.
 
 ## Deferred / not completed
 

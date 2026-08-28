@@ -2,7 +2,7 @@
 type: Evaluation Contract
 title: Evaluation Baseline Contract
 description: Defines the fixture suite, real-world repository intakes, scenario matrix, measurements, thresholds, and result evidence required before implementation choices are selected.
-timestamp: 2026-08-28T05:50:34Z
+timestamp: 2026-08-28T16:10:00Z
 authority: canonical
 verification: verified-limited
 verified_at: 2026-08-28T05:50:34Z
@@ -27,7 +27,7 @@ The evaluation suite can distinguish whether an extraction, retrieval, prompt, o
 
 ## Current implementation evidence
 
-The original Python and TypeScript fixtures, immutable Poetry, Uptime Kuma, and PocketBase intakes, exact 42-scenario corpus, result schema, dependency-free validators, deterministic scorer, and bounded repository-context provider runner are implemented under `eval/` and `packages/evaluation/`. The corpus currently resolves 61 expected citations. The zero-cost lexical baseline is measured at 0.595238 recall@10 and fails the provisional 0.85 retrieval gate. The provider adapter uses the broadly supported OpenAI-compatible `json_object` response format, embeds the exact local JSON Schema in the recorded prompt, and validates every returned object locally before accepting it. When a provider omits monetary cost, explicit per-million-token rates convert its reported usage into measured cost before the hard per-call and persistent GBP budget gates. Provider-backed comparisons remain pending approved credentials, Frankfurt-workspace confirmation, and measured model results; live evaluation requires an explicit USD-to-GBP rate and reserves against the persistent provider budget before each call.
+The original Python and TypeScript fixtures, immutable Poetry, Uptime Kuma, and PocketBase intakes, exact 42-scenario corpus, result schema, dependency-free validators, deterministic scorer, and bounded repository-context provider runner are implemented under `eval/` and `packages/evaluation/`. The corpus currently resolves 61 expected citations. The zero-cost lexical baseline is measured at 0.595238 recall@10 and fails the provisional 0.85 retrieval gate. The provider adapter uses the broadly supported OpenAI-compatible `json_object` response format, embeds the exact local JSON Schema in the recorded prompt, and validates every returned object locally before accepting it. When a provider omits monetary cost, explicit per-million-token rates convert its reported usage into measured cost before the hard per-call and persistent GBP budget gates. Provider credentials and production routing are configured; the full comparative quality/cost matrix remains pending measured runs. Live evaluation requires an explicit USD-to-GBP rate and reserves against the persistent provider budget before each call.
 
 ## Suite composition
 

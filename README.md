@@ -2,7 +2,7 @@
 type: Repository Guide
 title: Code Knowledge Assistant
 description: Start here to understand the evidence-backed repository review and conversational code exploration project.
-timestamp: 2026-08-28T13:25:00Z
+timestamp: 2026-08-28T16:10:00Z
 authority: canonical
 navigation:
   role: entry-point
@@ -27,17 +27,18 @@ The repository is intentionally documentation-led. Canonical product and archite
 8. [Evaluation baseline contract](./docs/knowledge/evaluation-contract.md)
 9. [Decision queue](./docs/knowledge/decision-queue.md)
 10. [Deployment readiness and outstanding work](./docs/knowledge/deployment-readiness.md)
-11. [Delivery tasks](./tasks/index.md)
+11. [Roadmap and known gaps](./docs/knowledge/roadmap-and-known-gaps.md)
+12. [Delivery tasks](./tasks/index.md)
 
 ## Current state
 
 - Product direction: selected and documented.
 - Architecture and capability tiers: inventory, safe ZIP intake, retained source snapshots, structured lexical extraction, fallback extraction, evidence-constrained provider interpretation with a deterministic control, and lexical retrieval are implementation-verified.
 - Model and retrieval choices: Qwen 3.6 Flash is the current production generation primary and DeepSeek V4 Flash is its per-concept fallback; the wider evaluation remains required before treating that allocation as final.
-- Evaluation baseline: deterministic fixtures, scoring controls, and three immutable real-world intake manifests are present; paid provider comparison is paused.
+- Evaluation baseline: deterministic fixtures, scoring controls, and three immutable real-world intake manifests are present; paid provider comparison is implemented as a bounded runner, with the full model/retrieval matrix still pending measured runs.
 - Application code: bounded ZIP and public-GitHub intake now pass through durable body-free job metadata, immutable source snapshotting, conservative Python/TypeScript/JavaScript structured extraction (plus unknown-text fallback), six bounded provider interpretation passes, strict claim-to-evidence validation, and bounded cited answering. Qwen hybrid thinking is disabled for these structured passes so its token budget is spent on the validated result; the model supplies interpretation while the application owns stable concept and claim identifiers. If a pass fails validation, DeepSeek is tried for that concept and any still-unavailable concept retains the deterministic evidence-backed control. Completed review artifacts and lexical evidence indexes survive restart, with a 48-hour expiry lifecycle. The browser presents a chat-centred Review, Findings, and Map workspace.
-- Conversation retrieval: bounded lexical retrieval over primary and derived evidence feeds provider-backed cited answers with explicit insufficiency controls. It is retrieval-augmented generation in the broad sense, but not semantic vector RAG; embeddings, reranking, conversation memory, and answer-time derived-claim verification remain evaluated follow-up work.
-- Deployment: the Dockerfile-backed singleton service is live at [code-knowledge-assistant-production.up.railway.app](https://code-knowledge-assistant-production.up.railway.app) with a persistent `/var/lib/code-atlas` volume. Production deployment `a9701ad2-e061-47e6-a933-da834a4ff163` runs the grounded-chat and source-identity changes from commit `ba5fec9`; health and readiness both return 200.
+- Conversation retrieval: bounded lexical retrieval over primary and derived evidence, supplemented with review summaries and selected primary excerpts, feeds provider-backed cited answers with explicit insufficiency controls. This is retrieval-augmented generation in the broad sense, but not semantic vector RAG; semantic retrieval, reranking, conversation memory, and answer-time derived-claim verification are documented follow-on tranches.
+- Deployment: the Dockerfile-backed singleton service is live at [code-knowledge-assistant-production.up.railway.app](https://code-knowledge-assistant-production.up.railway.app) with a persistent `/var/lib/code-atlas` volume. The latest provider-context deployment is tracked in [deployment readiness](./docs/knowledge/deployment-readiness.md); health and readiness are monitored by the Railway smoke path.
 - Public source: [polaralias/code-knowledge-assistant](https://github.com/polaralias/code-knowledge-assistant).
 
 See [Deployment readiness and outstanding work](./docs/knowledge/deployment-readiness.md) for the evidence matrix, launch gates, and explicit deferrals.

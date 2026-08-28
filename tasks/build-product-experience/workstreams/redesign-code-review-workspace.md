@@ -61,7 +61,7 @@ The design dials are `DESIGN_VARIANCE: 7`, `MOTION_INTENSITY: 3`, and `VISUAL_DE
 
 ## RAG boundary
 
-The current path is a bounded lexical RAG-like loop: source and derived evidence are indexed by `buildLexicalEvidenceIndex`, ranked by query-term overlap, truncated to a context byte limit, and passed to `createDeterministicAnswerer`, which returns citations or explicit insufficiency. It is useful retrieval-augmented answering, but it is not semantic vector RAG. Embeddings, reranking, provider-backed synthesis, durable conversation history, and answer-time claim verification remain future work and should be represented as explicit review states rather than simulated in the UI.
+The current path is bounded retrieval-augmented answering: source and derived evidence are indexed by `buildLexicalEvidenceIndex`, ranked by query-term overlap, supplemented with review concepts and selected primary excerpts for broad questions, and passed to the configured provider answerer. Answers return citations or explicit insufficiency; the deterministic answerer remains the control path. It is not semantic vector RAG. Embeddings, reranking, durable conversation history, and answer-time claim verification remain future work and are recorded in the canonical roadmap.
 
 ## Related knowledge
 

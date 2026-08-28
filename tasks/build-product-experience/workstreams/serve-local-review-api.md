@@ -39,4 +39,4 @@ Expose the implemented review and answer paths through a bounded local HTTP adap
 
 ## Handoff
 
-- Remaining: provider-backed generation/evaluation and hosted deployment configuration. Authentication/access-code gating and persistent limits are now integrated at hosted entrypoints.
+- Remaining: comparative provider evaluation and clean hosted-browser evidence. Provider-backed generation, authentication/access-code gating, persistent limits, and Railway deployment are integrated at hosted entrypoints.

@@ -2,10 +2,10 @@
 type: Output Contract
 title: Repository Review Knowledge Contract
 description: Defines the OKF-compatible generated review bundle, evidence separation, concept families, and review workflow.
-timestamp: 2026-08-28T13:13:28Z
+timestamp: 2026-08-28T16:10:00Z
 authority: canonical
 verification: verified-limited
-verified_at: 2026-08-28T13:13:28Z
+verified_at: 2026-08-28T16:10:00Z
 verified_against:
   - packages/source-snapshots/tests/snapshot-lifecycle.test.ts
   - packages/review-generation/tests/review-generation.test.ts
@@ -46,7 +46,7 @@ Every generated concept records a stable review identifier, immutable source rev
 
 ## Evidence separation
 
-The implemented normalized evidence records contain repository-relative path, revision, line range, symbol where available, content digest, extraction method, capability tier, and a bounded excerpt. Initial review generation sends a bounded evidence selection to one provider pass for each required concept family. The provider authors interpretation fields only; stable concept and claim identifiers are application-owned. Every material claim must cite an evidence identifier offered to that pass, and the merged bundle is validated before persistence. Invalid or unavailable output falls through the configured secondary model at concept granularity and then to the deterministic evidence-backed control. The local path indexes both primary chunks and derived claims, provider-backed answering returns resolvable citations or explicit insufficiency, and the browser exposes cited source spans. Filesystem-backed completed artifacts and source snapshots are durable across restart; hosted S3/PostgreSQL/vector storage remains unimplemented.
+The implemented normalized evidence records contain repository-relative path, revision, line range, symbol where available, content digest, extraction method, capability tier, and a bounded source excerpt. Initial review generation sends a bounded evidence selection to one provider pass for each required concept family. The provider authors interpretation fields only; stable concept and claim identifiers are application-owned. Every material claim must cite an evidence identifier offered to that pass, and the merged bundle is validated before persistence. Invalid or unavailable output falls through the configured secondary model at concept granularity and then to the deterministic evidence-backed control. The local path indexes both primary chunks and derived claims. Provider-backed answering combines retrieved records with bounded review-summary and primary-source context, returns resolvable citations or explicit insufficiency, and the browser exposes cited source spans. Filesystem-backed completed artifacts and source snapshots are durable across restart; hosted S3/PostgreSQL/vector storage remains unimplemented.
 
 The supporting source-snapshot, job, and completed-artifact lifecycles are verified limited. Eligible source plus the exclusion manifest—not excluded sensitive bodies—is retained behind an opaque snapshot identifier, while atomic body-free job records expose queued, processing, ready, failed, expired, and deleted state. Completed deterministic analysis, generated concepts, and bounded evidence are persisted inside a versioned integrity envelope; the lexical evidence index is rebuilt deterministically after restart. Browser execution verifies ZIP upload, bounded polling, generated review entry, cited follow-up questions, and source-evidence display, while runtime integration verifies the same review and cited question after application reconstruction. Public Git intake uses the same lifecycle and reaches `ready` in a production-shaped runtime smoke. A scheduled sweep and early deletion reconcile local job, snapshot, artifact, memory, and upload state. Durable conversations, vector records, provider verification, hosted adapters, and multi-instance cleanup coordination remain unimplemented.
 

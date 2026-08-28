@@ -17,6 +17,7 @@ okf_version: "0.1"
 - [Code Knowledge Assistant Product Brief](product-brief.md) - Summarises the user problem, product proposition, engineering goals, and public demonstration expectations.
 - [Evidence-Backed Code Knowledge Assistant](product-contract.md) - Defines the product outcome, trust model, MVP boundary, and observable success conditions for the Code Knowledge Assistant.
 - [Repository Review Knowledge Contract](review-output-contract.md) - Defines the OKF-compatible generated review bundle, evidence separation, concept families, and review workflow.
+- [Roadmap and Known Gaps](roadmap-and-known-gaps.md) - Records the intentionally deferred implementation work and the evidence required to promote each item.
 
 # Directories
 
