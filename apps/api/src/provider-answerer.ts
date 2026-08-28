@@ -29,7 +29,8 @@ export function createProviderAnswerer(index: LexicalEvidenceIndex, client: Stru
       const retrieval = index.query(question, { resultLimit: 5, contextByteLimit: 12_000 });
       const selected: EvidenceDocument[] = retrieval.status === "ok" ? [...retrieval.results] : [];
       const selectedIds = new Set(selected.map((item) => item.id));
-      if (selected.length < 5 && supplementalDocuments.length > 0) {
+      const broadQuestion = /\b(?:what|overview|purpose|describe|say|does)\b/iu.test(question);
+      if ((selected.length < 5 || broadQuestion) && supplementalDocuments.length > 0) {
         const broadContext = [...supplementalDocuments]
           .filter((item) => item.layer === "primary" && !selectedIds.has(item.id))
           .sort((left, right) => {
@@ -37,7 +38,7 @@ export function createProviderAnswerer(index: LexicalEvidenceIndex, client: Stru
             const rightDocs = /(^|\/)(readme|docs?)([^/]*|\/)/iu.test(right.provenance.repository_path) ? 0 : 1;
             return leftDocs - rightDocs || left.provenance.repository_path.localeCompare(right.provenance.repository_path) || left.id.localeCompare(right.id);
           });
-        selected.push(...broadContext.slice(0, 5 - selected.length));
+        selected.push(...broadContext.slice(0, broadQuestion ? 3 : 5 - selected.length));
       }
       if (selected.length === 0) return { status: "insufficient-evidence", reason: retrieval.status === "insufficient-evidence" ? retrieval.reason : "no-matches", answer: null, citations: [], qualification: "No matching repository evidence was found for this question." };
       const allowed = new Map(selected.map((item) => [item.id, item]));
