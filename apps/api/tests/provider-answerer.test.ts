@@ -25,3 +25,20 @@ test("provider answerer sends bounded retrieved evidence and returns only verifi
   assert.match(request?.prompt ?? "", /Answer the question itself/u);
   assert.equal((request?.prompt ?? "").includes("invented"), false);
 });
+
+test("provider answerer supplements broad follow-ups with primary source excerpts", async () => {
+  let prompt = "";
+  const answerer = createProviderAnswerer(buildLexicalEvidenceIndex([]), {
+    async generate<T>(input: StructuredGenerationRequest): Promise<StructuredGenerationResult<T>> {
+      prompt = input.prompt;
+      return { provider: "test", requestedModel: input.model, model: input.model, prompt: input.prompt, schema: input.schema,
+        output: { answer: "The repository provides a start server.", qualification: "", citations: [{ evidence_id: "primary:chunk-1" }] },
+        usage: { inputTokens: 1, outputTokens: 1, totalTokens: 2 }, latencyMs: 1, estimatedCostUsd: 0,
+        request: { provider: "test", model: input.model, prompt: input.prompt, schema: input.schema } } as StructuredGenerationResult<T>;
+    },
+  }, "test-model", [{ id: "primary:chunk-1", layer: "primary", content: "export function startServer() { return 'ready'; }", provenance: { repository_path: "src/main.ts", line_start: 1, line_end: 1 } }]);
+  const result = await answerer.answer("what do they say?");
+  assert.equal(result.status, "answered");
+  assert.match(prompt, /src\/main\.ts/u);
+  assert.equal(result.citations[0]?.repository_path, "src/main.ts");
+});

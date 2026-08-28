@@ -86,7 +86,9 @@ export async function buildUploadReviewServer(input: BuildUploadReviewServerInpu
       maxAnalyzedBytes: 100 * 1024 * 1024,
     },
     onPipelineProgress: input.telemetry ? (event) => input.telemetry!.record({ event: "review.pipeline.progress", ...event }) : undefined,
-    questionAnswererFactory: provider ? (review) => createProviderAnswerer(review.evidenceIndex, provider.client, provider.model) : undefined,
+    questionAnswererFactory: provider ? (review) => createProviderAnswerer(review.evidenceIndex, provider.client, provider.model,
+      review.evidence.map((item) => ({ id: `primary:${item.id}`, layer: "primary" as const, content: item.excerpt,
+        provenance: { repository_path: item.path, line_start: item.start_line, line_end: item.end_line } }))) : undefined,
     reviewGeneration: provider ? { client: provider.client, models: provider.models } : undefined,
   });
   let demoAvailable = input.demoReviewArtifactPath === undefined;
@@ -106,7 +108,9 @@ export async function buildUploadReviewServer(input: BuildUploadReviewServerInpu
           branch: "snapshot",
           displayRevision: loaded.review.review.source_revision.slice(0, 12),
         },
-        provider ? createProviderAnswerer(loaded.review.evidenceIndex, provider.client, provider.model) : loaded.questionAdapter,
+        provider ? createProviderAnswerer(loaded.review.evidenceIndex, provider.client, provider.model,
+          loaded.review.evidence.map((item) => ({ id: `primary:${item.id}`, layer: "primary" as const, content: item.excerpt,
+            provenance: { repository_path: item.path, line_start: item.start_line, line_end: item.end_line } }))) : loaded.questionAdapter,
       );
     } catch {
       demoAvailable = false;
