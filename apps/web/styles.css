@@ -69,6 +69,7 @@ h3 { font-size: 13px; line-height: 1.25; letter-spacing: -.01em; }
 .repo-context { display: flex; align-items: center; gap: 8px; min-width: 0; color: var(--quiet); font: 11px ui-monospace, SFMono-Regular, Consolas, monospace; }
 .repo-context strong { color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 650; }
 .top-actions { display: flex; align-items: center; gap: 13px; }
+.review-switcher select { max-width: 220px; padding: 8px 28px 8px 10px; border: 1px solid var(--line); border-radius: 5px; background: var(--surface); color: var(--ink); font: inherit; font-size: 12px; }
 .top-note { color: var(--muted); font-size: 12px; }
 .state-control select { border: 1px solid var(--line); border-radius: 6px; padding: 7px 28px 7px 9px; background: var(--surface-raised); color: var(--ink); font-size: 11px; }
 .upload-trigger { border: 1px solid var(--accent); border-radius: 6px; padding: 8px 12px; background: var(--accent); color: var(--accent-ink); font-size: 12px; font-weight: 740; transition: filter .18s ease, transform .18s ease; }

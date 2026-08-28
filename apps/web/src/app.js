@@ -12,6 +12,8 @@ const reviewClient = createReviewClient(DEMO_REVIEW, { endpoint: endpointFromDoc
 const uploadClient = createUploadClient({ endpoint: apiEndpointFromDocument(document), fallback: DEMO_REVIEW });
 let activeReviewMode = reviewClient.mode === 'live' ? 'demo' : 'fixture';
 let fixture = reviewClient.mode === 'live' ? withReviewState(DEMO_REVIEW, 'loading') : DEMO_REVIEW;
+const reviewSessions = new Map([['demo', { label: `${DEMO_REVIEW.repository.owner}/${DEMO_REVIEW.repository.name}`, review: fixture, mode: activeReviewMode }]]);
+let activeReviewKey = 'demo';
 let selectedDocument = fixture.documents[0].id;
 let selectedAnswer = fixture.chatExamples[0];
 let questionPending = false;
@@ -32,6 +34,11 @@ function applyReview(next) {
   selectedAnswer = next.chatExamples[0] ?? awaitingQuestion;
 }
 
+function saveReviewSession(key, label, review, mode) {
+  reviewSessions.set(key, { label, review, mode });
+  activeReviewKey = key;
+}
+
 const escapeHtml = (value) => String(value)
   .replaceAll('&', '&amp;')
   .replaceAll('<', '&lt;')
@@ -49,6 +56,7 @@ function renderTopbar() {
     <a class="brand" href="./" aria-label="Code Atlas home"><span class="brand-mark" aria-hidden="true">CA</span><span class="brand-name">Code Atlas</span></a>
     <div class="repo-context" aria-label="Current repository"><span>${escapeHtml(fixture.repository.owner)}</span><span aria-hidden="true">/</span><strong>${escapeHtml(fixture.repository.name)}</strong></div>
     <div class="top-actions">
+      ${reviewSessions.size > 1 ? `<label class="review-switcher"><span class="sr-only">Switch review</span><select id="review-switcher" aria-label="Switch review">${[...reviewSessions].map(([key, session]) => `<option value="${escapeHtml(key)}" ${key === activeReviewKey ? 'selected' : ''}>${escapeHtml(session.label)}</option>`).join('')}</select></label>` : ''}
       <span class="top-note">${reviewClient.mode === 'live' || uploadClient.mode === 'live' ? 'Live review' : 'Local preview'}</span>
       <button class="upload-trigger" type="button" id="upload-trigger">New review</button>
       <label class="state-control"><span class="sr-only">Preview state</span><select id="state-select" aria-label="Preview workspace state">
@@ -234,6 +242,8 @@ async function submitUpload() {
       signal: uploadAbortController.signal,
       onState: (next) => { uploadProgress = next; renderUploadPanel(); },
     });
+    const key = `upload-${result.reviewId}`;
+    saveReviewSession(key, `${result.review.repository.owner}/${result.review.repository.name}`, result.review, uploadClient.mode === 'live' ? 'upload' : 'fixture');
     applyReview(result.review);
     activeReviewMode = uploadClient.mode === 'live' ? 'upload' : 'fixture';
     reviewAccessCode = '';
@@ -260,6 +270,8 @@ async function submitGitHubReview() {
   renderUploadPanel();
   try {
     const result = await uploadClient.createGitHubReview({ repositoryUrl: url.value, ref: ref.value, accessCode: reviewAccessCode }, { onAccepted: () => { reviewAccessCode = ''; }, signal: uploadAbortController.signal, onState: (next) => { uploadProgress = next; renderUploadPanel(); } });
+    const key = `upload-${result.reviewId}`;
+    saveReviewSession(key, `${result.review.repository.owner}/${result.review.repository.name}`, result.review, uploadClient.mode === 'live' ? 'upload' : 'fixture');
     applyReview(result.review);
     activeReviewMode = uploadClient.mode === 'live' ? 'upload' : 'fixture';
     reviewAccessCode = '';
@@ -324,6 +336,15 @@ function showEvidence(citation) {
 
 function bindEvents() {
   document.querySelector('#upload-trigger')?.addEventListener('click', openUploadDialog);
+  document.querySelector('#review-switcher')?.addEventListener('change', (event) => {
+    const session = reviewSessions.get(event.target.value);
+    if (!session) return;
+    activeReviewKey = event.target.value;
+    activeReviewMode = session.mode;
+    applyReview(session.review);
+    activeTab = 'review';
+    render();
+  });
   document.querySelectorAll('[data-tab]').forEach((button) => button.addEventListener('click', () => {
     activeTab = button.dataset.tab ?? 'review';
     render();
@@ -410,6 +431,7 @@ uploadDialog?.addEventListener('close', () => {
 
 if (reviewClient.mode === 'live') {
   reviewClient.load().then((next) => {
+    reviewSessions.set('demo', { label: `${next.repository.owner}/${next.repository.name}`, review: next, mode: 'demo' });
     applyReview(next);
     render();
   });
