@@ -343,7 +343,15 @@ export function createReviewApiServer(
         if (method === "DELETE" && revokeId !== null) { sendJson(response, 200, await options.admin.accessControl.revokeAccessCode(revokeId)); return; }
         if (method === "GET" && url.pathname === "/api/admin/pending") { if (!options.admin.listPending) throw new ReviewApiError("ADMIN_UNAVAILABLE", 503); sendJson(response, 200, { jobs: await options.admin.listPending() }); return; }
         const pendingId = pathIdentifier(url.pathname, "/api/admin/pending/");
-        if (method === "DELETE" && pendingId !== null) { if (!options.admin.stopJob) throw new ReviewApiError("ADMIN_UNAVAILABLE", 503); sendJson(response, 200, { jobId: pendingId, ...(await options.admin.stopJob(pendingId)) }); return; }
+        if (method === "DELETE" && pendingId !== null) {
+          if (!options.admin.stopJob) throw new ReviewApiError("ADMIN_UNAVAILABLE", 503);
+          const leaseId = leasesByJob.get(pendingId) ?? null;
+          const result = await options.admin.stopJob(pendingId);
+          await releaseLease(leaseId);
+          leasesByJob.delete(pendingId);
+          sendJson(response, 200, { jobId: pendingId, ...result });
+          return;
+        }
       }
       if (method === "GET" && url.pathname === "/readyz") {
         let ready = true;
